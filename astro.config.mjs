@@ -51,10 +51,12 @@ export default defineConfig({
         },
       ],
       sidebar: [
+        { label: "Intro", slug: "index" },
         { label: "Main", slug: "main" },
         { label: "Dictionary", slug: "dictionary" },
         {
           label: "PlayerIO",
+          collapsed: true,
           items: [
             { label: "PlayerIO", slug: "playerio/playerio" },
             { label: "PlayerIOConnector", slug: "playerio/playerioconnector" },
