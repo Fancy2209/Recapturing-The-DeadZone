@@ -27,6 +27,12 @@
   --sl-color-gray-6: #d9d9d9;
   --sl-color-gray-7: #dfdfdf;
   --sl-color-black: #e6e6e6;
+
+  --sl-content-width: 50rem;
+  --sl-text-5xl: 2.2rem; /* Reduced from 3.5rem */
+  --sl-text-4xl: 1.4rem; /* Reduced from 2.75rem */
+  --sl-text-3xl: 1.2rem; /* Reduced from 2rem */
+  --sl-text-2xl: 1rem; /* Reduced from 1.5rem */
 }
 
 @layer obsidian {
