@@ -17,6 +17,10 @@ If you follow the development instruction correctly, you should be at this scree
 
 ![Last progress](../../assets/progress.png)
 
+#### What's Next?
+
+Not entirely sure what is `publishingnetworklogin`. It could be a mechanism to indicate whether we are logging in through publisher services like Kong/AG/FB. The game set it to `:auto` probably because we are logging in through PlayerIO (as if we are looking at a login bypass mechanism). However, what `publishingnetwork.js` could be?
+
 Things to look at:
 
 - `connectViaPlayerIO()`: `preloader/thelaststand.app.network.PlayerIOConnector`@line 205.
