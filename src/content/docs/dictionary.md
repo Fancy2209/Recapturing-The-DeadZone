@@ -10,7 +10,7 @@ Contains every little, uncategorized information that is often used in the game.
 
 ### `gameId`
 
-The `gameId` of TLS:DZ `dev-the-last-stand-iret8ormbeshajyk6woewg`. It is typically used for URL retrieval in [GameFS](/playerio/gamefs).
+The `gameId` of TLS:DZ `dev-the-last-stand-iret8ormbeshajyk6woewg`. It is typically used for URL retrieval in [`GameFS`](/playerio/gamefs).
 
 ### `_rootPath`
 

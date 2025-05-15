@@ -1,18 +1,26 @@
 // @ts-check
-import { defineConfig, passthroughImageService } from "astro/config";
+import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightThemeObsidian from "starlight-theme-obsidian";
 import vercel from "@astrojs/vercel";
+import rehypeExternalLinks from "rehype-external-links";
 
 // https://astro.build/config
 export default defineConfig({
-  image: {
-    service: passthroughImageService(),
-  },
-  adapter: vercel({
-    imageService: true,
-  }),
+  adapter: vercel({ imageService: true }),
   base: process.env.NODE_ENV === "production" ? "/" : "/",
+  markdown: {
+    rehypePlugins: [
+      [
+        rehypeExternalLinks,
+        {
+          content: { type: "text", value: " ↗" },
+          target: "_blank",
+          rel: ["noopener", "noreferrer"],
+        },
+      ],
+    ],
+  },
   integrations: [
     starlight({
       plugins: [starlightThemeObsidian()],
