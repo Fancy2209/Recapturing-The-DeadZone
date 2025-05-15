@@ -14,7 +14,8 @@ export default defineConfig({
       credits: true,
       title: "TLSDZ",
       editLink: {
-        baseUrl: 'https://github.com/glennhenry/DeadZone-Documentation/edit/main/docs/'
+        baseUrl:
+          "https://github.com/glennhenry/DeadZone-Documentation/edit/main/",
       },
       social: [
         {
@@ -35,6 +36,15 @@ export default defineConfig({
             { label: "PlayerIO", slug: "playerio/playerio" },
             { label: "PlayerIOConnector", slug: "playerio/playerioconnector" },
             { label: "GameFS", slug: "playerio/gamefs" },
+            {
+              label: "Subfolder Example",
+              items: [
+                {
+                  label: "Subfolder",
+                  slug: "playerio/subfolder-example/subfolder",
+                },
+              ],
+            },
           ],
         },
       ],
