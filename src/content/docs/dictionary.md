@@ -10,14 +10,14 @@ Contains every little, uncategorized information that is often used in the game.
 
 ### `gameId`
 
-The `gameId` of TLS:DZ `dev-the-last-stand-iret8ormbeshajyk6woewg`. It is typically used for URL retrieval in [`GameFS`](/playerio/gamefs).
+The `gameId` of TLS:DZ is `dev-the-last-stand-iret8ormbeshajyk6woewg`. It is typically used for URL retrieval in [`GameFS`](/playerio/gamefs).
 
 ### `_rootPath`
 
-Declared on `thelaststand.preloader.core.Main`@188, `onAddedToStage`.
+Declared on `thelaststand.preloader.core.Main`@line 188, `onAddedToStage` method.
 
-```
+```actionscript-3
 this._rootPath = stage.loaderInfo.parameters.path || "";
 ```
 
-Unsure how is the actual link generated.
+Unsure what is or how is the actual link generated.

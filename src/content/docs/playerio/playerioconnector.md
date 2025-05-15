@@ -17,7 +17,7 @@ Currently, our private server choose to authenticate through PlayerIO.
 ## Authenticate by PlayerIO
 
 ```actionscript-3
-// thelaststand.app.network.PlayerIOConnector@209
+// thelaststand.app.network.PlayerIOConnector@line 209
 PlayerIO.authenticate(stage,GAME_ID,"publishingnetwork",{"userToken":userToken},null,function(param1:Client):void {
     onPlayerIOPubNetworkConnected(param1,userToken);
 },this.onConnectError);
