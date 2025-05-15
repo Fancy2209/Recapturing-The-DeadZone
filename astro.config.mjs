@@ -30,21 +30,14 @@ export default defineConfig({
         },
       ],
       sidebar: [
+        { label: "Main", slug: "main" },
+        { label: "Dictionary", slug: "dictionary" },
         {
           label: "PlayerIO",
           items: [
             { label: "PlayerIO", slug: "playerio/playerio" },
             { label: "PlayerIOConnector", slug: "playerio/playerioconnector" },
             { label: "GameFS", slug: "playerio/gamefs" },
-            {
-              label: "Subfolder Example",
-              items: [
-                {
-                  label: "Subfolder",
-                  slug: "playerio/subfolder-example/subfolder",
-                },
-              ],
-            },
           ],
         },
       ],
