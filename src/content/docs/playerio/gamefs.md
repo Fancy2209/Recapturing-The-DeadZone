@@ -5,50 +5,33 @@ description: GameFS
 ---
 
 :::note
-A backend service of PlayerIO. This is from https://playerio.com/documentation/services/gamefs/.
+Part of PlayerIO backend services. Source: https://playerio.com/documentation/services/gamefs/.
 :::
 
-`GameFS` is used to store and distribute game files to players.
+`GameFS` is used to store and distribute game files to players. TLSDZ access `GameFS` through the [`PlayerIO`](/playerio/playerio) client library.
 
-## GameFS Constructor
-
-Creates a new `GameFS` instance.
-
-`GameFS(param1: String, param2: String)`
-
-**Parameters:**
-
-- **`param1` (string)**: `gameId` to uniquely identify file request. TLSDZ `gameId` is: `dev-the-last-stand-iret8ormbeshajyk6woewg`.
-- **`param2` (string)**: `urlMap`, a mapping value for `param1`. Still unsure what it is used for. Example usage: `maps[param1] = UrlMap(param2)`
-
-## Request
-
-A file can be requested by using the `getUrl` method from the [`PlayerIO`](/playerio/playerio) client.
-
-### `getUrl`
-
-This method retrieves a URL for a file within the `GameFS`. It will convert the provided URL into a full internet URL.
-
-**Parameters:**
-
-- **`path` (string)**: The path to the file within the GameFS. (e.g., "mygame/images/logo.png").
-- **`secure=false` (boolean)**: Indicates whether the returned URL should be using https or not.
-
-**Return Value:**
-
-- **`fullUrl` (string):** The full URL that can be downloaded.
-
-**Example:**
-
-`thelaststand.preloader.core.Main`@114:
-
-```
-PlayerIO.gameFs("dev-the-last-stand-iret8ormbeshajyk6woewg").getUrl(this._rootPath + _loc1_,this._useSSL)
+```actionscript-3
+// thelaststand.preloader.core.Main@114
+PlayerIO.gameFS("dev-the-last-stand-iret8ormbeshajyk6woewg").getUrl(this._rootPath + "preloader.swf",this._useSSL)
 ```
 
-:::note
-DZ often uses `this._rootPath` before each URL. See the [dictionary](/dictionary#_rootpath).
-:::
+This call instantiates the `GameFS` class with `gameId` of “dev-the-last-stand-iret8ormbeshajyk6woewg”. Once it is constructed, the `getUrl` method allows the game client to request a specific file path and get back a full URL that can be downloaded.
+
+The `getUrl` method takes two arguments: a path string like `/game/data/preloader.swf`, and an optional `secure` boolean. If `secure` is true, the returned URL uses HTTPS; otherwise, it uses HTTP.
+
+Internally, a URLMap processing happens. It is not known what it try to achieve. The full URL processing is simply:
+
+```actionscript-3
+// playerio.GameFS@31
+return (param3 ? "https" : "http") + "://127.0.0.1:8080/r/" + param1 + param2;
+```
+
+- `param3` should be the secure flag.
+- The string is TLSDZ domain name. In this case, we should replace it to our domain (e.g., localhost).
+- `param1` is the `gameId`.
+- `param2` is a game file path. The `GameFS` enforce file path to start with a slash (/).
+
+It will produce a URL like `http://127.0.0.1:8080/r/dev-the-last-stand-iret8ormbeshajyk6woewg/preloader.swf`.
 
 ## Related Links:
 
