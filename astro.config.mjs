@@ -8,7 +8,7 @@ export default defineConfig({
   integrations: [
     starlight({
       plugins: [starlightThemeObsidian()],
-      favicon: "./src/assets/favicon.ico",
+      favicon: "icon.ico",
       customCss: ["./src/assets/custom.css"],
       tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 6 },
       credits: true,
