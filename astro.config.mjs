@@ -13,6 +13,9 @@ export default defineConfig({
       tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 6 },
       credits: true,
       title: "TLSDZ",
+      editLink: {
+        baseUrl: 'https://github.com/glennhenry/DeadZone-Documentation/edit/main/docs/'
+      },
       social: [
         {
           icon: "github",
@@ -22,7 +25,7 @@ export default defineConfig({
         {
           icon: "github",
           label: "GitHub",
-          href: "https://github.com/withastro/starlight",
+          href: "https://github.com/glennhenry/DeadZone-Documentation",
         },
       ],
       sidebar: [
