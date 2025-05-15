@@ -11,6 +11,13 @@
   --sl-color-gray-5: #3c3c3c;
   --sl-color-gray-6: #272727;
   --sl-color-black: #2e2e2e;
+
+  --sl-content-width: 50rem;
+  --sl-text-5xl: 2.2rem;
+  --sl-text-4xl: 1.4rem;
+  --sl-text-3xl: 1.2rem;
+  --sl-text-2xl: 1rem;
+  --sl-text-code-sm: 0.9rem;
 }
 
 /* Light mode colors. */
@@ -29,10 +36,11 @@
   --sl-color-black: #e6e6e6;
 
   --sl-content-width: 50rem;
-  --sl-text-5xl: 2.2rem; /* Reduced from 3.5rem */
-  --sl-text-4xl: 1.4rem; /* Reduced from 2.75rem */
-  --sl-text-3xl: 1.2rem; /* Reduced from 2rem */
-  --sl-text-2xl: 1rem; /* Reduced from 1.5rem */
+  --sl-text-5xl: 2.2rem;
+  --sl-text-4xl: 1.4rem;
+  --sl-text-3xl: 1.2rem;
+  --sl-text-2xl: 1rem;
+  --sl-text-code-sm: 0.9rem;
 }
 
 @layer obsidian {
