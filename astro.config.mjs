@@ -44,6 +44,11 @@ export default defineConfig({
           label: "GitHub",
           href: "https://github.com/glennhenry/DeadZone-Documentation",
         },
+        {
+          icon: "discord",
+          label: "Discord",
+          href: "https://discord.gg/Q5dTKrPmfq",
+        },
       ],
       sidebar: [
         { label: "Main", slug: "main" },
