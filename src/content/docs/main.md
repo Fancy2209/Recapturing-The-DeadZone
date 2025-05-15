@@ -15,11 +15,12 @@ The preloader is what first loaded when we start the game. It does all the neces
 It is the “loading screen” of the game. It should show us this loading screen.
 
 <img src="/src/assets/loaderbg.png" alt="loader screen image"/>
-<img src="/assets/loaderbg.png" alt="loader screen image"/>
-<img src="../../assets/loaderbg.png" alt="loader screen image"/>
-<img src="./src/assets/loaderbg.png" alt="loader screen image"/>
 
 ![Loader screen](/src/assets/loaderbg.png)
+
+<img src="../../assets/loaderbg.png" alt="loader screen image"/>
+
+![Loader screen](../../assets/loaderbg.png)
 
 Then, the loading process begins. It will show the “Connecting to server“ and “Loading assets“ text. It downloads and extract packages such as `pak1.zip` and `pak2.zip`.
 
