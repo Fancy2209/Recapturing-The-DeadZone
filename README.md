@@ -23,7 +23,7 @@ description: example
 ---
 ```
 
-Replace the title, slug, and description appropriately. The slug follows the folder structure.
+Replace the title, slug, and description appropriately. The slug follows the folder structure. Any images or videos are placed on `src/assets/`.
 
 Then, add the page on sidebar by:
 
