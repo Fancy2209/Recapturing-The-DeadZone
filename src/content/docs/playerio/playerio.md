@@ -4,14 +4,10 @@ slug: playerio/playerio
 description: PlayerIO
 ---
 
-`PlayerIO` is a...
+:::note
+The main PlayerIO backend services (often referred as PlayerIO client library). Source: https://playerio.com/documentation/services/.
+:::
 
-```python
-print("Example code block")
-main()
-```
+`PlayerIO` class (from `playerio.PlayerIO` package) mostly do networking via [`GameFS`](/playerio/gamefs) or authenticate the player. Authenticate request is first received from [`PlayerIOConnector`](/playerio/playerioconnector).
 
-## Related Links:
-
-- [PlayerIOConnector](/playerio/playerioconnector)
-- [GameFS](/playerio/gamefs)
+publishingnetworklogin is(?)

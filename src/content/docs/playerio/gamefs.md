@@ -32,7 +32,3 @@ return (param3 ? "https" : "http") + "://127.0.0.1:8080/r/" + param1 + param2;
 - `param2` is a game file path. The `GameFS` enforce file path to start with a slash (/).
 
 It will produce a URL like `http://127.0.0.1:8080/r/dev-the-last-stand-iret8ormbeshajyk6woewg/preloader.swf`.
-
-## Related Links:
-
-- [PlayerIO](/playerio/playerio)
