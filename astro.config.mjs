@@ -6,7 +6,10 @@ import vercel from "@astrojs/vercel";
 
 // https://astro.build/config
 export default defineConfig({
-  adapter: vercel({ imageService: true }),
+  adapter: vercel({
+    imageService: true,
+    devImageService: "sharp",
+  }),
   base: process.env.NODE_ENV === "production" ? "/" : "/",
   integrations: [
     starlight({
