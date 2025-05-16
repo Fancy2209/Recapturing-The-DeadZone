@@ -62,6 +62,7 @@ export default defineConfig({
             { label: "PlayerIOConnector", slug: "playerio/playerioconnector" },
             { label: "GameFS", slug: "playerio/gamefs" },
             { label: "HTTPChannel", slug: "playerio/httpchannel" },
+            { label: "PublishingNetwork", slug: "playerio/publishingnetwork" },
           ],
         },
       ],

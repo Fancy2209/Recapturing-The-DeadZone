@@ -11,7 +11,7 @@ Part of PlayerIO backend services. Source: https://playerio.com/documentation/se
 `GameFS` is used to store and distribute game files to players. TLSDZ access `GameFS` through the [`PlayerIO`](/playerio/playerio) client library.
 
 ```actionscript-3
-// thelaststand.preloader.core.Main@line 114
+// preloader/thelaststand.preloader.core.Main@line 114
 PlayerIO.gameFS("dev-the-last-stand-iret8ormbeshajyk6woewg").getUrl(this._rootPath + "preloader.swf",this._useSSL)
 ```
 
@@ -22,7 +22,7 @@ The `getUrl` method takes two arguments: a path string like `/game/data/preloade
 Internally, a URLMap processing happens. It is not known what it try to achieve. The full URL processing is simply:
 
 ```actionscript-3
-// playerio.GameFS@line 31
+// preloader/playerio.GameFS@line 31
 return (param3 ? "https" : "http") + "://127.0.0.1:8080/r/" + param1 + param2;
 ```
 
