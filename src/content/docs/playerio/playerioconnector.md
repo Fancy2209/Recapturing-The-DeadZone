@@ -23,4 +23,4 @@ PlayerIO.authenticate(stage,GAME_ID,"publishingnetwork",{"userToken":userToken},
 },this.onConnectError);
 ```
 
-It tries to authenticate through the [`PlayerIO`](/playerio/playerio) client library and also set up an event listener. The listener does nothing other than refreshing player's data(?) through the `playerio.PublishingNetwork` package.
+It tries to authenticate through the [`PlayerIO`](/playerio/playerio) client library and also set up an event listener. The listener seem to be interacting with player's data(?) through the `refresh` method in the [`PublishingNetwork`](/playerio/publishingnetwork) class.
