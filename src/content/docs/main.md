@@ -24,7 +24,7 @@ If the player successfully authenticate, the next step would be loading the core
 
 Core loading starts from locating and downloading the `core.swf` file. Once it is downloaded, the game switches to `core.swf`.
 
-Behind the scene, it does the necessary things such as showing load animation to player, running sound effects or music, installing input listener (mouse, keyboard). Then, it proceeds to loading the game assets, that is extracting the game files under `/data`, such as:
+Behind the scene, it does the necessary things such as showing load animation to player, running sound effects or music, and installing input listener (mouse, keyboard). Then, it proceeds to loading the game assets, that is extracting the game files under `/data`, such as:
 
 - `resource_main.xml`: the resource locator, loads other resources.
 - `resources_mission.xml`: contains mission assets.

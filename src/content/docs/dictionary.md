@@ -14,10 +14,9 @@ The `gameId` of TLS:DZ is `dev-the-last-stand-iret8ormbeshajyk6woewg`. It is typ
 
 ### `_rootPath`
 
-Declared on `thelaststand.preloader.core.Main`@line 188, `onAddedToStage` method.
-
 ```actionscript-3
+// preloader/thelaststand.preloader.core.Main`@line 188
 this._rootPath = stage.loaderInfo.parameters.path || "";
 ```
 
-Unsure what is or how is the actual link generated.
+Unsure what is or how is the actual link generated. It appears to be a boolean but the variable name somewhat doesn't fit a boolean. Need to know what is behind `stage.loaderInfo.parameters.path`. Albeit, this isn't really important as we never encountered an error related to this.

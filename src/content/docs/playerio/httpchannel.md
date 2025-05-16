@@ -4,10 +4,6 @@ slug: playerio/httpchannel
 description: HTTP Channel
 ---
 
-:::note
-Part of PlayerIO backend services.
-:::
-
 PlayerIO networking utilities, often used to make network request. PlayerIO games communicate through RPC.
 
 ## Request
