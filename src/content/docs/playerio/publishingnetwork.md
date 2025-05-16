@@ -4,4 +4,20 @@ slug: playerio/publishingnetwork
 description: PublishingNetwork
 ---
 
-`PublishingNetwork` is...
+:::note
+Part of PlayerIO backend authentication services. Source: https://playerio.com/documentation/services/authentication/publishingnetwork, https://playerio.com/documentation/publishingnetwork/canvas.
+:::
+
+PlayerIO Publishing Network is a platform for developers to publish their games across a network of interconnected sites. This enables them to distribute their games to multiple partner websites with a single submission.
+
+TLSDZ registered its game within this network, allowing it to be featured on the [playsian](https://playsian.com/laststand), one of the affiliated site within the network. Players accessing the game within a publishing network sites must complete [authentication via PlayerIO](/playerio/playerioconnector#authenticate-by-playerio).
+
+Sites participating in the publishing network require a canvas for the game to function. This canvas includes a `userToken`, which developers may need to validate. This process ensures that players are genuinely accessing the game from one of the registered network sites.
+
+In the game code, `PublishingNetwork` is a class that handles the authentication for games that are published within the PlayerIO Publishing Network. There are also some related class:
+
+- `PublishingNetworkDialog`: Handles the panel for login.
+- `PublishingNetworkPayments`: Handles payment.
+- `PublishingNetworkProfile`: Handles the user detailed profile.
+- `PublishingNetworkProfiles`: Handles the loading and the display of a profile.
+- `PublishingNetworkRelations`: Handles relation between players (i.e., friend system).

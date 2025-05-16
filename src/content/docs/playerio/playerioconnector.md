@@ -4,13 +4,24 @@ slug: playerio/playerioconnector
 description: PlayerIOConnector
 ---
 
-`PlayerIOConnector` is a service that authenticate the players. It can connect to Facebook, Armor games, Kongregate, or even through PlayerIO itself (probably for developers).
+`PlayerIOConnector` is a service that authenticate the players. It can connect to Facebook, Armor games, Kongregate, or even through PlayerIO itself.
 
-After the [preloader](/main#preloader) loads completely (`thelaststand.preloader.core.Main@162`), the game starts communicating with `PlayerIOConnector`. The communication decides which authentication service to use.
+After the [preloader](/main#preloader) loads completely (`thelaststand.preloader.core.Main@line 162`), the game starts communicating with `PlayerIOConnector`. The communication decides which authentication service to use.
 
 Currently, our private server choose to authenticate through PlayerIO.
 
 ## Authenticate by PlayerIO
+
+In order to use PlayerIO auth:
+
+1. Developer need to publish their game at [PlayerIO publishing network](/playerio/publishingnetwork) and setup necessary code in the game.
+2. The registered network site should have an iframe panel to embed the game. This panel is also called the publishing network canvas, which act as the bridge with the game. _The page must also include `publishingnetwork.js`_.
+
+   > This script lets the game frame communicate with the hosting page for features such as showing payment dialogs and resizing the frame when the content size changes. From: https://playerio.com/documentation/publishingnetwork/canvas.
+
+   Without including the script, we will encounter an alert sent by `preloader/playerio.PublishingNetworkDialog@line 63`.
+
+This is what TLSDZ use to connect via PlayerIO.
 
 ```actionscript-3
 // preloader/thelaststand.app.network.PlayerIOConnector@line 209
@@ -19,4 +30,11 @@ PlayerIO.authenticate(stage,GAME_ID,"publishingnetwork",{"userToken":userToken},
 },this.onConnectError);
 ```
 
-It tries to authenticate through the [`PlayerIO`](/playerio/playerio) client library and also set up an event listener. The listener seem to be interacting with player's data(?) through the `refresh` method in the [`PublishingNetwork`](/playerio/publishingnetwork) class.
+- The third parameter is `connectionId`, used to identify where are players logging in from. "publishingnetwork" is the ID for PlayerIO auth.
+- The fourth parameter is the authentication arguments. Developer choose whether to authenticate manually by providing a `userToken` or let the PlayerIO client decides it automatically (by setting the fourth argument to `{"publishingnetworklogin", "auto"}`).
+
+:::tip
+`userToken` is a Base64URLEncoded JSON object containing information about the user and a signature to validate its authenticity.
+:::
+
+TLSDZ don't need to validate `userToken` because they already integrated their game with PlayerIO client library. A successful authentication is signified by an API request to `/api/601`.

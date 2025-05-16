@@ -30,12 +30,14 @@ Our general principle is:
 
 We have been documenting the sequential flow of the game in [main](/main). It's a good start to see where are we currently at. Right now, we are stuck in the authentication process.
 
----
+### Investigation
 
-The error message says something about `publishingnetworklogin`. It could be a mechanism to denote whether are we logging in through publisher services like Kong/AG/FB. Because we are logging in through PlayerIO, the game probably set it to `:auto` (as if we are looking at a login bypass mechanism). However, we are missing that `publishingnetwork.js`. It could be a script that takes care of the login requirement. That script isn't included anywhere in the game files(?). It's possible that it's a PlayerIO related script that we must create our own(?).
+The error message says something about `publishingnetworklogin` and the requirement of a script called `publishingnetwork.js`.
 
-Decompile the game and take a look at the code. Things to look at:
+Each auth system (Kong/AG/FB/PIO) is managed differently. PlayerIO authentication is associated with the [publishing network](/playerio/publishingnetwork).
 
-- `connectViaPlayerIO()`: `preloader/thelaststand.app.network.PlayerIOConnector`@line 205.
-- `PlayerIO.authenticate()`: `preloader/playerio.PlayerIO`@line 33 and @line 120.
-- `PublishingNetwork()`: `preloader/playerio.PublishingNetwork`@line 19 and @line 54.
+A game website that is registered in the publishing network requires a canvas to enable game to run. This canvas needs a script the `publishingnetwork.js` to function.
+
+In our scenario, by using the PlayerIO authentication, we are trying to make our web server to operate as a registered publishing network site. This involves creating the canvas and including the script. We may also need to register with the publishing network to obtain credentials for authentication.
+
+Our next task could be modifying the web server to be mimicking a valid publishing network site. The PlayerIO authentication will succeed if we see an API request to `/api/601` endpoint.
