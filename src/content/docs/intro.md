@@ -41,3 +41,12 @@ A game website that is registered in the publishing network requires a canvas to
 In our scenario, by using the PlayerIO authentication, we are trying to make our web server to operate as a registered publishing network site. This involves creating the canvas and including the script. We may also need to register with the publishing network to obtain credentials for authentication.
 
 Our next task could be modifying the web server to be mimicking a valid publishing network site. The PlayerIO authentication will succeed if we see an API request to `/api/601` endpoint.
+
+### Technical Insights & Troubleshooting
+
+During our investigation, we've uncovered some crucial details that are valuable for general development and troubleshooting, particularly concerning the Flash-JavaScript bridge:
+
+- **`Security.allowDomain` Restriction:** It has been discovered that `Security.allowDomain` in `preloader/main.as@line 82` hardcodes the allowed domain for JavaScript callbacks to a specific address, `ddeadzonegame.com`. If the domain where the SWF is loaded differs from this hardcoded value, the JavaScript callbacks (which are essential for communication between Flash and the web page) will not work.
+- **Domain Manipulation Options:** The allowed domain can be influenced by setting specific Flash variables when creating the player:
+    - If `local` is set to `1`, the Flash application will utilize the domain of the `core.swf` file (passed in the Flash variables) for its domain checks.
+- **Current Workaround:** As a temporary solution, using the IP address `127.0.0.1` instead of `localhost` seems to resolve the domain issue without requiring any modifications.
