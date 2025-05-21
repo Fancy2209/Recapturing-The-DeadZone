@@ -10,4 +10,4 @@ The main PlayerIO backend services (often referred as PlayerIO client library). 
 
 `PlayerIO` class (from `playerio.PlayerIO` package) mostly do networking via [`GameFS`](/playerio/gamefs) or authenticate the player. Authenticate request is first received from [`PlayerIOConnector`](/playerio/playerioconnector).
 
-publishingnetworklogin is(?)
+authenticate method details
