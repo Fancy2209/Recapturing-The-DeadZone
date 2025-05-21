@@ -12,10 +12,10 @@ Currently, our private server choose to authenticate through PlayerIO.
 
 ## Authenticate by PlayerIO
 
-In order to use PlayerIO auth:
+PlayerIO authentication is meant for players that plays a game from [PlayerIO publishing network](/playerio/publishingnetwork) sites, such as [playsian](https://www.playsian.com).
 
-1. Developer need to publish their game at [PlayerIO publishing network](/playerio/publishingnetwork) and setup necessary code in the game.
-2. The registered network site should have an iframe panel to embed the game. This panel is also called the publishing network canvas, which act as the bridge with the game. _The page must also include `publishingnetwork.js`_.
+1. First and foremost, developer need to publish their game at the network, so that their game can be featured. They may also need to add necessary authentication logic.
+2. The network site should have an iframe panel to embed the game. This panel is also called the publishing network canvas, which act as the container to run the game. _The html page must also include `publishingnetwork.js`_.
 
    > This script lets the game frame communicate with the hosting page for features such as showing payment dialogs and resizing the frame when the content size changes. From: https://playerio.com/documentation/publishingnetwork/canvas.
 
@@ -30,11 +30,14 @@ PlayerIO.authenticate(stage,GAME_ID,"publishingnetwork",{"userToken":userToken},
 },this.onConnectError);
 ```
 
+- Authentication is handled through the PlayerIO client, eliminating the need to validate the `userToken`, as this is managed by the PlayerIO client library.
 - The third parameter is `connectionId`, used to identify where are players logging in from. "publishingnetwork" is the ID for PlayerIO auth.
-- The fourth parameter is the authentication arguments. Developer choose whether to authenticate manually by providing a `userToken` or let the PlayerIO client decides it automatically (by setting the fourth argument to `{"publishingnetworklogin", "auto"}`).
+- The fourth parameter is the authentication arguments. Developer choose whether to provide the `userToken` manually or let the PlayerIO client pick it from the canvas automatically (by setting the fourth argument to `{"publishingnetworklogin", "auto"}`).
 
 :::tip
 `userToken` is a Base64URLEncoded JSON object containing information about the user and a signature to validate its authenticity.
 :::
 
-TLSDZ don't need to validate `userToken` because they already integrated their game with PlayerIO client library. A successful authentication is signified by an API request to `/api/601`.
+:::note
+A successful authentication is signified by an API request to `/api/601`.
+:::
