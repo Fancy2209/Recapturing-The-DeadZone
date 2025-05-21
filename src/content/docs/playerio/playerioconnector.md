@@ -6,7 +6,7 @@ description: PlayerIOConnector
 
 `PlayerIOConnector` is a service that authenticate the players. It can connect to Facebook, Armor games, Kongregate, or even through PlayerIO itself.
 
-After the [preloader](/main#preloader) loads completely (`thelaststand.preloader.core.Main@line 162`), the game starts communicating with `PlayerIOConnector`. The communication decides which authentication service to use.
+After the [preloader](/main#preloader) loads completely (`preloader/thelaststand.preloader.core.Main@line 162`), the game starts communicating with `PlayerIOConnector`. The communication decides which authentication service to use.
 
 Currently, our private server choose to authenticate through PlayerIO.
 
