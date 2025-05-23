@@ -52,7 +52,7 @@ export default defineConfig({
       ],
       sidebar: [
         { label: "Intro", slug: "index" },
-        { label: "Main", slug: "main" },
+        { label: "Sequential flow", slug: "sequential_flow" },
         { label: "Dictionary", slug: "dictionary" },
         {
           label: "PlayerIO",
@@ -65,6 +65,12 @@ export default defineConfig({
             { label: "PublishingNetwork", slug: "playerio/publishingnetwork" },
           ],
         },
+        {
+          label: "Preloader",
+          items: [
+            { label: "Main", slug: "preloader/main" }
+          ]
+        }
       ],
     }),
   ],
