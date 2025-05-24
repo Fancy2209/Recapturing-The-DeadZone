@@ -10,7 +10,7 @@ Contains every little, uncategorized information that is often used in the game.
 
 ### `gameId`
 
-The `gameId` of TLS:DZ is `dev-the-last-stand-iret8ormbeshajyk6woewg`. It is used to communicate with PlayerIO backend services, such as URL retrieval in [`GameFS`](/playerio/gamefs).
+The `gameId` of TLS:DZ is `dev-the-last-stand-iret8ormbeshajyk6woewg`. It is used to communicate with PlayerIO backend services, such as URL retrieval in [`GameFS`](/common/playerio/gamefs).
 
 :::note
 `gameId` is received by registering an account (and creating a game) at [PlayerIO](playerio.com). The `gameId` we know is not the original TLS:DZ ID, but rather produced from one of our devs.
@@ -27,7 +27,7 @@ Unsure what is or how is the actual link generated. It appears to be a boolean b
 
 ### `_localAssets`
 
-A boolean flag used in the preloader, often referenced when the game attempts to load resources. It indicates whether the game should make a network request to the same domain as the `core.swf` file or download it from the network via [GameFS](/playerio/gamefs).
+A boolean flag used in the preloader, often referenced when the game attempts to load resources. It indicates whether the game should make a network request to the same domain as the `core.swf` file or download it from the network via [GameFS](/common/playerio/gamefs).
 
 **Example usage:** `preloader/thelaststand.preloader.coreMain@line 81`.
 
