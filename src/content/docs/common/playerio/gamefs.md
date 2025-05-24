@@ -1,6 +1,6 @@
 ---
 title: GameFS
-slug: playerio/gamefs
+slug: common/playerio/gamefs
 description: GameFS
 ---
 
@@ -8,7 +8,7 @@ description: GameFS
 Part of PlayerIO backend services. Source: https://playerio.com/documentation/services/gamefs/.
 :::
 
-`GameFS` is used to store and distribute game files to players. TLSDZ access `GameFS` through the [`PlayerIO`](/playerio/playerio) client library.
+`GameFS` is used to store and distribute game files to players. TLSDZ access `GameFS` through the [`PlayerIO`](/common/playerio/playerio) client library.
 
 ```actionscript-3
 // preloader/thelaststand.preloader.core.Main@line 114

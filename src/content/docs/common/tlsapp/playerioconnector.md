@@ -1,6 +1,6 @@
 ---
 title: PlayerIOConnector
-slug: playerio/playerioconnector
+slug: common/tlsapp/playerioconnector
 description: PlayerIOConnector
 ---
 

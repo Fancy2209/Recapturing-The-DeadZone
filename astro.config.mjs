@@ -52,25 +52,47 @@ export default defineConfig({
       ],
       sidebar: [
         { label: "Intro", slug: "index" },
-        { label: "Sequential flow", slug: "sequential_flow" },
+        { label: "Sequential Flow", slug: "sequential_flow" },
         { label: "Dictionary", slug: "dictionary" },
         {
-          label: "PlayerIO",
+          label: "Common",
           collapsed: true,
           items: [
-            { label: "PlayerIO", slug: "playerio/playerio" },
-            { label: "PlayerIOConnector", slug: "playerio/playerioconnector" },
-            { label: "GameFS", slug: "playerio/gamefs" },
-            { label: "HTTPChannel", slug: "playerio/httpchannel" },
-            { label: "PublishingNetwork", slug: "playerio/publishingnetwork" },
+            {
+              label: "PlayerIO",
+              collapsed: true,
+              items: [
+                { label: "PlayerIO", slug: "common/playerio/playerio" },
+                { label: "GameFS", slug: "common/playerio/gamefs" },
+                { label: "HTTPChannel", slug: "common/playerio/httpchannel" },
+                {
+                  label: "PublishingNetwork",
+                  slug: "common/playerio/publishingnetwork",
+                },
+              ],
+            },
+            {
+              label: "TLSapp",
+              collapsed: true,
+              items: [
+                {
+                  label: "PlayerIOConnector",
+                  slug: "common/tlsapp/playerioconnector",
+                },
+              ],
+            },
           ],
         },
         {
           label: "Preloader",
-          items: [
-            { label: "Main", slug: "preloader/main" }
-          ]
-        }
+          collapsed: true,
+          items: [{ label: "Main", slug: "preloader/main" }],
+        },
+        {
+          label: "Core",
+          collapsed: true,
+          items: [{ label: "Main", slug: "core/main" }],
+        },
       ],
     }),
   ],
