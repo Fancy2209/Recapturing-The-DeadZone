@@ -43,7 +43,7 @@ PlayerIO.authenticate(stage,GAME_ID,"publishingnetwork",{"userToken":userToken},
 A successful PlayerIO authentication is shown by an API request to `/api/601` (SocialRefresh), which is sent by the `refresh` method in `playerio.generated.social`. This method is called from the `Client` object in `thelaststand.app.network.PlayerIOConnector@line 220`.
 
 :::note
-`Client` (`playerio.client`) is an object that connects to all PlayerIO APIs.
+`Client` (`playerio.client`) is an object that hold reference to all PlayerIO APIs.
 :::
 
 After the refresh is triggered, a `PlayerIOUser` object is created. This object contains user data like `userId`, `userName`, and `avatarUrl`.
