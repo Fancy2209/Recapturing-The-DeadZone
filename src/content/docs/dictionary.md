@@ -22,8 +22,8 @@ A boolean flag used in the preloader, often referenced when the game attempts to
 
 **Example usage:** `preloader/thelaststand.preloader.coreMain@line 81`.
 
-This flag is declared in the `onAddedToStage` method at `preloader/thelaststand.preloader.coreMain@line 190`. Specifically, its value depends on the loader parameter (`local`), which is a data passed from the flash variables in the website's JavaScript file (`main.js`).
+This flag is declared in the `onAddedToStage` method at `preloader/thelaststand.preloader.coreMain@line 190`. Its value is determined by the loader parameter, which is passed from the flash variables defined in the website's JavaScript file (`main.js`).
 
 :::tip
-The flash variables also manage other local properties of the preloader `Main`, such as `_rootPath`, `_coreFile`, and `_useSSL`.
+Other properties of the preloader `Main` such as `_rootPath`, `_coreFile`, and `_useSSL` are also derived from the flash variables.
 :::
