@@ -29,6 +29,7 @@ The `Main` class (`thelaststand.preloader.core/Main.as`) is the entry point for 
 - When the core SWF finishes loading (`onCoreLoadComplete`), `initCore()`:
   - Adds the core game to the stage.
   - Cleans up preloader UI elements and listeners.
+  - The core SWF file starts its `Main` class
 - The class also handles stage resizing, spinner animation, connection errors, and provides a JavaScript-accessible screenshot function.
 
 ### Request made to API server
@@ -37,4 +38,3 @@ Order of call:
 
 1. 13 (Authenticate)
 2. 601 (SocialRefresh)
-3. 27 (CreateJoinRoom)
