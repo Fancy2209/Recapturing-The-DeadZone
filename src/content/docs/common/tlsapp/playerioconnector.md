@@ -46,4 +46,7 @@ A successful PlayerIO authentication is shown by an API request to `/api/601` (S
 `Client` (`playerio.client`) is an object that hold reference to all PlayerIO APIs.
 :::
 
-After the refresh is triggered, a `PlayerIOUser` object is created. This object contains user data like `userId`, `userName`, and `avatarUrl`.
+The refresh method takes two callback functions.
+
+- The first callback will be called when the refresh succeeds. Inside is a code that create a `PlayerIOUser` object. This object contains user data like `userId`, `userName`, and `avatarUrl`. It will also communicate with JavaScript using `ExternalInterface` to call the `setUserId` method.
+- The second is an error handler that dispatch the error event.
