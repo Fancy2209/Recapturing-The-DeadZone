@@ -52,46 +52,43 @@ export default defineConfig({
       ],
       sidebar: [
         { label: "Intro", slug: "index" },
-        { label: "Sequential Flow", slug: "sequential_flow" },
-        { label: "Dictionary", slug: "dictionary" },
+        { label: "Glossary", slug: "glossary" },
+        { label: "preloader/Main.as", slug: "preloader-main" },
+        { label: "core/Main.as", slug: "core-main" },
         {
-          label: "Common",
+          label: "playerio",
           collapsed: true,
           items: [
             {
-              label: "PlayerIO",
+              label: "utils",
               collapsed: true,
               items: [
-                { label: "PlayerIO", slug: "common/playerio/playerio" },
-                { label: "GameFS", slug: "common/playerio/gamefs" },
-                { label: "HTTPChannel", slug: "common/playerio/httpchannel" },
-                {
-                  label: "PublishingNetwork",
-                  slug: "common/playerio/publishingnetwork",
-                },
+                { label: "HTTPChannel", slug: "playerio/utils/httpchannel" },
               ],
             },
+            { label: "PlayerIO", slug: "playerio/playerio" },
+            { label: "GameFS", slug: "playerio/gamefs" },
             {
-              label: "TLSapp",
-              collapsed: true,
-              items: [
-                {
-                  label: "PlayerIOConnector",
-                  slug: "common/tlsapp/playerioconnector",
-                },
-              ],
+              label: "PublishingNetwork",
+              slug: "playerio/publishingnetwork",
             },
           ],
         },
         {
-          label: "Preloader",
+          label: "thelaststand.app",
           collapsed: true,
-          items: [{ label: "Main", slug: "preloader/main" }],
-        },
-        {
-          label: "Core",
-          collapsed: true,
-          items: [{ label: "Main", slug: "core/main" }],
+          items: [
+            {
+              label: "network",
+              collapsed: true,
+              items: [
+                {
+                  label: "PlayerIOConnector",
+                  slug: "thelaststand.app/network/playerioconnector",
+                },
+              ],
+            },
+          ],
         },
       ],
     }),
