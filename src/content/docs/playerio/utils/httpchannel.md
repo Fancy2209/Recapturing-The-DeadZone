@@ -1,6 +1,6 @@
 ---
 title: HTTPChannel
-slug: common/playerio/httpchannel
+slug: playerio/utils/httpchannel
 description: HTTP Channel
 ---
 

@@ -13,7 +13,7 @@ npm run dev
 
 ### How to add new page:
 
-A page must be `.md` file and is enforced to have this on top of them (frontmatter):
+1. A page must be `.md` file and is enforced to have this on top of them (frontmatter):
 
 ```
 ---
@@ -23,9 +23,11 @@ description: example
 ---
 ```
 
-Replace the title, slug, and description appropriately. The slug follows the folder structure. Any images or videos are placed on `src/assets/`.
+2. Replace the title appropriately. The description is optional, so you can set it to be the same as the title. Any images or videos should be placed in `src/assets/`.
+3. The slug is produced from the directory structure based on the game packages. For example, `playerioconnector.md` exists within the `thelaststand.app.network` package. Each dot represents a new nested directory.
+4. Next, add the page to the sidebar.
 
-Then, add the page on sidebar by:
+   1. Begin by editing the `astro.config.mjs`.
+   2. Follow the existing sidebar link format. You can create new groups or place it in existing ones based on the page topic.
 
-1. Start by editing the `astro.config.mjs`.
-2. Follow the previous sidebar links pattern. Depending on the page topic, you can create a new sidebar groups or place it inside the defined groups.
+   Sidebar lists are based on game packages. Long package names can be shortened (e.g., `thelaststand.app`). If a package has several child packages, we can make a group for them (e.g., `network` under `thelaststand.app`).
