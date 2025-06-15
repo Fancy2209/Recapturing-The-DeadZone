@@ -5,9 +5,11 @@ description: PlayerIO
 ---
 
 :::note
-The main PlayerIO backend services (often referred as PlayerIO client library). Source: https://playerio.com/documentation/services/.
+Part of PlayerIO backend services. Source: https://playerio.com/documentation/reference/actionscript3/playerio.playerio.
 :::
 
-`PlayerIO` class (from `playerio.PlayerIO` package) mostly do networking via [`GameFS`](/playerio/gamefs) or authenticate the player. Authenticate request is first received from [`PlayerIOConnector`](/thelaststand.app/network/playerioconnector).
+The `PlayerIO` class serves as a networking bridge to [`GameFS`](/playerio/gamefs) and handles authentication.
 
-authenticate method details
+The [`PlayerIOConnector`](/thelaststand.app/network/playerioconnector) is responsible for making authentication calls to this class. It selects the appropriate authentication method based on how the game authenticates (e.g., `connectViaFacebook`, `connectViaArmorGames`, `connectViaPlayerIO`).
+
+Currently, our server uses PlayerIO for authentication. The `PlayerIOConnector` uses the `connectViaPlayerIO` method, which in turn calls the static method `PlayerIO.authenticate()` to carry out the authentication process. Within the `PlayerIO` class, this leads to calls to the generated `authenticate` method in the `playerio.generated.PlayerIO` package, ultimately resulting in a call to [API 13](/glossary#api-13).
