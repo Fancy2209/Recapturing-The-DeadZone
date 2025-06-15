@@ -87,4 +87,9 @@ message CreateJoinRoomOutput {
   optional string joinKey = 2;
   repeated ServerEndpoint endpoints = 3;
 }
+
+message ServerEndpoint {
+  optional string address = 1;
+  optional int32 port = 2;
+}
 ```
