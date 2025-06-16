@@ -12,7 +12,12 @@
   --sl-color-gray-6: #272727;
   --sl-color-black: #2e2e2e;
 
-  --sl-content-width: 50rem;
+  /* Custom */
+  --sl-color-panel-divider: #454848;
+  --slsg-graph-outline-color: #454848;
+  --sl-color-hairline: #454848;
+
+  --sl-content-width: 55rem;
   --sl-text-5xl: 2.2rem;
   --sl-text-4xl: 1.4rem;
   --sl-text-3xl: 1.2rem;
@@ -35,7 +40,12 @@
   --sl-color-gray-7: #dfdfdf;
   --sl-color-black: #e6e6e6;
 
-  --sl-content-width: 50rem;
+  /* Custom */
+  --sl-color-panel-divider: #b7bdc8;
+  --slsg-graph-outline-color: #b7bdc8;
+  --sl-color-hairline: #b7bdc8;
+
+  --sl-content-width: 55rem;
   --sl-text-5xl: 2.2rem;
   --sl-text-4xl: 1.4rem;
   --sl-text-3xl: 1.2rem;
@@ -45,6 +55,41 @@
 
 @layer obsidian {
   :root[data-theme="dark"] {
-    --sl-color-bg: rgb(25, 26, 29);
+    --sl-color-bg: rgb(36, 36, 40);
   }
+}
+
+.sidebar-top {
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--sl-color-panel-divider);
+}
+
+.sidebar-content {
+  border-right: 1px solid var(--sl-color-panel-divider);
+}
+
+.content-panel:has(h1) {
+  border-bottom: 1px solid var(--sl-color-panel-divider);
+}
+
+.right-sidebar {
+  border-left: 1px solid var(--sl-color-panel-divider);
+}
+
+.pagination-links {
+  gap: 1.5rem;
+}
+
+.pagination-links a {
+  padding: 0.8rem;
+  border: 1px solid var(--sl-color-panel-divider);
+}
+
+footer {
+  border-top: none;
+}
+
+.kudos {
+  margin-top: 0;
+  margin-bottom: 0;
 }
