@@ -28,6 +28,7 @@ export default defineConfig({
       customCss: ["./src/assets/custom.css"],
       tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 6 },
       credits: true,
+      lastUpdated: true,
       title: "TLSDZ",
       editLink: {
         baseUrl:

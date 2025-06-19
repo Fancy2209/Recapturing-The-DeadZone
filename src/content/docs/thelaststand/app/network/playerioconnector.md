@@ -24,7 +24,8 @@ PlayerIO authentication is meant for players that plays a game from [PlayerIO pu
 This is what TLSDZ use to connect via PlayerIO.
 
 ```actionscript-3
-// thelaststand.app.network.PlayerIOConnector@line 209
+// thelaststand.app.network/PlayerIOConnector.as
+// @line 209
 PlayerIO.authenticate(stage,GAME_ID,"publishingnetwork",{"userToken":userToken},null,function(param1:Client):void {
     onPlayerIOPubNetworkConnected(param1,userToken);
 },this.onConnectError);
