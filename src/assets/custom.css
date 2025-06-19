@@ -19,9 +19,10 @@
 
   --sl-content-width: 55rem;
   --sl-text-5xl: 2.2rem;
-  --sl-text-4xl: 1.4rem;
-  --sl-text-3xl: 1.2rem;
-  --sl-text-2xl: 1rem;
+  --sl-text-4xl: 1.8rem;
+  --sl-text-3xl: 1.6rem;
+  --sl-text-2xl: 1.3rem;
+  --sl-text-xs: 1rem;
   --sl-text-code-sm: 0.9rem;
 }
 
@@ -47,33 +48,17 @@
 
   --sl-content-width: 55rem;
   --sl-text-5xl: 2.2rem;
-  --sl-text-4xl: 1.4rem;
-  --sl-text-3xl: 1.2rem;
-  --sl-text-2xl: 1rem;
+  --sl-text-4xl: 1.8rem;
+  --sl-text-3xl: 1.6rem;
+  --sl-text-2xl: 1.3rem;
+  --sl-text-xs: 1rem;
   --sl-text-code-sm: 0.9rem;
 }
 
 @layer obsidian {
   :root[data-theme="dark"] {
-    --sl-color-bg: rgb(36, 36, 40);
+    --sl-color-bg: rgb(30, 30, 32);
   }
-}
-
-.sidebar-top {
-  padding-bottom: 0.9rem;
-  border-bottom: 1px solid var(--sl-color-panel-divider);
-}
-
-.sidebar-content {
-  border-right: 1px solid var(--sl-color-panel-divider);
-}
-
-.content-panel:has(h1) {
-  border-bottom: 1px solid var(--sl-color-panel-divider);
-}
-
-.right-sidebar {
-  border-left: 1px solid var(--sl-color-panel-divider);
 }
 
 .pagination-links {
