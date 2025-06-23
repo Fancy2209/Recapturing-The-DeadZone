@@ -34,18 +34,20 @@ See [preloader](/preloader-main) and [core](/core-main) to know how the game wor
 
 ### Current Investigation
 
-We successfully loaded and unpacked all the assets after being stuck last time. Now it’s time for the client to connect to the server. The server connection is initiated by the core main calling the [`Network`](/thelaststand.app/network/network) class.
+We have successfully serialized and deserialized message sent from client through our custom serde mechanism which is based on PlayerIO's. They likely defined their own serialization format, and we can't rely on msgpack. At least it worked for now.
 
-The client first makes an API request (with [API 27](/glossary#api-27)) to our API server. This request signals "CreateJoinRoom," indicating that the client wants to connect to the server.
+Client is now fully connected to the socket server and is ready to exchange real-time data with the game. It is now on 'Loading your game' text, which probably mean it is trying to load the player's game data. We may need to play around with DB because this must include loading player's account from DB or establishing a new account where the game (IIRC) initiate "new survivor" creation to the player. Later, it should save the newly made account to the DB and proceed to the tutorial.
+
+So, the next step is researching on how the game loads' data, what it expects, and possibly faking an account or data.
+
+:::warn
+Sad news is that there is no longer a helpful error message send by client upon connecting to socket server. It seems like errors are supposed to be shown on dev's client-side environment, in which we do not own the original source.
+:::
+
+#### Note on Room
 
 :::note
 Room, in the context of PlayerIO means a separate instance of server side code. It is differentiated with room ID and room type. Different room may reside in different game servers and may be separated physically (detail about [PlayerIO room](https://playerio.com/documentation/services/multiplayer/essentials)).
 
 In TLSDZ, there are game, chat, trade, and alliance type of room (`thelaststand.app.network.RoomType`). This means there are 4+ isolated instance of game servers that may run at a time (taking alliance into consideration).
 :::
-
-The server should respond appropriately by returning `roomId`, `joinKey`, and, most importantly, `ServerEndpoint`. The server endpoint contains the domain address and port for the client to connect.
-
-We have successfully implemented API 27, and the client is now connected to our socket server. The first message we received after the connection establishment was the client sending back our API 27 response. We believe it's sort of a way that is done by the client to coordinate between the API and the socket server.
-
-There are no additional messages after that, and the message is currently incomplete and cannot be deserialized. We are not sure what to do with the message (or if it's a deserialization issue on our server) and have yet to investigate the specific response to be sent next.
