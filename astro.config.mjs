@@ -84,6 +84,10 @@ export default defineConfig({
               collapsed: true,
               items: [
                 {
+                  label: "Network",
+                  slug: "thelaststand.app/network/network",
+                },
+                {
                   label: "PlayerIOConnector",
                   slug: "thelaststand.app/network/playerioconnector",
                 },

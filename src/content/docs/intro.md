@@ -40,8 +40,8 @@ Client is now fully connected to the socket server and is ready to exchange real
 
 So, the next step is researching on how the game loads' data, what it expects, and possibly faking an account or data.
 
-:::warn
-Sad news is that there is no longer a helpful error message send by client upon connecting to socket server. It seems like errors are supposed to be shown on dev's client-side environment, in which we do not own the original source.
+:::info
+Any error from the client should be sent to the server via [API 50](/glossary#api-50).
 :::
 
 #### Note on Room

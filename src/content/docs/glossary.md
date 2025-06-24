@@ -93,3 +93,24 @@ message ServerEndpoint {
   optional int32 port = 2;
 }
 ```
+
+### API 50
+
+Write error. Called in many places to send error to server. Contextual call `thelaststand.app.network.Network@line 1358` and actual call `playerio.generated.ErrorLog@line 36`.
+
+Response is not mandatory since it is one-way communication from client to the server request. Input from client request is based on `WriteErrorArgs` and the response is an error message based on `WriteErrorError`.
+
+```protobuf
+message WriteErrorArgs {
+  optional string source = 1;
+  optional string error = 2;
+  optional string details = 3;
+  optional string stacktrace = 4;
+  repeated KeyValuePair extraData = 5;
+}
+
+message WriteErrorError {
+  optional int32 errorCode = 1;
+  optional string message = 2;
+}
+```
