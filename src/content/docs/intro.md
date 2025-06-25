@@ -34,20 +34,10 @@ See [preloader](/preloader-main) and [core](/core-main) to know how the game wor
 
 ### Current Investigation
 
-We have successfully serialized and deserialized message sent from client through our custom serde mechanism which is based on PlayerIO's. They likely defined their own serialization format, and we can't rely on msgpack. At least it worked for now.
+While the client-side game has all game resources, the server still send new resources overtime. There are few resources (like `config.xml`, `buildings.xml`, `resources_secondary.xml`) that must be sent every time.
 
-Client is now fully connected to the socket server and is ready to exchange real-time data with the game. It is now on 'Loading your game' text, which probably mean it is trying to load the player's game data. We may need to play around with DB because this must include loading player's account from DB or establishing a new account where the game (IIRC) initiate "new survivor" creation to the player. Later, it should save the newly made account to the DB and proceed to the tutorial.
-
-So, the next step is researching on how the game loads' data, what it expects, and possibly faking an account or data.
+The next step is the game loading player object, probably within the `onPlayerDataLoaded` function. One of the steps includes making a request to API 85, which is a player object request to BigDB. We are currently sending the default message, hence the game force us to refresh the game.
 
 :::info
 Any error from the client should be sent to the server via [API 50](/glossary#api-50).
-:::
-
-#### Note on Room
-
-:::note
-Room, in the context of PlayerIO means a separate instance of server side code. It is differentiated with room ID and room type. Different room may reside in different game servers and may be separated physically (detail about [PlayerIO room](https://playerio.com/documentation/services/multiplayer/essentials)).
-
-In TLSDZ, there are game, chat, trade, and alliance type of room (`thelaststand.app.network.RoomType`). This means there are 4+ isolated instance of game servers that may run at a time (taking alliance into consideration).
 :::
