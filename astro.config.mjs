@@ -64,6 +64,7 @@ export default defineConfig({
               label: "utils",
               collapsed: true,
               items: [
+                { label: "BinarySerializer", slug: "playerio/utils/binaryserializer" },
                 { label: "HTTPChannel", slug: "playerio/utils/httpchannel" },
               ],
             },

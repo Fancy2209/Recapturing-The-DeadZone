@@ -10,7 +10,7 @@ Each message includes a string identifying the [network message type](/thelastst
 
 The [Connection](/playerio/connection) class manages message exchange. It is responsible for setting up listeners and callbacks for a specific type of network messages, as well as creating and sending messages.
 
-Messages must be processed using a proper [serialization mechanism](/playerio/utils/binaryserializer) before being sent.
+Messages must be [serialized or deserialized using the proper mechanism](/playerio/utils/binaryserializer).
 
 ## Example
 
