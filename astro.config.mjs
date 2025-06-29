@@ -67,8 +67,11 @@ export default defineConfig({
                 { label: "HTTPChannel", slug: "playerio/utils/httpchannel" },
               ],
             },
-            { label: "PlayerIO", slug: "playerio/playerio" },
+            { label: "Connection", slug: "playerio/connection" },
             { label: "GameFS", slug: "playerio/gamefs" },
+            { label: "Message", slug: "playerio/message" },
+            { label: "PlayerIO", slug: "playerio/playerio" },
+            { label: "PlayerIOError", slug: "playerio/playerioerror" },
             {
               label: "PublishingNetwork",
               slug: "playerio/publishingnetwork",
@@ -86,6 +89,10 @@ export default defineConfig({
                 {
                   label: "Network",
                   slug: "thelaststand.app/network/network",
+                },
+                {
+                  label: "NetworkMessage",
+                  slug: "thelaststand.app/network/networkmessage",
                 },
                 {
                   label: "PlayerIOConnector",
