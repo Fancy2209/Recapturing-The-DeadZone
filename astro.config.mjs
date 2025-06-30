@@ -68,6 +68,13 @@ export default defineConfig({
                 { label: "HTTPChannel", slug: "playerio/utils/httpchannel" },
               ],
             },
+            {
+              label: "generated.messages",
+              collapsed: true,
+              items: [
+                { label: "Overview", slug: "playerio/generated.messages" }
+              ],
+            },
             { label: "Connection", slug: "playerio/connection" },
             { label: "GameFS", slug: "playerio/gamefs" },
             { label: "Message", slug: "playerio/message" },
