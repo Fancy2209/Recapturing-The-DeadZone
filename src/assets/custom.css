@@ -61,6 +61,21 @@
   }
 }
 
+@layer starlight {
+  .top-level li {
+    padding-left: var(--sl-sidebar-item-padding-inline);
+    padding-right: var(--sl-sidebar-item-padding-inline);
+  }
+
+  .top-level a {
+    padding-top: 0.1rem;
+  }
+
+  .mobile-preferences {
+    padding-bottom: 1rem;
+  }
+}
+
 .pagination-links {
   gap: 1.5rem;
 }
