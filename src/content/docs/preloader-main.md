@@ -6,8 +6,6 @@ description: Index page of the preloader.swf file
 
 The `Main` class (`thelaststand.preloader.core/Main.as`) is the entry point for the preloader of The Last Stand: Dead Zone. It is responsible for initializing the loading screen, managing the loading of core game assets, and preparing the environment before the main game (`core.swf`) is launched.
 
-## Sequential flow
-
 - The `Main` class constructor sets up the stage properties and adds listeners for when the preloader is added or removed from the stage.
 - When the preloader is added to the stage (`onAddedToStage`), it reads configuration parameters from `loaderInfo` (such as `local`, `path`, `core`, and `useSSL`) and calls `init()`.
 - The `init()` method:
@@ -31,10 +29,3 @@ The `Main` class (`thelaststand.preloader.core/Main.as`) is the entry point for 
   - Cleans up preloader UI elements and listeners.
   - The core SWF file starts its `Main` class
 - The class also handles stage resizing, spinner animation, connection errors, and provides a JavaScript-accessible screenshot function.
-
-### Request made to API server
-
-Order of call:
-
-1. 13 (Authenticate)
-2. 601 (SocialRefresh)
