@@ -72,7 +72,7 @@ export default defineConfig({
               label: "generated.messages",
               collapsed: true,
               items: [
-                { label: "Overview", slug: "playerio/generated.messages" }
+                { label: "Overview", slug: "playerio/generated/messages" }
               ],
             },
             { label: "BigDB", slug: "playerio/bigdb" },
@@ -98,15 +98,15 @@ export default defineConfig({
               items: [
                 {
                   label: "Network",
-                  slug: "thelaststand.app/network/network",
+                  slug: "thelaststand/app/network/network",
                 },
                 {
                   label: "NetworkMessage",
-                  slug: "thelaststand.app/network/networkmessage",
+                  slug: "thelaststand/app/network/networkmessage",
                 },
                 {
                   label: "PlayerIOConnector",
-                  slug: "thelaststand.app/network/playerioconnector",
+                  slug: "thelaststand/app/network/playerioconnector",
                 },
               ],
             },

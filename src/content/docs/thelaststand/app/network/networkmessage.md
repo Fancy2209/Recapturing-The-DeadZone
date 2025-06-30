@@ -1,6 +1,6 @@
 ---
 title: NetworkMessage
-slug: thelaststand.app/network/networkmessage
+slug: thelaststand/app/network/networkmessage
 description: NetworkMessage
 ---
 

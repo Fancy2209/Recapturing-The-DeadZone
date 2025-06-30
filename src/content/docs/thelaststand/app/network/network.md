@@ -1,6 +1,6 @@
 ---
 title: Network
-slug: thelaststand.app/network/network
+slug: thelaststand/app/network/network
 description: Network
 ---
 

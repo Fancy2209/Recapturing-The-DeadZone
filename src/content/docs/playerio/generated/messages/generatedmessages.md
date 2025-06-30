@@ -1,6 +1,6 @@
 ---
 title: PlayerIO Generated Messages
-slug: playerio/generated.messages
+slug: playerio/generated/messages
 description: PlayerIO Generated Messages
 ---
 

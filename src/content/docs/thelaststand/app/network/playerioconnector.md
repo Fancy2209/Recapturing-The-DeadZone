@@ -1,6 +1,6 @@
 ---
 title: PlayerIOConnector
-slug: thelaststand.app/network/playerioconnector
+slug: thelaststand/app/network/playerioconnector
 description: PlayerIOConnector
 ---
 
