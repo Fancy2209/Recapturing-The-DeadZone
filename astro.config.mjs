@@ -75,9 +75,11 @@ export default defineConfig({
                 { label: "Overview", slug: "playerio/generated.messages" }
               ],
             },
+            { label: "BigDB", slug: "playerio/bigdb" },
             { label: "Connection", slug: "playerio/connection" },
             { label: "GameFS", slug: "playerio/gamefs" },
             { label: "Message", slug: "playerio/message" },
+            { label: "Multiplayer", slug: "playerio/multiplayer" },
             { label: "PlayerIO", slug: "playerio/playerio" },
             { label: "PlayerIOError", slug: "playerio/playerioerror" },
             {
