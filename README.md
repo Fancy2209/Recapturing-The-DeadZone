@@ -24,7 +24,7 @@ description: example
 ```
 
 2. Replace the title appropriately. The description is optional, so you can set it to be the same as the title. Any images or videos should be placed in `src/assets/`.
-3. The slug is produced from the directory structure based on the game packages. For example, `playerioconnector.md` exists within the `thelaststand.app.network` package. Each dot represents a new nested directory.
+3. The slug is produced from the directory structure based on the game packages. For example, `playerioconnector.md` exists within the `thelaststand.app.network` package, thus the final slug is `thelaststand/app/network/playerioconnector`.
 4. Next, add the page to the sidebar.
 
    1. Begin by editing the `astro.config.mjs`.
