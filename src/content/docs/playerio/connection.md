@@ -42,5 +42,5 @@ this._connection.addMessageHandler(NetworkMessage.SERVER_INIT_PROGRESS,this.onSe
 ```
 
 :::note
-[List of network message type](/thelaststand.app/network/networkmessage).
+[List of network message type](/thelaststand/app/network/networkmessage).
 :::

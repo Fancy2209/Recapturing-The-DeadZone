@@ -34,10 +34,8 @@ See [preloader](/preloader-main) and [core](/core-main) to know how the game wor
 
 ### Current Investigation
 
-While the client-side game has all game resources, the server still send new resources overtime. There are few resources (like `config.xml`, `buildings.xml`, `resources_secondary.xml`) that must be sent every time.
-
-The next step is the game loading player object, probably within the `onPlayerDataLoaded` function. One of the steps includes making a request to API 85, which is a player object request to BigDB. We are currently sending the default message, hence the game force us to refresh the game.
+The problem is still within the `onGameReady` method of [Network](/thelaststand/app/network/network#ongameready). After parsing the game ready message, the next step is loading `PlayersObject` from BigDB, which delegates a request to API 85. We are currently responding with empty message, hence the game force us to refresh the game.
 
 :::tip
-Any error from the client should be sent to the server via [API 50](/glossary#api-50).
+Errors from the client is sent to the server via [API 50](/glossary#api-50). In our private server, this will be written in `write_error.log`.
 :::
