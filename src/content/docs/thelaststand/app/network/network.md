@@ -42,15 +42,15 @@ Then, it parses each value of the message.
 - The `binaries` is parsed through the `parseBinaries` method. Inside, it decodes the gzip and notify core main through `onNetworkGameDataReceived` method to replace the existing resource. Our hypothesis is that the resources sent from server are additional data based on player's data that replaces the original resource.
 - The JSON dumps are parsed, and the data is assigned to the local variable of `Network` for further access by other classes.
 
-The rest of the method loads player's data from [BigDB](/playerio/bigdb) by making requests to [API 85](/glossary#api-85) (load objects). The list of objects is `PlayersObject`, `NeighborHistory`, and `Inventory`.
+The rest of the method loads player's data from [BigDB](/playerio/bigdb) by making requests to [API 85](/glossary#api-85) (load objects). The objects are `PlayersObject`, `NeighborHistory`, and `Inventory`.
 
-If all three objects are loaded into memory, the `onPlayerDataLoaded` method is called.
+If all three objects follows the protobuf format correctly, the `onPlayerDataLoaded` method is called.
 
 ## onPlayerDataLoaded
 
 Responsible for initializing game and player state, initializing game systems, and preparing the environment for gameplay. Specifically, it performs the following steps:
 
-- Verifies that all necessary game objects have been successfully loaded (i.e., are not null).
+- Verifies that all necessary game objects have been successfully loaded and are not null.
 - Calls the `AHBuildSrvs` method to construct in-game `Survivor` objects.
 - Parses the `playerObject`, which includes `loginPlayerState`, and maps the relevant data to local variables.
 - Initializes core systems such as `GlobalQuestSystem`, `QuestSystem`, `OfferSystem`, and `AllianceSystem`. This is also where game trackers, notifications, and message/event handlers are set up.
