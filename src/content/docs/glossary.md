@@ -119,7 +119,7 @@ message WriteErrorError {
 
 BigDB request to load objects. Contextual call `thelaststand.app.network.Network@line 1355` and actual call `playerio.generated.BigDB@line 86`.
 
-Input is `LoadObjectsArgs` which contains a list of `BigDBObjectId` that denotes the list of table it wants to load to and the keys (usually `userId`).
+Input is `LoadObjectsArgs` which contains a list of `BigDBObjectId` that denotes the list of table it wants to load to (e.g., `Inventory`, `PlayerObjects`) and the keys (usually `userId`).
 
 ```
 message LoadObjectsArgs {
