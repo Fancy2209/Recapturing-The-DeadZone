@@ -34,8 +34,12 @@ See [preloader](/preloader-main) and [core](/core-main) to know how the game wor
 
 ### Current Investigation
 
-The problem is still within the `onGameReady` method of [Network](/thelaststand/app/network/network#ongameready). After parsing the game ready message, the next step is loading `PlayersObject` from BigDB, which delegates a request to API 85. We are currently responding with empty message, hence the game force us to refresh the game.
+We have implemented [API 85](/glossary#api-85) with the response of mocked data. As a result, the game throw an NPE when calling the method `readObject` of Network class to the `PlayerObjects`. This means the game expects a data field to be present in the object, but it actually isn't in our mocked data.
+
+To fix this, we need to know how `readObject` method works, and what it reads/expects for the `PlayerObjects`. The player object is a nested object of player's data and preference. Some data is another object which may have their own `readObject`. We will need to trace each `readObject` call and find out which data field is missing.
 
 :::tip
-Errors from the client is sent to the server via [API 50](/glossary#api-50). In our private server, this will be written in `write_error.log`.
+After connected to socket server, client errors are sent to the server through [API 50](/glossary#api-50). In our private server, these errors are logged in `write_error.log`. This is particularly helpful for debugging, as the flash debugger does not always report errors. Additionally, you can modify the SWF to intentionally trigger an error, which will help you trace the issue.
+
+`Logch` is command is also useful to send log to the console of the game (can be activated by pressing `=`). Log command can be written like `Cc.logch("<identifier>", "<logmsg>")`.
 :::
