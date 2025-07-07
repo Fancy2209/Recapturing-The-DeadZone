@@ -64,7 +64,11 @@ export default defineConfig({
               label: "utils",
               collapsed: true,
               items: [
-                { label: "BinarySerializer", slug: "playerio/utils/binaryserializer" },
+                {
+                  label: "BinarySerializer",
+                  slug: "playerio/utils/binaryserializer",
+                },
+                { label: "Converter", slug: "playerio/utils/converter" },
                 { label: "HTTPChannel", slug: "playerio/utils/httpchannel" },
               ],
             },
@@ -72,11 +76,12 @@ export default defineConfig({
               label: "generated.messages",
               collapsed: true,
               items: [
-                { label: "Overview", slug: "playerio/generated/messages" }
+                { label: "Overview", slug: "playerio/generated/messages" },
               ],
             },
             { label: "BigDB", slug: "playerio/bigdb" },
             { label: "Connection", slug: "playerio/connection" },
+            { label: "DatabaseObject", slug: "playerio/databaseobject" },
             { label: "GameFS", slug: "playerio/gamefs" },
             { label: "Message", slug: "playerio/message" },
             { label: "Multiplayer", slug: "playerio/multiplayer" },
@@ -92,6 +97,52 @@ export default defineConfig({
           label: "thelaststand.app",
           collapsed: true,
           items: [
+            {
+              label: "data",
+              collapsed: true,
+              items: [
+                {
+                  label: "CostTable",
+                  slug: "thelaststand/app/data/costtable",
+                },
+                {
+                  label: "PlayerData",
+                  slug: "thelaststand/app/data/playerdata",
+                },
+              ],
+            },
+            {
+              label: "game",
+              collapsed: true,
+              items: [
+                {
+                  label: "data",
+                  collapsed: true,
+                  items: [
+                    {
+                      label: "Attributes",
+                      slug: "thelaststand/app/game/data/attributes",
+                    },
+                    {
+                      label: "HumanAppearance",
+                      slug: "thelaststand/app/game/data/humanappearance",
+                    },
+                    {
+                      label: "Survivor",
+                      slug: "thelaststand/app/game/data/survivor",
+                    },
+                    {
+                      label: "SurvivorAppearance",
+                      slug: "thelaststand/app/game/data/survivorappearance",
+                    },
+                    {
+                      label: "SurvivorClass",
+                      slug: "thelaststand/app/game/data/survivorclass",
+                    },
+                  ],
+                },
+              ],
+            },
             {
               label: "network",
               collapsed: true,
