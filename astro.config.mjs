@@ -120,12 +120,34 @@ export default defineConfig({
                   collapsed: true,
                   items: [
                     {
+                      label: "injury",
+                      collapsed: true,
+                      items: [
+                        {
+                          label: "Injury",
+                          slug: "thelaststand/app/game/data/injury/injury",
+                        },
+                        {
+                          label: "InjuryList",
+                          slug: "thelaststand/app/game/data/injury/injurylist",
+                        },
+                      ],
+                    },
+                    {
                       label: "Attributes",
                       slug: "thelaststand/app/game/data/attributes",
                     },
                     {
+                      label: "Gender",
+                      slug: "thelaststand/app/game/data/gender",
+                    },
+                    {
                       label: "HumanAppearance",
                       slug: "thelaststand/app/game/data/humanappearance",
+                    },
+                    {
+                      label: "Morale",
+                      slug: "thelaststand/app/game/data/morale",
                     },
                     {
                       label: "Survivor",
@@ -138,6 +160,18 @@ export default defineConfig({
                     {
                       label: "SurvivorClass",
                       slug: "thelaststand/app/game/data/survivorclass",
+                    },
+                    {
+                      label: "TimerData",
+                      slug: "thelaststand/app/game/data/timerdata",
+                    },
+                    {
+                      label: "WeaponClass",
+                      slug: "thelaststand/app/game/data/weaponclass",
+                    },
+                    {
+                      label: "WeaponType",
+                      slug: "thelaststand/app/game/data/weapontype",
                     },
                   ],
                 },
