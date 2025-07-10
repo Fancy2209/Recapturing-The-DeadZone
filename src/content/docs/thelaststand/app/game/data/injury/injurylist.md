@@ -10,7 +10,7 @@ Internal logic includes methods such as `addInjury`, `removeInjury`, `getTotalDa
 
 ## readObject
 
-1. `param1: Array` — required, must be an `Array` of injury data objects; if not an array, the function exits early
+1. `param1: Array` — required, must be an `Array` of [injury](/thelaststand/app/game/data/injury/injury) data objects; if not an array, the function exits early
 
 Internally:
 

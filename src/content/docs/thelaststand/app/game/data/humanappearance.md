@@ -8,7 +8,7 @@ Represent a generic human appearance (e.g., extended by [SurvivorAppearance](/th
 
 A change in appearance dispatch the changed signal.
 
-Internal methods contain: 
+Internal methods contain:
 
 - Reading XML assets and populating properties.
-- The `deserialize` method deserializes the `attire.xml` assets.
+- The `deserialize` method loads the `attire.xml` assets and set appearance attributes based on the XML definitions.
