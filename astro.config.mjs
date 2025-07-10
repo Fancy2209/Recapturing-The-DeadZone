@@ -134,6 +134,10 @@ export default defineConfig({
                       ],
                     },
                     {
+                      label: "AttireData",
+                      slug: "thelaststand/app/game/data/attiredata",
+                    },
+                    {
                       label: "Attributes",
                       slug: "thelaststand/app/game/data/attributes",
                     },
@@ -144,6 +148,10 @@ export default defineConfig({
                     {
                       label: "HumanAppearance",
                       slug: "thelaststand/app/game/data/humanappearance",
+                    },
+                    {
+                      label: "Item",
+                      slug: "thelaststand/app/game/data/item",
                     },
                     {
                       label: "Morale",
@@ -162,12 +170,20 @@ export default defineConfig({
                       slug: "thelaststand/app/game/data/survivorclass",
                     },
                     {
+                      label: "SurvivorLoadout",
+                      slug: "thelaststand/app/game/data/survivorloadout",
+                    },
+                    {
                       label: "TimerData",
                       slug: "thelaststand/app/game/data/timerdata",
                     },
                     {
                       label: "WeaponClass",
                       slug: "thelaststand/app/game/data/weaponclass",
+                    },
+                    {
+                      label: "WeaponData",
+                      slug: "thelaststand/app/game/data/weapondata",
                     },
                     {
                       label: "WeaponType",
