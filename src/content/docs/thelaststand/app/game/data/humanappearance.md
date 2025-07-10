@@ -4,4 +4,11 @@ slug: thelaststand/app/game/data/humanappearance
 description: HumanAppearance
 ---
 
-HumanAppearance class
+Represent a generic human appearance (e.g., extended by [SurvivorAppearance](/thelaststand/app/game/data/survivorappearance)). It has [`AttireData`](/thelaststand/app/game/data/attiredata) of skin, hair, hair color, facial hair, upper and lower body, accessories, base attire, overlay, and more.
+
+A change in appearance dispatch the changed signal.
+
+Internal methods contain: 
+
+- Reading XML assets and populating properties.
+- The `deserialize` method deserializes the `attire.xml` assets.
