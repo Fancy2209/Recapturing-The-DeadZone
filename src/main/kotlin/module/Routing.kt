@@ -1,20 +1,23 @@
 package dev.deadzone.module
 
+import dev.deadzone.api.handler.authenticate
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
-import io.ktor.server.response.respondText
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Application.configureRouting() {
     routing {
         staticResources("/", "static")
 
-        post("/api/13") {
-            call.respondText("asdfsd")
-        }
+        post("/api/{path}") {
+            val path = call.parameters["path"] ?: return@post call.respond(HttpStatusCode.BadRequest)
 
-        post("/api") {
-            call.respondText("API 0")
+            when (path) {
+                "13" -> authenticate()
+                else -> call.respond(HttpStatusCode.NotFound, "Unknown API path: $path")
+            }
         }
     }
 }
