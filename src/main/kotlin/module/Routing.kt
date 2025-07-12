@@ -16,8 +16,21 @@ fun Application.configureRouting() {
 
             when (path) {
                 "13" -> authenticate()
-                else -> call.respond(HttpStatusCode.NotFound, "Unknown API path: $path")
+                else -> call.respond(HttpStatusCode.NotFound, "Unimplemented API: $path")
             }
         }
     }
+}
+
+/**
+ * Adds a PlayerIO framing prefix to the byte array.
+ *
+ * This is required by the PlayerIO API message convention, which expects each request and response
+ * to be prefixed with two specific bytes: `0x00` and `0x01`.
+ *
+ * @receiver The original unframed [ByteArray] representing a protocol buffer message.
+ * @return A new [ByteArray] with `0x00` and `0x01` prepended.
+ */
+fun ByteArray.PIOFraming(): ByteArray {
+    return byteArrayOf(0, 1) + this
 }
