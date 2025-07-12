@@ -2,7 +2,9 @@ package dev.deadzone
 
 import dev.deadzone.module.configureDatabases
 import dev.deadzone.module.configureHTTP
+import dev.deadzone.module.configureLogging
 import dev.deadzone.module.configureRouting
+import dev.deadzone.module.configureSerialization
 import dev.deadzone.module.configureSockets
 import io.ktor.server.application.*
 
@@ -15,4 +17,6 @@ fun Application.module() {
     configureDatabases()
     configureHTTP()
     configureRouting()
+    configureSerialization()
+    configureLogging()
 }
