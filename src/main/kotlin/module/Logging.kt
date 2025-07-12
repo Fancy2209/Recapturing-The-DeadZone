@@ -10,3 +10,11 @@ fun Application.configureLogging() {
 }
 
 val RoutingContext.log get() = call.application.environment.log
+
+fun RoutingContext.logApiMessage(message: Any) {
+    call.application.environment.log.info("Received [API ${call.parameters["path"]}]: $message")
+}
+
+fun RoutingContext.logApiOutput(message: ByteArray) {
+    call.application.environment.log.info("Sent [API ${call.parameters["path"]}]: ${message.decodeToString()}")
+}
