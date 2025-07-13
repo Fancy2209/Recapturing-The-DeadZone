@@ -8,7 +8,8 @@ import io.ktor.server.response.respondText
 
 fun Application.configureHTTP() {
     install(CORS) {
-        allowHost("localhost:8080", schemes = listOf("http"))
+        allowHost("127.0.0.1:8080", schemes = listOf("http"))
+        allowHost("127.0.0.1:7777", schemes = listOf("http"))
         allowHeader(HttpHeaders.ContentType)
         allowMethod(HttpMethod.Get)
     }
