@@ -98,7 +98,7 @@ class Server(
         return bytes.toByteArray().toString(Charsets.UTF_8)
     }
 
-    private fun stop() {
+    fun stop() {
         print("Stopping ${clients.size} connections...")
         clients.forEach {
             it.socket.close()
