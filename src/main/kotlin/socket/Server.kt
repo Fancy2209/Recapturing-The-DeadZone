@@ -1,8 +1,10 @@
 package dev.deadzone.socket
 
 import dev.deadzone.core.utils.Message
+import dev.deadzone.core.utils.MessageDispatcher
 import dev.deadzone.core.utils.PIODeserializer
 import dev.deadzone.core.utils.PIOSerializer
+import dev.deadzone.core.utils.message.handler.JoinHandler
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
@@ -22,6 +24,9 @@ class Server(
     private val clients = Collections.synchronizedList(mutableListOf<Connection>())
     val serializer = PIOSerializer()
     val deserializer = PIODeserializer()
+    val dispatcher = MessageDispatcher().apply {
+        register(JoinHandler())
+    }
 
     fun start() {
         coroutineScope.launch {
@@ -81,8 +86,8 @@ class Server(
 
                     val deserialized = deserializer.deserialize(data2)
                     val msg = Message.fromRaw(deserialized)
-                    print(msg)
 
+                    dispatcher.dispatch(msg)
                 }
             } catch (e: Exception) {
                 print("Error with client ${connection.socket.remoteAddress}: ${e.message}")
