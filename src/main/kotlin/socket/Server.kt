@@ -42,6 +42,16 @@ class Server(
                     val line = readChannel.readUTF8Line() ?: break
                     println("[SOCKET] Received: $line")
 
+                    if (line.startsWith("<policy-file-request/>")) {
+                        writeChannel.writeStringUtf8(
+                            """
+                            <cross-domain-policy>
+                            <allow-access-from domain="*" to-ports="7777"/>
+                            </cross-domain-policy>\x00    
+                            """.trimIndent(),
+                        )
+                    }
+
                     // dispatch...
                 }
             } catch (e: Exception) {
