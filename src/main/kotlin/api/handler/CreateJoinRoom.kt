@@ -23,11 +23,11 @@ import kotlinx.serialization.protobuf.ProtoBuf
  */
 @OptIn(ExperimentalSerializationApi::class)
 suspend fun RoutingContext.createJoinRoom() {
-    val authenticateArgs = ProtoBuf.decodeFromByteArray<CreateJoinRoomArgs>(
+    val createJoinRoomArgs = ProtoBuf.decodeFromByteArray<CreateJoinRoomArgs>(
         call.receiveChannel().toByteArray()
     )
 
-    logApiMessage(authenticateArgs)
+    logApiMessage(createJoinRoomArgs)
 
     val createJoinRoomOutput = ProtoBuf.encodeToByteArray<CreateJoinRoomOutput>(
         CreateJoinRoomOutput.dummy()
