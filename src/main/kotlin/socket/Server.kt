@@ -3,18 +3,12 @@ package dev.deadzone.socket
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import java.util.Collections
+import kotlinx.coroutines.*
+import java.util.*
 
 const val POLICY_FILE_REQUEST = "<policy-file-request/>"
-const val POLICY_FILE_RESPONSE = """
-<cross-domain-policy>
-<allow-access-from domain="*" to-ports="7777"/>
-</cross-domain-policy>\x00
-"""
+const val POLICY_FILE_RESPONSE =
+    "<cross-domain-policy><allow-access-from domain=\"*\" to-ports=\"7777\"/></cross-domain-policy>\u0000"
 
 class Server(
     private val host: String = "127.0.0.1",
@@ -55,25 +49,34 @@ class Server(
 
     private fun handleClient(connection: Connection) {
         coroutineScope.launch {
+            val socket = connection.socket
+            val input = socket.openReadChannel()
+            val output = socket.openWriteChannel(autoFlush = true)
+
             try {
-                val socket = connection.socket
-                val readChannel = socket.openReadChannel()
-                val writeChannel = socket.openWriteChannel(autoFlush = true)
-
                 while (true) {
-                    val line = readChannel.readUTF8Line() ?: break
-                    print("Received: $line")
+                    val data = readUntilNull(input)
+                    print("Received: $data")
 
-                    print(clients.forEach { print(it.toString()) })
-                    if (line.startsWith(POLICY_FILE_REQUEST)) {
-                        writeChannel.writeStringUtf8(POLICY_FILE_RESPONSE.trimIndent())
-                        print(POLICY_FILE_RESPONSE.trimIndent())
-                    }
+                    when {
+                        data.contains(POLICY_FILE_REQUEST) -> {
+                            output.writeFully(POLICY_FILE_RESPONSE.toByteArray(Charsets.UTF_8))
+                            output.flush()
+                            print("Sent policy response")
+                        }
 
-                    if (line.startsWith("join")) {
-                        print("received join")
+                        data == "\u0000" -> {
+                            print("Ignoring null byte")
+                        }
+
+                        data.contains("join") -> {
+                            print("Join request received: $data")
+                        }
+
+                        else -> {
+                            print("Unimplemented data: $data")
+                        }
                     }
-                    // dispatch...
                 }
             } catch (e: Exception) {
                 print("Error with client ${connection.socket.remoteAddress}: ${e.message}")
@@ -85,14 +88,24 @@ class Server(
         }
     }
 
+    private suspend fun readUntilNull(input: ByteReadChannel): String {
+        val bytes = mutableListOf<Byte>()
+        while (!input.isClosedForRead) {
+            val b = input.readByte()
+            if (b == 0.toByte()) break
+            bytes.add(b)
+        }
+        return bytes.toByteArray().toString(Charsets.UTF_8)
+    }
+
     private fun stop() {
-        print("Closing socket server... disconnecting (${clients.size}) clients.")
+        print("Stopping ${clients.size} connections...")
         clients.forEach {
             it.socket.close()
         }
-        clients.clear()
-        print("Socket server closed.")
+        print("Server closed.")
     }
+
 }
 
 fun Server.print(msg: Any) {
