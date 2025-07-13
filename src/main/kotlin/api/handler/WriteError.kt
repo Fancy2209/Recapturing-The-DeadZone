@@ -1,12 +1,19 @@
 package dev.deadzone.api.handler
 
+import dev.deadzone.api.message.auth.AuthenticateArgs
+import dev.deadzone.api.message.auth.AuthenticateOutput
 import dev.deadzone.api.message.utils.WriteErrorArgs
+import dev.deadzone.api.message.utils.WriteErrorError
+import dev.deadzone.module.PIOFraming
 import dev.deadzone.module.logApiMessage
+import dev.deadzone.module.logApiOutput
 import io.ktor.server.request.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.utils.io.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromByteArray
+import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
 
 /**
@@ -23,4 +30,12 @@ suspend fun RoutingContext.writeError() {
     )
 
     logApiMessage(writeErrorArgs)
+
+    val writeErrorError = ProtoBuf.encodeToByteArray<WriteErrorError>(
+        WriteErrorError.dummy()
+    )
+
+    logApiOutput(writeErrorError)
+
+    call.respondBytes(writeErrorError.PIOFraming())
 }
