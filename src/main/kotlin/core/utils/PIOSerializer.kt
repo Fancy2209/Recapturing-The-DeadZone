@@ -125,13 +125,22 @@ class PIODeserializer {
     private var partLength = 0
     private var length = -1
     private var message = mutableListOf<Any>()
-    private val values = mutableListOf<List<Any>>()
 
-    fun deserialize(data: ByteArray): List<List<Any>> {
+    fun deserialize(data: ByteArray): List<Any> {
+        reset()
         for (byte in data) {
             deserializeByte(byte)
         }
-        return values
+        return message.toList()
+    }
+
+    fun reset() {
+        state = "init"
+        pattern = Pattern.DOES_NOT_EXIST
+        buffer.reset()
+        partLength = 0
+        length = -1
+        message.clear()
     }
 
     private fun deserializeByte(byteVal: Byte) {
@@ -160,8 +169,8 @@ class PIODeserializer {
 
     private fun handleInitState(byteVal: Byte) {
         pattern = Pattern.fromByte(byteVal.toInt() and 0xFF)
-
         val part = byteVal.toInt() and 0x3F
+
         when (pattern) {
             Pattern.STRING_SHORT_PATTERN, Pattern.BYTE_ARRAY_SHORT_PATTERN -> {
                 partLength = part
@@ -247,11 +256,6 @@ class PIODeserializer {
             length = value
         } else {
             message.add(value ?: "null")
-            if (message.size == length + 1) {
-                values.add(message.toList())
-                message.clear()
-                length = -1
-            }
         }
     }
 

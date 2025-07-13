@@ -1,5 +1,6 @@
 package dev.deadzone.socket
 
+import dev.deadzone.core.utils.Message
 import dev.deadzone.core.utils.PIODeserializer
 import dev.deadzone.core.utils.PIOSerializer
 import io.ktor.network.selector.*
@@ -78,7 +79,10 @@ class Server(
                         data.drop(1).toByteArray()
                     } else data
 
-                    deserializer.deserialize(data2)
+                    val deserialized = deserializer.deserialize(data2)
+                    val msg = Message.fromRaw(deserialized)
+                    print(msg)
+
                 }
             } catch (e: Exception) {
                 print("Error with client ${connection.socket.remoteAddress}: ${e.message}")
