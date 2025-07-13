@@ -54,29 +54,27 @@ class Server(
             val output = socket.openWriteChannel(autoFlush = true)
 
             try {
+                val buffer = ByteArray(4096)
+
                 while (true) {
-                    val data = readUntilNull(input)
-                    print("Received: $data")
+                    val bytesRead = input.readAvailable(buffer, 0, buffer.size)
+                    if (bytesRead <= 0) break
 
-                    when {
-                        data.contains(POLICY_FILE_REQUEST) -> {
-                            output.writeFully(POLICY_FILE_RESPONSE.toByteArray(Charsets.UTF_8))
-                            output.flush()
-                            print("Sent policy response")
-                        }
+                    val data = buffer.copyOfRange(0, bytesRead)
+                    print("Received raw: ${data.printString()}")
 
-                        data == "\u0000" -> {
-                            print("Ignoring null byte")
-                        }
-
-                        data.contains("join") -> {
-                            print("Join request received: $data")
-                        }
-
-                        else -> {
-                            print("Unimplemented data: $data")
-                        }
+                    if (data.startsWithBytes(POLICY_FILE_REQUEST.toByteArray())) {
+                        output.writeFully(POLICY_FILE_RESPONSE.toByteArray())
+                        print("Sent policy response")
+                        break
                     }
+
+                    if (data.startsWithBytes(byteArrayOf(0x00))) {
+                        print("Received 0x00 --- ignoring")
+                        continue
+                    }
+
+                    print("can use: $data")
                 }
             } catch (e: Exception) {
                 print("Error with client ${connection.socket.remoteAddress}: ${e.message}")
@@ -86,16 +84,6 @@ class Server(
                 connection.socket.close()
             }
         }
-    }
-
-    private suspend fun readUntilNull(input: ByteReadChannel): String {
-        val bytes = mutableListOf<Byte>()
-        while (!input.isClosedForRead) {
-            val b = input.readByte()
-            if (b == 0.toByte()) break
-            bytes.add(b)
-        }
-        return bytes.toByteArray().toString(Charsets.UTF_8)
     }
 
     fun stop() {
@@ -108,6 +96,22 @@ class Server(
 
 }
 
-fun Server.print(msg: Any) {
+fun ByteArray.printString(): String {
+    return this.joinToString("") { byte ->
+        val b = byte.toInt() and 0xFF
+        if (b in 0x20..0x7E) b.toChar().toString()
+        else "\\x%02x".format(b)
+    }
+}
+
+fun ByteArray.startsWithBytes(prefix: ByteArray): Boolean {
+    if (this.size < prefix.size) return false
+    for (i in prefix.indices) {
+        if (this[i] != prefix[i]) return false
+    }
+    return true
+}
+
+fun print(msg: Any) {
     println("[SOCKET]: $msg")
 }
