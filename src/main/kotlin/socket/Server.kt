@@ -7,67 +7,94 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import java.util.Collections
+
+const val POLICY_FILE_REQUEST = "<policy-file-request/>"
+const val POLICY_FILE_RESPONSE = """
+<cross-domain-policy>
+<allow-access-from domain="*" to-ports="7777"/>
+</cross-domain-policy>\x00
+"""
 
 class Server(
     private val host: String = "127.0.0.1",
     private val port: Int = 7777,
+    private val maxConnections: Int = 5,
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
 ) {
-    private val clients: List<Connection> = mutableListOf()
+    private val clients = Collections.synchronizedList(mutableListOf<Connection>())
 
     fun start() {
         coroutineScope.launch {
-            val selectorManager = SelectorManager(Dispatchers.IO)
-            val serverSocket = aSocket(selectorManager).tcp().bind(host, port)
-            println("Socket server started at $host:$port")
+            try {
+                val selectorManager = SelectorManager(Dispatchers.IO)
+                val serverSocket = aSocket(selectorManager).tcp().bind(host, port)
+                print("Socket server started at $host:$port")
 
-            while (true) {
-                val connection = Connection(socket = serverSocket.accept())
+                while (true) {
+                    val socket = serverSocket.accept()
 
-                println("New client: $connection")
+                    if (clients.size >= maxConnections) {
+                        print("Maximum connections reached. Refusing connection from ${socket.remoteAddress}")
+                        socket.close()
+                        continue
+                    }
 
-                handleClient(connection)
+                    val connection = Connection(socket = socket)
+                    clients.add(connection)
+                    print("New client: ${connection.socket.remoteAddress}")
+                    handleClient(connection)
+
+                }
+            } catch (e: Exception) {
+                print("ERROR starting server $e")
+                stop()
             }
         }
     }
 
     private fun handleClient(connection: Connection) {
         coroutineScope.launch {
-            val socket = connection.socket
-            val readChannel = socket.openReadChannel()
-            val writeChannel = socket.openWriteChannel(autoFlush = true)
-
             try {
+                val socket = connection.socket
+                val readChannel = socket.openReadChannel()
+                val writeChannel = socket.openWriteChannel(autoFlush = true)
+
                 while (true) {
                     val line = readChannel.readUTF8Line() ?: break
-                    println("[SOCKET] Received: $line")
+                    print("Received: $line")
 
-                    if (line.startsWith("<policy-file-request/>")) {
-                        writeChannel.writeStringUtf8(
-                            """
-                            <cross-domain-policy>
-                            <allow-access-from domain="*" to-ports="7777"/>
-                            </cross-domain-policy>\x00    
-                            """.trimIndent(),
-                        )
+                    print(clients.forEach { print(it.toString()) })
+                    if (line.startsWith(POLICY_FILE_REQUEST)) {
+                        writeChannel.writeStringUtf8(POLICY_FILE_RESPONSE.trimIndent())
+                        print(POLICY_FILE_RESPONSE.trimIndent())
                     }
 
+                    if (line.startsWith("join")) {
+                        print("received join")
+                    }
                     // dispatch...
                 }
             } catch (e: Exception) {
-                println("Error with client ${socket.remoteAddress}: ${e.message}")
+                print("Error with client ${connection.socket.remoteAddress}: ${e.message}")
             } finally {
-                println("Client ${socket.remoteAddress} disconnected")
-                socket.close()
+                print("Client ${connection.socket.remoteAddress} disconnected")
+                clients.remove(connection)
+                connection.socket.close()
             }
         }
     }
 
     private fun stop() {
-        println("Closing socket server... disconnecting (${clients.size}) clients.")
+        print("Closing socket server... disconnecting (${clients.size}) clients.")
         clients.forEach {
             it.socket.close()
         }
-        println("Socket server closed.")
+        clients.clear()
+        print("Socket server closed.")
     }
+}
+
+fun Server.print(msg: Any) {
+    println("[SOCKET]: $msg")
 }
