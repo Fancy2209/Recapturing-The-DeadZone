@@ -1,6 +1,7 @@
 package dev.deadzone.module
 
 import dev.deadzone.api.handler.authenticate
+import dev.deadzone.api.handler.socialRefresh
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
@@ -16,6 +17,7 @@ fun Application.configureRouting() {
 
             when (path) {
                 "13" -> authenticate()
+                "601" -> socialRefresh()
                 else -> call.respond(HttpStatusCode.NotFound, "Unimplemented API: $path")
             }
         }
