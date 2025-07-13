@@ -87,8 +87,10 @@ class Server(
                     val deserialized = PIODeserializer.deserialize(data2)
                     val msg = SocketMessage.fromRaw(deserialized)
 
-                    dispatcher.dispatch(msg)?.let { responseMsg ->
-                        output.writeFully(responseMsg)
+                    dispatcher.findHandlerFor(msg)?.let { handler ->
+                        handler.handle(msg) { response ->
+                            output.writeFully(response)
+                        }
                     }
                 }
             } catch (e: Exception) {

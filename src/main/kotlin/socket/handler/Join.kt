@@ -3,6 +3,8 @@ package dev.deadzone.core.utils.message.handler
 import dev.deadzone.core.utils.PIOSerializer
 import dev.deadzone.core.utils.SocketMessage
 import dev.deadzone.core.utils.SocketMessageHandler
+import io.ktor.util.date.getTimeMillis
+import kotlinx.serialization.json.Json
 
 /**
  * Handle `join` message by:
@@ -16,12 +18,26 @@ class JoinHandler : SocketMessageHandler {
         return message.getString("join") != null
     }
 
-    override fun handle(message: SocketMessage): ByteArray {
+    override suspend fun handle(message: SocketMessage, send: suspend (ByteArray) -> Unit) {
         val joinKey = message.getString("join")
         println("Handling join with key: $joinKey")
 
-        val msg = listOf("playerio.joinresult", true)
+        // First message: join result
+        val joinResultMsg = listOf("playerio.joinresult", true)
+        send(PIOSerializer.serialize(joinResultMsg))
 
-        return PIOSerializer.serialize(msg)
+        // Optional: Do some async work here (e.g. DB or delay)
+        // delay(100)
+
+        // Second message: game ready message
+        val gameReadyMsg = listOf(
+            "gr",
+            getTimeMillis(),
+            byteArrayOf(),
+            Json.encodeToString(""),
+            Json.encodeToString(""),
+            Json.encodeToString("")
+        )
+        send(PIOSerializer.serialize(gameReadyMsg))
     }
 }

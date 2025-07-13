@@ -7,11 +7,7 @@ class SocketMessageDispatcher() {
         handlers.add(handler)
     }
 
-    fun dispatch(msg: SocketMessage): ByteArray? {
-        handlers.firstOrNull { it.match(msg) }?.let { handler ->
-            println("Dispatched $msg to $handler")
-            return handler.handle(msg)
-        }
-        return null
+    fun findHandlerFor(msg: SocketMessage): SocketMessageHandler? {
+        return handlers.firstOrNull { it.match(msg) }
     }
 }
