@@ -1,6 +1,15 @@
 package dev.deadzone.core.utils
 
-class Message(private val raw: List<Any>) {
+/**
+ * A higher-level representation of game message sent to the socket server.
+ *
+ * Message is always a flat list of even length (if odd then the first is the type).
+ * Two of each element is paired as key-value pair.
+ *
+ * @constructor Raw deserialized data received from socket connection
+ *
+ */
+class SocketMessage(private val raw: List<Any>) {
     val type: String? = if (raw.size % 2 == 1) raw.firstOrNull() as? String else null
 
     private val map: Map<String, Any?> = buildMap {
@@ -13,6 +22,13 @@ class Message(private val raw: List<Any>) {
         }
     }
 
+    /**
+     * Get a value (`any` type) from particular key.
+     * Use [getString], [getInt], etc for typed result
+     *
+     * @param key
+     * @return the value from the corresponding key in the message
+     */
     fun get(key: String): Any? = map[key]
 
     fun getString(key: String): String? = map[key] as? String
@@ -29,8 +45,8 @@ class Message(private val raw: List<Any>) {
         "Message(map=$map)"
 
     companion object {
-        fun fromRaw(raw: List<Any>): Message {
-            return Message(raw)
+        fun fromRaw(raw: List<Any>): SocketMessage {
+            return SocketMessage(raw)
         }
     }
 }

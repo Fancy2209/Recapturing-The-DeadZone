@@ -1,13 +1,13 @@
 package dev.deadzone.core.utils
 
-class MessageDispatcher() {
-    private val handlers = mutableListOf<MessageHandler>()
+class SocketMessageDispatcher() {
+    private val handlers = mutableListOf<SocketMessageHandler>()
 
-    fun register(handler: MessageHandler) {
+    fun register(handler: SocketMessageHandler) {
         handlers.add(handler)
     }
 
-    fun dispatch(msg: Message): ByteArray? {
+    fun dispatch(msg: SocketMessage): ByteArray? {
         handlers.firstOrNull { it.match(msg) }?.let { handler ->
             println("Dispatched $msg to $handler")
             return handler.handle(msg)

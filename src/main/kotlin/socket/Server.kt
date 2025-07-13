@@ -1,14 +1,16 @@
 package dev.deadzone.socket
 
-import dev.deadzone.core.utils.Message
-import dev.deadzone.core.utils.MessageDispatcher
 import dev.deadzone.core.utils.PIODeserializer
-import dev.deadzone.core.utils.PIOSerializer
+import dev.deadzone.core.utils.SocketMessage
+import dev.deadzone.core.utils.SocketMessageDispatcher
 import dev.deadzone.core.utils.message.handler.JoinHandler
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import java.util.*
 
 const val POLICY_FILE_REQUEST = "<policy-file-request/>"
@@ -22,7 +24,7 @@ class Server(
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
 ) {
     private val clients = Collections.synchronizedList(mutableListOf<Connection>())
-    val dispatcher = MessageDispatcher().apply {
+    val dispatcher = SocketMessageDispatcher().apply {
         register(JoinHandler())
     }
 
@@ -83,7 +85,7 @@ class Server(
                     } else data
 
                     val deserialized = PIODeserializer.deserialize(data2)
-                    val msg = Message.fromRaw(deserialized)
+                    val msg = SocketMessage.fromRaw(deserialized)
 
                     dispatcher.dispatch(msg)?.let { responseMsg ->
                         output.writeFully(responseMsg)

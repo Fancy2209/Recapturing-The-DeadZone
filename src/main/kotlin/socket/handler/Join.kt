@@ -1,8 +1,8 @@
 package dev.deadzone.core.utils.message.handler
 
-import dev.deadzone.core.utils.Message
-import dev.deadzone.core.utils.MessageHandler
 import dev.deadzone.core.utils.PIOSerializer
+import dev.deadzone.core.utils.SocketMessage
+import dev.deadzone.core.utils.SocketMessageHandler
 
 /**
  * Handle `join` message by:
@@ -11,12 +11,12 @@ import dev.deadzone.core.utils.PIOSerializer
  * 2. Sending `gr` message
  *
  */
-class JoinHandler : MessageHandler {
-    override fun match(message: Message): Boolean {
+class JoinHandler : SocketMessageHandler {
+    override fun match(message: SocketMessage): Boolean {
         return message.getString("join") != null
     }
 
-    override fun handle(message: Message): ByteArray {
+    override fun handle(message: SocketMessage): ByteArray {
         val joinKey = message.getString("join")
         println("Handling join with key: $joinKey")
 
