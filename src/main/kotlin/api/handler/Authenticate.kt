@@ -1,7 +1,7 @@
 package dev.deadzone.api.handler
 
-import dev.deadzone.api.message.AuthenticateArgs
-import dev.deadzone.api.message.AuthenticateOutput
+import dev.deadzone.api.message.auth.AuthenticateArgs
+import dev.deadzone.api.message.auth.AuthenticateOutput
 import dev.deadzone.module.PIOFraming
 import dev.deadzone.module.logApiMessage
 import dev.deadzone.module.logApiOutput

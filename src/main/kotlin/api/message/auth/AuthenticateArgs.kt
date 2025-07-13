@@ -1,4 +1,4 @@
-package dev.deadzone.api.message
+package dev.deadzone.api.message.auth
 
 import kotlinx.serialization.Serializable
 

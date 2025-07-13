@@ -1,4 +1,4 @@
-package dev.deadzone.api.message
+package dev.deadzone.api.message.auth
 
 import kotlinx.serialization.Serializable
 
@@ -12,7 +12,7 @@ data class AuthenticateOutput(
     val isInstalledByPublishingNetwork: Boolean = false,
     val deprecated1: Boolean = false,
     val apiSecurity: String = "",
-    val apiServerHosts: List<String> = listOf("")
+    val apiServerHosts: List<String> = listOf()
 ) {
     companion object {
         fun dummy(): AuthenticateOutput {
