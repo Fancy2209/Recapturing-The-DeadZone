@@ -1,6 +1,7 @@
 package dev.deadzone.module
 
 import dev.deadzone.api.handler.authenticate
+import dev.deadzone.api.handler.createJoinRoom
 import dev.deadzone.api.handler.socialRefresh
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -18,6 +19,7 @@ fun Application.configureRouting() {
             when (path) {
                 "13" -> authenticate()
                 "601" -> socialRefresh()
+                "27" -> createJoinRoom()
                 else -> call.respond(HttpStatusCode.NotFound, "Unimplemented API: $path")
             }
         }
