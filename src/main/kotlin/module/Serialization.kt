@@ -6,8 +6,10 @@ import io.ktor.serialization.kotlinx.protobuf.*
 import io.ktor.server.application.Application
 import kotlinx.serialization.protobuf.*
 import io.ktor.server.application.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 
+@OptIn(ExperimentalSerializationApi::class)
 fun Application.configureSerialization() {
     install(ContentNegotiation) {
         json(Json {
