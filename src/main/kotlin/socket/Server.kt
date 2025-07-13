@@ -22,8 +22,6 @@ class Server(
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
 ) {
     private val clients = Collections.synchronizedList(mutableListOf<Connection>())
-    val serializer = PIOSerializer()
-    val deserializer = PIODeserializer()
     val dispatcher = MessageDispatcher().apply {
         register(JoinHandler())
     }
@@ -84,10 +82,12 @@ class Server(
                         data.drop(1).toByteArray()
                     } else data
 
-                    val deserialized = deserializer.deserialize(data2)
+                    val deserialized = PIODeserializer.deserialize(data2)
                     val msg = Message.fromRaw(deserialized)
 
-                    dispatcher.dispatch(msg)
+                    dispatcher.dispatch(msg)?.let { responseMsg ->
+                        output.writeFully(responseMsg)
+                    }
                 }
             } catch (e: Exception) {
                 print("Error with client ${connection.socket.remoteAddress}: ${e.message}")

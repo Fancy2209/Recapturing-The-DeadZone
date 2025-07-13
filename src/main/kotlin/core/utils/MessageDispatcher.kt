@@ -7,7 +7,11 @@ class MessageDispatcher() {
         handlers.add(handler)
     }
 
-    fun dispatch(msg: Message) {
-        handlers.firstOrNull { it.match(msg) }?.handle(msg)
+    fun dispatch(msg: Message): ByteArray? {
+        handlers.firstOrNull { it.match(msg) }?.let { handler ->
+            println("Dispatched $msg to $handler")
+            return handler.handle(msg)
+        }
+        return null
     }
 }
