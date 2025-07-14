@@ -5,11 +5,6 @@ import dev.deadzone.socket.Server
 import io.ktor.server.application.*
 
 fun main(args: Array<String>) {
-    val server = Server()
-    server.start()
-    Runtime.getRuntime().addShutdownHook(Thread {
-        server.stop()
-    })
     io.ktor.server.netty.EngineMain.main(args)
 }
 
@@ -19,4 +14,10 @@ fun Application.module() {
     configureRouting()
     configureSerialization()
     configureLogging()
+
+    val server = Server()
+    server.start()
+    Runtime.getRuntime().addShutdownHook(Thread {
+        server.stop()
+    })
 }

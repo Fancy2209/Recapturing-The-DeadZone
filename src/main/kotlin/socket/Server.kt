@@ -4,6 +4,7 @@ import dev.deadzone.core.utils.PIODeserializer
 import dev.deadzone.core.utils.SocketMessage
 import dev.deadzone.core.utils.SocketMessageDispatcher
 import dev.deadzone.core.utils.message.handler.JoinHandler
+import dev.deadzone.module.Dependency
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
@@ -91,9 +92,13 @@ class Server(
                         print("Got msg: $msg")
                         print("Dispatching to $handler")
                         handler.handle(msg) { response ->
+                            print("Sending ${response.printString()}")
+                            print(Dependency.database.toString())
                             output.writeFully(response)
                         }
                     }
+
+                    print("============END=============")
                 }
             } catch (e: Exception) {
                 print("Error with client ${connection.socket.remoteAddress}: ${e.message}")
