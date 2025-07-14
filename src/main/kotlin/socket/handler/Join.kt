@@ -47,7 +47,8 @@ class JoinHandler(private val db: Database) : SocketMessageHandler {
     }
 
     /**
-     * Pack all xml.gz resources and resources_secondary.xml
+     * Pack all xml.gz resources in data/xml/ and manually added compressed
+     * resources_secondary.xml.gz in data/
      */
     fun produceBinaries(): ByteArray {
         val xmlResources = listOf(
@@ -71,7 +72,7 @@ class JoinHandler(private val db: Database) : SocketMessageHandler {
             "survivor.xml.gz",
             "vehiclenames.xml.gz",
             "zombie.xml.gz",
-            "resources_secondary.xml"
+            "resources_secondary.xml.gz"
         )
 
         val output = ByteArrayOutputStream()
@@ -82,7 +83,7 @@ class JoinHandler(private val db: Database) : SocketMessageHandler {
         val classLoader = Thread.currentThread().contextClassLoader
 
         for (filename in xmlResources) {
-            val path = if (filename == "resources_secondary.xml")
+            val path = if (filename == "resources_secondary.xml.gz")
                 "static/game/data/$filename"
             else
                 "static/game/data/xml/$filename"
