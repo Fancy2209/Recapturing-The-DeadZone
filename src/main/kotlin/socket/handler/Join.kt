@@ -1,4 +1,4 @@
-package dev.deadzone.core.utils.message.handler
+package dev.deadzone.socket.handler
 
 import dev.deadzone.core.BigDB
 import dev.deadzone.core.utils.PIOSerializer
@@ -109,14 +109,14 @@ class JoinHandler(private val db: BigDB) : SocketMessageHandler {
     /**
      * Load cost table which is based on CostTable.as (currently still mocked)
      */
-    fun loadCostTable(): String  {
+    fun loadCostTable(): String {
         return loadRawJson("cost_table.json")
     }
 
     /**
      * Load survivor table which is based on Survivor.as (not exactly same)
      */
-    fun loadSrvTable(): String  {
+    fun loadSrvTable(): String {
         return loadRawJson("srv_table.json")
     }
 
@@ -124,11 +124,11 @@ class JoinHandler(private val db: BigDB) : SocketMessageHandler {
      * Load player login state which is based on Player's state from PlayerData.as
      * (currently still mocked and hardcoded, not from player's database)
      */
-    fun loadPlayerLoginState(): String  {
+    fun loadPlayerLoginState(): String {
         return loadRawJson("login_state.json")
     }
 
-    fun loadRawJson(path: String): String  {
+    fun loadRawJson(path: String): String {
         return object {}.javaClass.getResource("/data/$path")?.readText()
             ?: error("Resource not found: $path")
     }

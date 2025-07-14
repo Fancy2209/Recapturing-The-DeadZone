@@ -4,7 +4,7 @@ import dev.deadzone.core.BigDB
 import dev.deadzone.core.utils.PIODeserializer
 import dev.deadzone.core.utils.SocketMessage
 import dev.deadzone.core.utils.SocketMessageDispatcher
-import dev.deadzone.core.utils.message.handler.JoinHandler
+import dev.deadzone.socket.handler.JoinHandler
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
