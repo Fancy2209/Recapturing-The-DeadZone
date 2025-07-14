@@ -1,11 +1,9 @@
 package dev.deadzone.core.utils.message.handler
 
-import dev.deadzone.config.GamePaths
 import dev.deadzone.core.utils.PIOSerializer
 import dev.deadzone.core.utils.SocketMessage
 import dev.deadzone.core.utils.SocketMessageHandler
-import io.ktor.util.date.getTimeMillis
-import kotlinx.serialization.json.Json
+import io.ktor.util.date.*
 import kotlinx.serialization.json.buildJsonObject
 import org.jetbrains.exposed.sql.Database
 import java.io.ByteArrayOutputStream
@@ -44,23 +42,52 @@ class JoinHandler(private val db: Database) : SocketMessageHandler {
         send(PIOSerializer.serialize(gameReadyMsg))
     }
 
+    /**
+     * Pack all xml.gz resources and resources_secondary.xml
+     */
     fun produceBinaries(): ByteArray {
-        // Get all xml resources and also include resources_secondary
-        val xmlResources = GamePaths.XML_DIR.listFiles().filter { file ->
-            file.extension == "gz"
-        } + listOf(GamePaths.BASE_PATH.resolve("resources_secondary_xml"))
-
+        val xmlResources = listOf(
+            "alliances.xml.gz",
+            "arenas.xml.gz",
+            "attire.xml.gz",
+            "badwords.xml.gz",
+            "buildings.xml.gz",
+            "config.xml.gz",
+            "crafting.xml.gz",
+            "effects.xml.gz",
+            "humanenemies.xml.gz",
+            "injury.xml.gz",
+            "itemmods.xml.gz",
+            "items.xml.gz",
+            "quests.xml.gz",
+            "quests_global.xml.gz",
+            "raids.xml.gz",
+            "skills.xml.gz",
+            "streetstructs.xml.gz",
+            "survivor.xml.gz",
+            "vehiclenames.xml.gz",
+            "zombie.xml.gz",
+            "resources_secondary.xml"
+        )
 
         val output = ByteArrayOutputStream()
 
         // 1. Write number of files as a single byte
         output.write(xmlResources.size)
 
-        for (file in xmlResources) {
-            val fileBytes = file.readBytes()
+        val classLoader = Thread.currentThread().contextClassLoader
 
-            val name = file.name.removeSuffix(".gz")
-            val uri = "xml/$name"
+        for (filename in xmlResources) {
+            val path = if (filename == "resources_secondary.xml")
+                "static/game/data/$filename"
+            else
+                "static/game/data/xml/$filename"
+
+            val inputStream = classLoader.getResourceAsStream(path)
+                ?: throw IllegalStateException("File not found in resources: $path")
+            val fileBytes = inputStream.readBytes()
+
+            val uri = "xml/" + filename.removeSuffix(".gz")
             val uriBytes = uri.toByteArray(Charsets.UTF_8)
 
             // 2. Write URI length as 2-byte little endian
