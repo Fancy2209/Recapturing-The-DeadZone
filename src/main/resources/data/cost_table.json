@@ -1,0 +1,20 @@
+{
+  "buildings": {
+    "barricade": {
+      "wood": 10,
+      "metal": 5
+    },
+    "turret": {
+      "wood": 50,
+      "metal": 25
+    }
+  },
+  "upgrades": {
+    "storage": {
+      "cost": 1000
+    },
+    "speed": {
+      "cost": 500
+    }
+  }
+}

@@ -4,7 +4,11 @@ import dev.deadzone.core.utils.PIOSerializer
 import dev.deadzone.core.utils.SocketMessage
 import dev.deadzone.core.utils.SocketMessageHandler
 import io.ktor.util.date.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.jsonObject
 import org.jetbrains.exposed.sql.Database
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
@@ -35,9 +39,9 @@ class JoinHandler(private val db: Database) : SocketMessageHandler {
             "gr",
             getTimeMillis(),
             produceBinaries(),
-            buildJsonObject { },
-            buildJsonObject { },
-            buildJsonObject { }
+            loadCostTable(),
+            loadSrvTable(),
+            loadPlayerLoginState()
         )
         send(PIOSerializer.serialize(gameReadyMsg))
     }
@@ -104,6 +108,33 @@ class JoinHandler(private val db: Database) : SocketMessageHandler {
         }
 
         return output.toByteArray()
+    }
+
+    /**
+     * Load cost table which is based on CostTable.as (currently still mocked)
+     */
+    fun loadCostTable(): String  {
+        return loadRawJson("cost_table.json")
+    }
+
+    /**
+     * Load survivor table which is based on Survivor.as (not exactly same)
+     */
+    fun loadSrvTable(): String  {
+        return loadRawJson("srv_table.json")
+    }
+
+    /**
+     * Load player login state which is based on Player's state from PlayerData.as
+     * (currently still mocked and hardcoded, not from player's database)
+     */
+    fun loadPlayerLoginState(): String  {
+        return loadRawJson("login_state.json")
+    }
+
+    fun loadRawJson(path: String): String  {
+        return object {}.javaClass.getResource("/data/$path")?.readText()
+            ?: error("Resource not found: $path")
     }
 }
 

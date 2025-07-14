@@ -1,0 +1,52 @@
+{
+  "settings": {
+    "volume": 0.8,
+    "language": "en"
+  },
+  "news": {
+    "event": "Double XP Weekend"
+  },
+  "sales": [
+    [
+      "weapons",
+      "discount"
+    ],
+    [
+      "armor",
+      "clearance"
+    ]
+  ],
+  "allianceWinnings": {
+    "gold": 500,
+    "medals": 2
+  },
+  "recentPVPList": [
+    {
+      "opponent": "Player123",
+      "result": "win"
+    },
+    {
+      "opponent": "Player456",
+      "result": "loss"
+    }
+  ],
+  "invsize": 50,
+  "upgrades": "AAAAAAAAAAAAAA==",
+  "allianceId": null,
+  "allianceTag": null,
+  "longSession": true,
+  "leveledUp": false,
+  "promos": [],
+  "promoSale": null,
+  "dealItem": null,
+  "leaderResets": 0,
+  "unequipItemBinds": false,
+  "globalStats": {},
+  "inventory": [],
+  "neighborHistory": {},
+  "zombieAttack": false,
+  "zombieAttackLogins": 0,
+  "offersEnabled": false,
+  "lastLogout": null,
+  "prevLogin": null
+}
