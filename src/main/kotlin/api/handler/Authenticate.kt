@@ -13,6 +13,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
+import org.jetbrains.exposed.sql.Database
 
 /**
  * Authenticate (API 13)
@@ -22,7 +23,7 @@ import kotlinx.serialization.protobuf.ProtoBuf
  * Output: `AuthenticateOutput`
  */
 @OptIn(ExperimentalSerializationApi::class)
-suspend fun RoutingContext.authenticate() {
+suspend fun RoutingContext.authenticate(db: Database) {
     val authenticateArgs = ProtoBuf.decodeFromByteArray<AuthenticateArgs>(
         call.receiveChannel().toByteArray()
     )

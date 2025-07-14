@@ -5,6 +5,7 @@ import dev.deadzone.core.utils.SocketMessage
 import dev.deadzone.core.utils.SocketMessageHandler
 import io.ktor.util.date.getTimeMillis
 import kotlinx.serialization.json.Json
+import org.jetbrains.exposed.sql.Database
 
 /**
  * Handle `join` message by:
@@ -13,7 +14,7 @@ import kotlinx.serialization.json.Json
  * 2. Sending `gr` message
  *
  */
-class JoinHandler : SocketMessageHandler {
+class JoinHandler(private val db: Database) : SocketMessageHandler {
     override fun match(message: SocketMessage): Boolean {
         return message.getString("join") != null
     }

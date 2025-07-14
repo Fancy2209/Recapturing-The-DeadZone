@@ -15,6 +15,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
+import org.jetbrains.exposed.sql.Database
 
 /**
  * WriteError (API 50)
@@ -24,7 +25,7 @@ import kotlinx.serialization.protobuf.ProtoBuf
  * Output: `WriteErrorError` (optional)
  */
 @OptIn(ExperimentalSerializationApi::class)
-suspend fun RoutingContext.writeError() {
+suspend fun RoutingContext.writeError(db: Database) {
     val writeErrorArgs = ProtoBuf.decodeFromByteArray<WriteErrorArgs>(
         call.receiveChannel().toByteArray()
     )

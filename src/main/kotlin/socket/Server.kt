@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import org.jetbrains.exposed.sql.Database
 import java.util.*
 
 const val POLICY_FILE_REQUEST = "<policy-file-request/>"
@@ -22,11 +23,12 @@ class Server(
     private val host: String = "127.0.0.1",
     private val port: Int = 7777,
     private val maxConnections: Int = 5,
+    private val db: Database,
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
 ) {
     private val clients = Collections.synchronizedList(mutableListOf<Connection>())
     val dispatcher = SocketMessageDispatcher().apply {
-        register(JoinHandler())
+        register(JoinHandler(db))
     }
 
     fun start() {
@@ -93,7 +95,6 @@ class Server(
                         print("Dispatching to $handler")
                         handler.handle(msg) { response ->
                             print("Sending ${response.printString()}")
-                            print(Dependency.database.toString())
                             output.writeFully(response)
                         }
                     }

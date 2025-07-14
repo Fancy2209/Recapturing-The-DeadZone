@@ -13,6 +13,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
+import org.jetbrains.exposed.sql.Database
 
 /**
  * CreateJoinRoom (API 27)
@@ -22,7 +23,7 @@ import kotlinx.serialization.protobuf.ProtoBuf
  * Output: `CreateJoinRoomOutput`
  */
 @OptIn(ExperimentalSerializationApi::class)
-suspend fun RoutingContext.createJoinRoom() {
+suspend fun RoutingContext.createJoinRoom(db: Database) {
     val createJoinRoomArgs = ProtoBuf.decodeFromByteArray<CreateJoinRoomArgs>(
         call.receiveChannel().toByteArray()
     )

@@ -9,8 +9,9 @@ import io.ktor.server.application.*
 import io.ktor.server.http.content.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.jetbrains.exposed.sql.Database
 
-fun Application.configureRouting() {
+fun Application.configureRouting(db: Database) {
     routing {
         staticResources("/", "static")
 
@@ -18,10 +19,10 @@ fun Application.configureRouting() {
             val path = call.parameters["path"] ?: return@post call.respond(HttpStatusCode.BadRequest)
 
             when (path) {
-                "13" -> authenticate()
-                "601" -> socialRefresh()
-                "27" -> createJoinRoom()
-                "50" -> writeError()
+                "13" -> authenticate(db)
+                "601" -> socialRefresh(db)
+                "27" -> createJoinRoom(db)
+                "50" -> writeError(db)
                 else -> call.respond(HttpStatusCode.NotFound, "Unimplemented API: $path")
             }
         }

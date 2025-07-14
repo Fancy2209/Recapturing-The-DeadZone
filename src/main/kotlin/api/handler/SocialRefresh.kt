@@ -11,6 +11,7 @@ import io.ktor.utils.io.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
+import org.jetbrains.exposed.sql.Database
 
 /**
  * SocialRefresh (API 601)
@@ -20,7 +21,7 @@ import kotlinx.serialization.protobuf.ProtoBuf
  * Output: `SocialRefreshOutput`
  */
 @OptIn(ExperimentalSerializationApi::class)
-suspend fun RoutingContext.socialRefresh() {
+suspend fun RoutingContext.socialRefresh(db: Database) {
     val socialRefreshArgs = call.receiveChannel().toByteArray() // Actually no input is given
 
     logApiMessage(socialRefreshArgs.decodeToString())

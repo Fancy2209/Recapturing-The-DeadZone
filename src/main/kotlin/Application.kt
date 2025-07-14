@@ -11,11 +11,11 @@ fun main(args: Array<String>) {
 fun Application.module() {
     configureDatabases()
     configureHTTP()
-    configureRouting()
+    configureRouting(db = Dependency.database)
     configureSerialization()
     configureLogging()
 
-    val server = Server()
+    val server = Server(db = Dependency.database)
     server.start()
     Runtime.getRuntime().addShutdownHook(Thread {
         server.stop()
