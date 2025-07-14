@@ -1,7 +1,7 @@
 package dev.deadzone.module
 
-import org.jetbrains.exposed.sql.Database
+import dev.deadzone.core.BigDB
 
 object Dependency {
-    lateinit var database: Database
+    lateinit var database: BigDB
 }

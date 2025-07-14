@@ -1,5 +1,6 @@
 package dev.deadzone
 
+import com.mongodb.kotlin.client.coroutine.MongoClient
 import dev.deadzone.module.*
 import dev.deadzone.socket.Server
 import io.ktor.server.application.*
@@ -8,16 +9,11 @@ fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
 }
 
-fun Application.module() {
-    configureDatabases()
+suspend fun Application.module() {
+    configureDatabase()
     configureHTTP()
     configureRouting(db = Dependency.database)
     configureSerialization()
     configureLogging()
-
-    val server = Server(db = Dependency.database)
-    server.start()
-    Runtime.getRuntime().addShutdownHook(Thread {
-        server.stop()
-    })
+    configureSocket(db = Dependency.database)
 }

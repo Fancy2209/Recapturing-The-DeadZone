@@ -4,14 +4,14 @@ import dev.deadzone.api.handler.authenticate
 import dev.deadzone.api.handler.createJoinRoom
 import dev.deadzone.api.handler.socialRefresh
 import dev.deadzone.api.handler.writeError
+import dev.deadzone.core.BigDB
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.jetbrains.exposed.sql.Database
 
-fun Application.configureRouting(db: Database) {
+fun Application.configureRouting(db: BigDB) {
     routing {
         staticResources("/", "static")
 

@@ -2,6 +2,7 @@ package dev.deadzone.api.handler
 
 import dev.deadzone.api.message.client.CreateJoinRoomArgs
 import dev.deadzone.api.message.client.CreateJoinRoomOutput
+import dev.deadzone.core.BigDB
 import dev.deadzone.module.PIOFraming
 import dev.deadzone.module.logApiMessage
 import dev.deadzone.module.logApiOutput
@@ -13,7 +14,6 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
-import org.jetbrains.exposed.sql.Database
 
 /**
  * CreateJoinRoom (API 27)
@@ -23,7 +23,7 @@ import org.jetbrains.exposed.sql.Database
  * Output: `CreateJoinRoomOutput`
  */
 @OptIn(ExperimentalSerializationApi::class)
-suspend fun RoutingContext.createJoinRoom(db: Database) {
+suspend fun RoutingContext.createJoinRoom(db: BigDB) {
     val createJoinRoomArgs = ProtoBuf.decodeFromByteArray<CreateJoinRoomArgs>(
         call.receiveChannel().toByteArray()
     )

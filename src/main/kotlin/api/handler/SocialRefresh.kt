@@ -1,6 +1,7 @@
 package dev.deadzone.api.handler
 
 import dev.deadzone.api.message.auth.SocialRefreshOutput
+import dev.deadzone.core.BigDB
 import dev.deadzone.module.PIOFraming
 import dev.deadzone.module.logApiMessage
 import dev.deadzone.module.logApiOutput
@@ -11,7 +12,6 @@ import io.ktor.utils.io.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
-import org.jetbrains.exposed.sql.Database
 
 /**
  * SocialRefresh (API 601)
@@ -21,7 +21,7 @@ import org.jetbrains.exposed.sql.Database
  * Output: `SocialRefreshOutput`
  */
 @OptIn(ExperimentalSerializationApi::class)
-suspend fun RoutingContext.socialRefresh(db: Database) {
+suspend fun RoutingContext.socialRefresh(db: BigDB) {
     val socialRefreshArgs = call.receiveChannel().toByteArray() // Actually no input is given
 
     logApiMessage(socialRefreshArgs.decodeToString())

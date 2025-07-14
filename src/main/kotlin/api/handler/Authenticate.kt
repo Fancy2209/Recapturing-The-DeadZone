@@ -2,6 +2,7 @@ package dev.deadzone.api.handler
 
 import dev.deadzone.api.message.auth.AuthenticateArgs
 import dev.deadzone.api.message.auth.AuthenticateOutput
+import dev.deadzone.core.BigDB
 import dev.deadzone.module.PIOFraming
 import dev.deadzone.module.logApiMessage
 import dev.deadzone.module.logApiOutput
@@ -13,7 +14,6 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
-import org.jetbrains.exposed.sql.Database
 
 /**
  * Authenticate (API 13)
@@ -23,7 +23,7 @@ import org.jetbrains.exposed.sql.Database
  * Output: `AuthenticateOutput`
  */
 @OptIn(ExperimentalSerializationApi::class)
-suspend fun RoutingContext.authenticate(db: Database) {
+suspend fun RoutingContext.authenticate(db: BigDB) {
     val authenticateArgs = ProtoBuf.decodeFromByteArray<AuthenticateArgs>(
         call.receiveChannel().toByteArray()
     )

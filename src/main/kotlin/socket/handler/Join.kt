@@ -1,15 +1,10 @@
 package dev.deadzone.core.utils.message.handler
 
+import dev.deadzone.core.BigDB
 import dev.deadzone.core.utils.PIOSerializer
 import dev.deadzone.core.utils.SocketMessage
 import dev.deadzone.core.utils.SocketMessageHandler
 import io.ktor.util.date.*
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.jsonObject
-import org.jetbrains.exposed.sql.Database
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -21,7 +16,7 @@ import java.nio.ByteOrder
  * 2. Sending `gr` message
  *
  */
-class JoinHandler(private val db: Database) : SocketMessageHandler {
+class JoinHandler(private val db: BigDB) : SocketMessageHandler {
     override fun match(message: SocketMessage): Boolean {
         return message.getString("join") != null
     }

@@ -1,10 +1,10 @@
 package dev.deadzone.socket
 
+import dev.deadzone.core.BigDB
 import dev.deadzone.core.utils.PIODeserializer
 import dev.deadzone.core.utils.SocketMessage
 import dev.deadzone.core.utils.SocketMessageDispatcher
 import dev.deadzone.core.utils.message.handler.JoinHandler
-import dev.deadzone.module.Dependency
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
@@ -12,7 +12,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import org.jetbrains.exposed.sql.Database
 import java.util.*
 
 const val POLICY_FILE_REQUEST = "<policy-file-request/>"
@@ -23,7 +22,7 @@ class Server(
     private val host: String = "127.0.0.1",
     private val port: Int = 7777,
     private val maxConnections: Int = 5,
-    private val db: Database,
+    private val db: BigDB,
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
 ) {
     private val clients = Collections.synchronizedList(mutableListOf<Connection>())
