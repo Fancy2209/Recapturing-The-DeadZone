@@ -23,7 +23,7 @@ import kotlinx.serialization.protobuf.ProtoBuf
  * Output: `[LoadObjectsOutput]`
  */
 @OptIn(ExperimentalSerializationApi::class)
-suspend fun RoutingContext.loadObject(db: BigDB) {
+suspend fun RoutingContext.loadObjects(db: BigDB) {
     val loadObjectsArgs = ProtoBuf.decodeFromByteArray<LoadObjectsArgs>(
         call.receiveChannel().toByteArray()
     )

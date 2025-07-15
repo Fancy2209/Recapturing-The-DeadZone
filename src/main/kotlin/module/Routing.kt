@@ -1,9 +1,6 @@
 package dev.deadzone.module
 
-import dev.deadzone.api.handler.authenticate
-import dev.deadzone.api.handler.createJoinRoom
-import dev.deadzone.api.handler.socialRefresh
-import dev.deadzone.api.handler.writeError
+import dev.deadzone.api.handler.*
 import dev.deadzone.core.BigDB
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -23,6 +20,7 @@ fun Application.configureRouting(db: BigDB) {
                 "601" -> socialRefresh(db)
                 "27" -> createJoinRoom(db)
                 "50" -> writeError(db)
+                "85" -> loadObjects(db)
                 else -> call.respond(HttpStatusCode.NotFound, "Unimplemented API: $path")
             }
         }
