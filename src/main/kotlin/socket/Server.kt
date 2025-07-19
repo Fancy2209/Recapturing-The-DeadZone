@@ -120,13 +120,13 @@ class Server(
 
 }
 
-private const val MAX_PRINT_STRING_LENGTH = 500
+private const val MAX_PRINT_STRING_LENGTH = 300
 
-fun ByteArray.printString(): String {
+fun ByteArray.printString(printFull: Boolean = false): String {
     val builder = StringBuilder()
     var count = 0
     for (byte in this) {
-        if (count >= MAX_PRINT_STRING_LENGTH) {
+        if (count >= MAX_PRINT_STRING_LENGTH && !printFull) {
             builder.append("... [truncated]")
             break
         }
@@ -148,9 +148,9 @@ fun ByteArray.startsWithBytes(prefix: ByteArray): Boolean {
     return true
 }
 
-fun print(msg: Any) {
+fun print(msg: Any, printFull: Boolean = false) {
     val str = msg.toString()
-    val limited = if (str.length > MAX_PRINT_STRING_LENGTH)
+    val limited = if (str.length > MAX_PRINT_STRING_LENGTH && !printFull)
         str.take(MAX_PRINT_STRING_LENGTH) + "... [truncated]"
     else
         str

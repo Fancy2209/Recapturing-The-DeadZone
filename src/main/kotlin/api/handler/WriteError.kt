@@ -28,7 +28,7 @@ suspend fun RoutingContext.writeError(db: BigDB) {
         call.receiveChannel().toByteArray()
     )
 
-    logApiMessage(writeErrorArgs)
+    logApiMessage(writeErrorArgs, true)
 
     val writeErrorError = ProtoBuf.encodeToByteArray<WriteErrorError>(
         WriteErrorError.dummy()

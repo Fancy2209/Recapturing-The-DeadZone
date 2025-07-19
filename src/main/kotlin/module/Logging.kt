@@ -12,11 +12,11 @@ fun Application.configureLogging() {
 
 val RoutingContext.log get() = call.application.environment.log
 
-private const val MAX_LOG_LENGTH = 500
+private const val MAX_LOG_LENGTH = 300
 
-fun RoutingContext.logApiMessage(message: Any) {
+fun RoutingContext.logApiMessage(message: Any, printFull: Boolean = false) {
     val msgString = message.toString()
-    val truncated = if (msgString.length > MAX_LOG_LENGTH) {
+    val truncated = if (msgString.length > MAX_LOG_LENGTH && !printFull) {
         msgString.take(MAX_LOG_LENGTH) + "... [truncated]"
     } else {
         msgString
@@ -24,14 +24,14 @@ fun RoutingContext.logApiMessage(message: Any) {
     call.application.environment.log.info("Received [API ${call.parameters["path"]}]: $truncated")
 }
 
-fun RoutingContext.logApiOutput(message: ByteArray) {
+fun RoutingContext.logApiOutput(message: ByteArray, printFull: Boolean = false) {
     val msgString = try {
         message.decodeToString()
     } catch (e: Exception) {
         "[binary output not decodable]"
     }
 
-    val truncated = if (msgString.length > MAX_LOG_LENGTH) {
+    val truncated = if (msgString.length > MAX_LOG_LENGTH && !printFull) {
         msgString.take(MAX_LOG_LENGTH) + "... [truncated]"
     } else {
         msgString
