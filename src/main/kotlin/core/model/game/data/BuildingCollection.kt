@@ -13,10 +13,5 @@ data class BuildingCollection(
                 Building.dummy()
             )
         }
-        fun empty(): List<Building> {
-            return listOf(
-                Building.dummy()
-            )
-        }
     }
 }
