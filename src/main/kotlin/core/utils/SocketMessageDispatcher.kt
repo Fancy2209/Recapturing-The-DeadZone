@@ -1,5 +1,7 @@
 package dev.deadzone.core.utils
 
+import dev.deadzone.socket.handler.DefaultHandler
+
 class SocketMessageDispatcher() {
     private val handlers = mutableListOf<SocketMessageHandler>()
 
@@ -7,7 +9,8 @@ class SocketMessageDispatcher() {
         handlers.add(handler)
     }
 
-    fun findHandlerFor(msg: SocketMessage): SocketMessageHandler? {
-        return handlers.firstOrNull { it.match(msg) }
+    fun findHandlerFor(msg: SocketMessage): SocketMessageHandler {
+        return handlers.find { it.match(msg) } ?: DefaultHandler()
     }
 }
+

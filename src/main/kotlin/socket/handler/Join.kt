@@ -24,7 +24,7 @@ class JoinHandler(private val db: BigDB) : SocketMessageHandler {
 
     override suspend fun handle(message: SocketMessage, send: suspend (ByteArray) -> Unit) {
         val joinKey = message.getString("join")
-        println("Handling join with key: $joinKey")
+        println("[SOCKET]: Handling join with key: $joinKey")
 
         // First message: join result
         val joinResultMsg = listOf("playerio.joinresult", true)
