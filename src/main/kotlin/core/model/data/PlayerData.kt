@@ -81,7 +81,7 @@ data class PlayerData(
     companion object {
         fun dummy(): PlayerData {
             val srvId = "survivor-player"
-            val exampleBools = listOf(true, true, true, false, false, false, false, false)
+            val exampleBools = IntRange(0, 8).map { false }
 
             return PlayerData(
                 key = "exampleKey",
@@ -122,8 +122,8 @@ data class PlayerData(
                 batchRecycles = null,
                 offenceLoadout = null,
                 defenceLoadout = null,
-                quests = null,
-                questsCollected = null,
+                quests = boolsToByteArray(exampleBools),
+                questsCollected = boolsToByteArray(exampleBools),
                 achievements = boolsToByteArray(exampleBools),
                 dailyQuest = null,
                 questsTracked = null,
