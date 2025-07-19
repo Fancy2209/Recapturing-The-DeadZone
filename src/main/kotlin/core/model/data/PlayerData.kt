@@ -2,28 +2,19 @@ package dev.deadzone.core.model.data
 
 import kotlinx.serialization.Serializable
 import dev.deadzone.core.model.data.user.AbstractUser
-import dev.deadzone.core.model.game.data.assignment.AssignmentCollection
 import dev.deadzone.core.model.game.data.Attributes
-import dev.deadzone.core.model.game.data.BatchRecycleJobCollection
 import dev.deadzone.core.model.game.data.BuildingCollection
-import dev.deadzone.core.model.game.data.CooldownCollection
 import dev.deadzone.core.model.game.data.quests.DynamicQuest
-import dev.deadzone.core.model.data.FlagSet
 import dev.deadzone.core.model.game.data.GameResources
-import dev.deadzone.core.model.game.data.quests.GlobalQuestData
-import dev.deadzone.core.model.data.HighActivity
 import dev.deadzone.core.model.game.data.BatchRecycleJob
 import dev.deadzone.core.model.game.data.Building
-import dev.deadzone.core.model.game.data.Gender_Constants
 import dev.deadzone.core.model.game.data.bounty.InfectedBounty
 import dev.deadzone.core.model.game.data.Inventory
-import dev.deadzone.core.model.game.data.MissionCollection
 import dev.deadzone.core.model.game.data.MissionData
 import dev.deadzone.core.model.game.data.Survivor
 import dev.deadzone.core.model.game.data.SurvivorClassConstants_Constants
 import dev.deadzone.core.model.network.RemotePlayerData
 import dev.deadzone.core.model.game.data.research.ResearchState
-import dev.deadzone.core.model.game.data.skills.SkillCollection
 import dev.deadzone.core.model.game.data.SurvivorCollection
 import dev.deadzone.core.model.game.data.SurvivorLoadoutEntry
 import dev.deadzone.core.model.game.data.Task
@@ -114,7 +105,7 @@ data class PlayerData(
                     ammunition = 100
                 ),
                 survivors = SurvivorCollection.dummy(
-                    srvId, classId = SurvivorClassConstants_Constants.FIGHTER
+                    srvId, classId = SurvivorClassConstants_Constants.PLAYER
                 ),
                 playerAttributes = Attributes.dummy(),
                 buildings = BuildingCollection().list,
@@ -138,7 +129,7 @@ data class PlayerData(
                 bountyCap = 0,
                 lastLogout = null,
                 dzBounty = null,
-                nextDZBountyIssue = 1_000_000_000,
+                nextDZBountyIssue = 1230768000000,
                 highActivity = null,
                 invsize = 8,
                 zombieAttack = false,

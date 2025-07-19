@@ -17,13 +17,19 @@ object Converter {
         )
     }
 
-    fun toValueObject(value: Any?): ValueObject {
+    fun toValueObject(value: Any?, isDate: Boolean? = null): ValueObject {
         return when (value) {
             null -> ValueObject(valueType = ValueType.STRING, string = "")
             is String -> ValueObject(valueType = ValueType.STRING, string = value)
             is Int -> ValueObject(valueType = ValueType.INT32, int32 = value)
             is UInt -> ValueObject(valueType = ValueType.UINT, uInt = value)
-            is Long -> ValueObject(valueType = ValueType.LONG, long = value)
+            is Long -> {
+                if (isDate == true) {
+                    ValueObject(valueType = ValueType.DATETIME, dateTime = value)
+                } else {
+                    ValueObject(valueType = ValueType.LONG, long = value)
+                }
+            }
             is Boolean -> ValueObject(valueType = ValueType.BOOL, bool = value)
             is Float -> ValueObject(valueType = ValueType.FLOAT, float = value)
             is Double -> ValueObject(valueType = ValueType.DOUBLE, double = value)
@@ -52,6 +58,7 @@ object Converter {
 
     fun toObjectProperties(obj: Any): List<ObjectProperty> {
         val reserved = setOf("key", "creator", "version")
+        val knownDateKeys = setOf("nextDZBountyIssue")
 
         return obj::class.members
             .filterIsInstance<kotlin.reflect.KProperty1<Any, *>>()
@@ -64,7 +71,11 @@ object Converter {
                 } catch (e: Exception) {
                     null
                 }
-                ObjectProperty(name, toValueObject(value))
+                if (name in knownDateKeys) {
+                    ObjectProperty(name, toValueObject(value, true))
+                } else {
+                    ObjectProperty(name, toValueObject(value))
+                }
             }
     }
 }
