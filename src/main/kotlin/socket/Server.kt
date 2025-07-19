@@ -120,12 +120,24 @@ class Server(
 
 }
 
+private const val MAX_PRINT_STRING_LENGTH = 500
+
 fun ByteArray.printString(): String {
-    return this.joinToString("") { byte ->
+    val builder = StringBuilder()
+    var count = 0
+    for (byte in this) {
+        if (count >= MAX_PRINT_STRING_LENGTH) {
+            builder.append("... [truncated]")
+            break
+        }
         val b = byte.toInt() and 0xFF
-        if (b in 0x20..0x7E) b.toChar().toString()
-        else "\\x%02x".format(b)
+        builder.append(
+            if (b in 0x20..0x7E) b.toChar()
+            else "\\x%02x".format(b)
+        )
+        count++
     }
+    return builder.toString()
 }
 
 fun ByteArray.startsWithBytes(prefix: ByteArray): Boolean {
@@ -137,5 +149,11 @@ fun ByteArray.startsWithBytes(prefix: ByteArray): Boolean {
 }
 
 fun print(msg: Any) {
-    println("[SOCKET]: $msg")
+    val str = msg.toString()
+    val limited = if (str.length > MAX_PRINT_STRING_LENGTH)
+        str.take(MAX_PRINT_STRING_LENGTH) + "... [truncated]"
+    else
+        str
+
+    println("[SOCKET]: $limited")
 }
