@@ -1,7 +1,13 @@
 package dev.deadzone.core.model.network
 
-object RemotePlayerDataConstants {
-    const val RELATIONSHIP_FRIEND = "friend"
-    const val RELATIONSHIP_NEUTRAL = "neutral"
-    const val RELATIONSHIP_ENEMY = "enemy"
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class RemotePlayerDataConstants(val value: String)
+
+object RemotePlayerDataConstants_Constants {
+    val RELATIONSHIP_FRIEND = RemotePlayerDataConstants("friend")
+    val RELATIONSHIP_NEUTRAL = RemotePlayerDataConstants("neutral")
+    val RELATIONSHIP_ENEMY = RemotePlayerDataConstants("enemy")
 }

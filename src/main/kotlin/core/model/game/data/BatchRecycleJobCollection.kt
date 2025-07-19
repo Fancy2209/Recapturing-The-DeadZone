@@ -5,5 +5,5 @@ import dev.deadzone.core.model.game.data.BatchRecycleJob
 
 @Serializable
 data class BatchRecycleJobCollection(
-    val list: List<BatchRecycleJob>
+    val list: List<BatchRecycleJob> = listOf()
 )

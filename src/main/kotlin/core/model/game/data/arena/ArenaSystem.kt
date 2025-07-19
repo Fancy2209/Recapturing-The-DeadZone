@@ -14,7 +14,7 @@ data class ArenaSystem(
     val points: Int,
     val stage: Int,
     val returnsurvivors: List<String> = listOf(),  // survivor ids
-    val cooldown: CooldownCollection,
+    val cooldown: CooldownCollection = CooldownCollection(),
     val assignsuccess: Boolean,
     val items: List<Item> = listOf()
 )

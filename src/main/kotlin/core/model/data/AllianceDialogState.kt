@@ -1,8 +1,14 @@
 package dev.deadzone.core.model.data
 
-object AllianceDialogState {
-    const val SHOW_NONE = 0
-    const val SHOW_ALLIANCE_DIALOG = 1
-    const val SHOW_INDIVIDUALS = 2
-    const val SHOW_TOP_100 = 3
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class AllianceDialogState(val value: Int)
+
+object AllianceDialogState_Constants {
+    val SHOW_NONE = AllianceDialogState(0)
+    val SHOW_ALLIANCE_DIALOG = AllianceDialogState(1)
+    val SHOW_INDIVIDUALS = AllianceDialogState(2)
+    val SHOW_TOP_100 = AllianceDialogState(3)
 }

@@ -15,7 +15,7 @@ data class Item(
     val mod3: String?,
     val type: String,
     val level: Int = 0,
-    val qty: UInt = 1,
+    val qty: UInt = 1u,
     val quality: Int?,
     val bind: UInt?,
     val tradable: Boolean?,
@@ -25,6 +25,5 @@ data class Item(
     val craft: CraftingInfo?,
     val name: String?,
     val specData: ItemBonusStats?,
-    val type: String,  // added from createItemFromObject of ItemFactory
-    val duplicate: boolean,  // added from deserialize of Inventory
+    val duplicate: Boolean,  // added from deserialize of Inventory
 )

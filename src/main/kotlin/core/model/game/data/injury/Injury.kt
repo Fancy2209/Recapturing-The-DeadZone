@@ -9,7 +9,7 @@ data class Injury(
     val type: String,
     val location: String,
     val severity: String,
-    val damage: Number,
-    val morale: Number,
+    val damage: Double,
+    val morale: Double,
     val timer: TimerData?
 )

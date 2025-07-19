@@ -1,9 +1,15 @@
 package dev.deadzone.core.model.data
 
-object Currency {
-    const val FUEL = "Coins"
-    const val FACEBOOK_CREDITS = "FBC"
-    const val US_DOLLARS = "USD"
-    const val KONGREGATE_KREDS = "KKR"
-    const val ALLIANCE_TOKENS = "ATK"
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class Currency(val value: String)
+
+object Currency_Constants {
+    val FUEL = Currency("Coins")
+    val FACEBOOK_CREDITS = Currency("FBC")
+    val US_DOLLARS = Currency("USD")
+    val KONGREGATE_KREDS = Currency("KKR")
+    val ALLIANCE_TOKENS = Currency("ATK")
 }

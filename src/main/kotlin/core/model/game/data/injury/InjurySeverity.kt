@@ -1,9 +1,15 @@
 package dev.deadzone.core.model.game.data.injury
 
-object InjurySeverity {
-    const val MINOR = "minor"
-    const val MODERATE = "moderate"
-    const val SERIOUS = "serious"
-    const val SEVERE = "severe"
-    const val CRITICAL = "critical"
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class InjurySeverity(val value: String)
+
+object InjurySeverity_Constants {
+    val MINOR = InjurySeverity("minor")
+    val MODERATE = InjurySeverity("moderate")
+    val SERIOUS = InjurySeverity("serious")
+    val SEVERE = InjurySeverity("severe")
+    val CRITICAL = InjurySeverity("critical")
 }

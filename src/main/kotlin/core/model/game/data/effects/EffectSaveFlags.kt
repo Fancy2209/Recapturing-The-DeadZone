@@ -1,8 +1,14 @@
 package dev.deadzone.core.model.game.data.effects
 
-object EffectSaveFlags {
-    const val NONE = 0
-    const val CONSUMABLE = 1
-    const val PERMANENT = 2
-    const val LINKED_ITEM = 4
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class EffectSaveFlags(val value: UInt)
+
+object EffectSaveFlags_Constants {
+    val NONE = EffectSaveFlags(0u)
+    val CONSUMABLE = EffectSaveFlags(1u)
+    val PERMANENT = EffectSaveFlags(2u)
+    val LINKED_ITEM = EffectSaveFlags(4u)
 }

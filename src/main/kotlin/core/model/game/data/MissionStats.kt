@@ -6,8 +6,8 @@ import kotlinx.serialization.Serializable
 data class MissionStats(
     val zombieSpawned: Int = 0,
     val levelUps: Int = 0,
-    val damageOutput: Double = 0,
-    val damageTaken: Double = 0,
+    val damageOutput: Double = 0.0,
+    val damageTaken: Double = 0.0,
     val containersSearched: Int = 0,
     val survivorKills: Int = 0,
     val survivorsDowned: Int = 0,

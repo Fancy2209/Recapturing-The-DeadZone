@@ -1,10 +1,16 @@
 package dev.deadzone.core.model.game.data
 
-object GearType {
-    const val UNKNOWN = 0
-    const val PASSIVE = 1
-    const val ACTIVE = 2
-    const val CONSUMABLE = 4
-    const val EXPLOSIVE = 8
-    const val IMPROVISED = 16
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class GearType(val value: UInt)
+
+object GearType_Constants {
+    val UNKNOWN = GearType(0u)
+    val PASSIVE = GearType(1u)
+    val ACTIVE = GearType(2u)
+    val CONSUMABLE = GearType(4u)
+    val EXPLOSIVE = GearType(8u)
+    val IMPROVISED = GearType(16u)
 }

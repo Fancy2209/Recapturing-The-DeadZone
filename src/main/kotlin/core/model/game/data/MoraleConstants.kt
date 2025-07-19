@@ -1,13 +1,19 @@
 package dev.deadzone.core.model.game.data
 
-object MoraleConstants {
-    const val EFFECT_INJURY = "injury"
-    const val EFFECT_MISSION_COMPLETE = "missionComplete"
-    const val EFFECT_FOOD = "food"
-    const val EFFECT_WATER = "water"
-    const val EFFECT_SECURITY = "security"
-    const val EFFECT_COMFORT = "comfort"
-    const val EFFECT_AVERAGE_SURVIVOR = "avgSurvivor"
-    const val EFFECT_DAILY_QUEST_COMPLETED = "dailyQuestCompleted"
-    const val EFFECT_DAILY_QUEST_FAILED = "dailyQuestFailed"
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class MoraleConstants(val value: String)
+
+object MoraleConstants_Constants {
+    val EFFECT_INJURY = MoraleConstants("injury")
+    val EFFECT_MISSION_COMPLETE = MoraleConstants("missionComplete")
+    val EFFECT_FOOD = MoraleConstants("food")
+    val EFFECT_WATER = MoraleConstants("water")
+    val EFFECT_SECURITY = MoraleConstants("security")
+    val EFFECT_COMFORT = MoraleConstants("comfort")
+    val EFFECT_AVERAGE_SURVIVOR = MoraleConstants("avgSurvivor")
+    val EFFECT_DAILY_QUEST_COMPLETED = MoraleConstants("dailyQuestCompleted")
+    val EFFECT_DAILY_QUEST_FAILED = MoraleConstants("dailyQuestFailed")
 }

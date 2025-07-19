@@ -1,11 +1,17 @@
 package dev.deadzone.core.model.game.data
 
-object GameResourcesConstants {
-    const val CASH = "cash"
-    const val WOOD = "wood"
-    const val METAL = "metal"
-    const val CLOTH = "cloth"
-    const val WATER = "water"
-    const val FOOD = "food"
-    const val AMMUNITION = "ammunition"
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class GameResourcesConstants(val value: String)
+
+object GameResourcesConstants_Constants {
+    val CASH = GameResourcesConstants("cash")
+    val WOOD = GameResourcesConstants("wood")
+    val METAL = GameResourcesConstants("metal")
+    val CLOTH = GameResourcesConstants("cloth")
+    val WATER = GameResourcesConstants("water")
+    val FOOD = GameResourcesConstants("food")
+    val AMMUNITION = GameResourcesConstants("ammunition")
 }

@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Morale(
-    val maps: Map<String, Double>
+    val maps: Map<String, Double> = mapOf()
 )

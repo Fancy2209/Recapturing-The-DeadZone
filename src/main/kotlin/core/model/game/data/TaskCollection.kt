@@ -5,5 +5,5 @@ import dev.deadzone.core.model.game.data.Task
 
 @Serializable
 data class TaskCollection(
-    val list: List<Task>
+    val list: List<Task> = listOf()
 )

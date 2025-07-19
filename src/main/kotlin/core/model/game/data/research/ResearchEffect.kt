@@ -1,58 +1,64 @@
 package dev.deadzone.core.model.game.data.research
 
-object ResearchEffect {
-    const val Unknown = "Unknown"
-    const val FoodWaterProductionRate = "FoodWaterProductionRate"
-    const val FoodWaterProductionCapacity = "FoodWaterProductionCapacity"
-    const val BuildingMaterialProductionRate = "BuildingMaterialProductionRate"
-    const val BuildingMaterialProductionCapacity = "BuildingMaterialProductionCapac"
-    const val AmmoProductionRate = "AmmoProductionRate"
-    const val AmmoProductionCapacity = "AmmoProductionCapacity"
-    const val FuelProductionRate = "FuelProductionRate"
-    const val FuelProductionCapacity = "FuelProductionCapacity"
-    const val ExplosiveTrapDamage = "ExplosiveTrapDamage"
-    const val ExplosiveTrapDisarmChance = "ExplosiveTrapDisarmChance"
-    const val ExplosiveTrapDisarmTime = "ExplosiveTrapDisarmTime"
-    const val ExplosiveTrapDetectRange = "ExplosiveTrapDetectRange"
-    const val ExplosiveTrapHealth = "ExplosiveTrapHealth"
-    const val WireTrapDamage = "WireTrapDamage"
-    const val WireTrapDisarmChance = "WireTrapDisarmChance"
-    const val WireTrapDisarmTime = "WireTrapDisarmTime"
-    const val WireTrapDetectRange = "WireTrapDetectRange"
-    const val WireTrapHealth = "WireTrapHealth"
-    const val BallisticTrapDamage = "BallisticTrapDamage"
-    const val BallisticTrapDisarmChance = "BallisticTrapDisarmChance"
-    const val BallisticTrapDisarmTime = "BallisticTrapDisarmTime"
-    const val BallisticTrapDetectRange = "BallisticTrapDetectRange"
-    const val BallisticTrapHealth = "BallisticTrapHealth"
-    const val BarricadeHealth = "BarricadeHealth"
-    const val BarricadeCover = "BarricadeCover"
-    const val BarricadeSecurity = "BarricadeSecurity"
-    const val DoorHealth = "DoorHealth"
-    const val DoorCover = "DoorCover"
-    const val DoorSecurity = "DoorSecurity"
-    const val WatchtowerHealth = "WatchtowerHealth"
-    const val WatchtowerCover = "WatchtowerCover"
-    const val WatchtowerSecurity = "WatchtowerSecurity"
-    const val BarrierHealth = "BarrierHealth"
-    const val BarrierCover = "BarrierCover"
-    const val BarrierSecurity = "BarrierSecurity"
-    const val FoodWaterStorageCapacity = "FoodWaterStorageCapacity"
-    const val BuildingMaterialStorageCapacity = "BuildingMaterialStorageCapacity"
-    const val AmmoStorageCapacity = "AmmoStorageCapacity"
-    const val IndoorComfort = "IndoorComfort"
-    const val OutdoorComfort = "OutdoorComfort"
-    const val MoralePenalty = "MoralePenalty"
-    const val FirearmDamage = "FirearmDamage"
-    const val MeleeDamage = "MeleeDamage"
-    const val GearHealth = "GearHealth"
-    const val BuildingRepairCost = "BuildingRepairCost"
-    const val CraftingQuality = "CraftingQuality"
-    const val CraftingCost = "CraftingCost"
-    const val MissionReturnTime = "MissionReturnTime"
-    const val MissionAutoSuccess = "MissionAutoSuccess"
-    const val MissionXP = "MissionXP"
-    const val LootFindJunk = "LootFindJunk"
-    const val LootFindQuality = "LootFindQuality"
-    const val InjuryRecoveryTime = "InjuryRecoveryTime"
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class ResearchEffect(val value: String)
+
+object ResearchEffect_Constants {
+    val Unknown = ResearchEffect("Unknown")
+    val FoodWaterProductionRate = ResearchEffect("FoodWaterProductionRate")
+    val FoodWaterProductionCapacity = ResearchEffect("FoodWaterProductionCapacity")
+    val BuildingMaterialProductionRate = ResearchEffect("BuildingMaterialProductionRate")
+    val BuildingMaterialProductionCapacity = ResearchEffect("BuildingMaterialProductionCapac")
+    val AmmoProductionRate = ResearchEffect("AmmoProductionRate")
+    val AmmoProductionCapacity = ResearchEffect("AmmoProductionCapacity")
+    val FuelProductionRate = ResearchEffect("FuelProductionRate")
+    val FuelProductionCapacity = ResearchEffect("FuelProductionCapacity")
+    val ExplosiveTrapDamage = ResearchEffect("ExplosiveTrapDamage")
+    val ExplosiveTrapDisarmChance = ResearchEffect("ExplosiveTrapDisarmChance")
+    val ExplosiveTrapDisarmTime = ResearchEffect("ExplosiveTrapDisarmTime")
+    val ExplosiveTrapDetectRange = ResearchEffect("ExplosiveTrapDetectRange")
+    val ExplosiveTrapHealth = ResearchEffect("ExplosiveTrapHealth")
+    val WireTrapDamage = ResearchEffect("WireTrapDamage")
+    val WireTrapDisarmChance = ResearchEffect("WireTrapDisarmChance")
+    val WireTrapDisarmTime = ResearchEffect("WireTrapDisarmTime")
+    val WireTrapDetectRange = ResearchEffect("WireTrapDetectRange")
+    val WireTrapHealth = ResearchEffect("WireTrapHealth")
+    val BallisticTrapDamage = ResearchEffect("BallisticTrapDamage")
+    val BallisticTrapDisarmChance = ResearchEffect("BallisticTrapDisarmChance")
+    val BallisticTrapDisarmTime = ResearchEffect("BallisticTrapDisarmTime")
+    val BallisticTrapDetectRange = ResearchEffect("BallisticTrapDetectRange")
+    val BallisticTrapHealth = ResearchEffect("BallisticTrapHealth")
+    val BarricadeHealth = ResearchEffect("BarricadeHealth")
+    val BarricadeCover = ResearchEffect("BarricadeCover")
+    val BarricadeSecurity = ResearchEffect("BarricadeSecurity")
+    val DoorHealth = ResearchEffect("DoorHealth")
+    val DoorCover = ResearchEffect("DoorCover")
+    val DoorSecurity = ResearchEffect("DoorSecurity")
+    val WatchtowerHealth = ResearchEffect("WatchtowerHealth")
+    val WatchtowerCover = ResearchEffect("WatchtowerCover")
+    val WatchtowerSecurity = ResearchEffect("WatchtowerSecurity")
+    val BarrierHealth = ResearchEffect("BarrierHealth")
+    val BarrierCover = ResearchEffect("BarrierCover")
+    val BarrierSecurity = ResearchEffect("BarrierSecurity")
+    val FoodWaterStorageCapacity = ResearchEffect("FoodWaterStorageCapacity")
+    val BuildingMaterialStorageCapacity = ResearchEffect("BuildingMaterialStorageCapacity")
+    val AmmoStorageCapacity = ResearchEffect("AmmoStorageCapacity")
+    val IndoorComfort = ResearchEffect("IndoorComfort")
+    val OutdoorComfort = ResearchEffect("OutdoorComfort")
+    val MoralePenalty = ResearchEffect("MoralePenalty")
+    val FirearmDamage = ResearchEffect("FirearmDamage")
+    val MeleeDamage = ResearchEffect("MeleeDamage")
+    val GearHealth = ResearchEffect("GearHealth")
+    val BuildingRepairCost = ResearchEffect("BuildingRepairCost")
+    val CraftingQuality = ResearchEffect("CraftingQuality")
+    val CraftingCost = ResearchEffect("CraftingCost")
+    val MissionReturnTime = ResearchEffect("MissionReturnTime")
+    val MissionAutoSuccess = ResearchEffect("MissionAutoSuccess")
+    val MissionXP = ResearchEffect("MissionXP")
+    val LootFindJunk = ResearchEffect("LootFindJunk")
+    val LootFindQuality = ResearchEffect("LootFindQuality")
+    val InjuryRecoveryTime = ResearchEffect("InjuryRecoveryTime")
 }

@@ -4,12 +4,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AmmoType(
-    val NONE: UInt = 0,
-    val ARROW: UInt = 1,
-    val ASSAULT_RIFLE: UInt = 2,
-    val BOLT: UInt = 4,
-    val LONG_RIFLE: UInt = 8,
-    val PISTOL: UInt = 16,
-    val SHOTGUN: UInt = 32,
-    val SMG: UInt = 64
+    val NONE: UInt = 0u,
+    val ARROW: UInt = 1u,
+    val ASSAULT_RIFLE: UInt = 2u,
+    val BOLT: UInt = 4u,
+    val LONG_RIFLE: UInt = 8u,
+    val PISTOL: UInt = 16u,
+    val SHOTGUN: UInt = 32u,
+    val SMG: UInt = 64u
 )

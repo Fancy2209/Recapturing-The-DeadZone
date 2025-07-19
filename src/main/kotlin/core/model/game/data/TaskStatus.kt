@@ -1,7 +1,13 @@
 package dev.deadzone.core.model.game.data
 
-object TaskStatus {
-    const val ACTIVE = "active"
-    const val INACTIVE = "inactive"
-    const val COMPLETE = "complete"
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class TaskStatus(val value: String)
+
+object TaskStatus_Constants {
+    val ACTIVE = TaskStatus("active")
+    val INACTIVE = TaskStatus("inactive")
+    val COMPLETE = TaskStatus("complete")
 }

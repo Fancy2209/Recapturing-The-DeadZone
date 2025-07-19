@@ -5,5 +5,5 @@ import dev.deadzone.core.model.game.data.effects.Effect
 
 @Serializable
 data class EffectCollection(
-    val list: List<Effect>
+    val list: List<Effect> = listOf()
 )

@@ -1,18 +1,32 @@
-package dev.deadzone.core.model.game.data.quests
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class QuestSecret(val value: UInt)
+
+@Serializable
+@JvmInline
+value class QuestType(val value: String)
+
+@Serializable
+@JvmInline
+value class QuestTracking(val value: String)
 
 object QuestConstants {
-    const val SECRET_NONE = 0
-    const val SECRET_TITLE_ONLY = 1
-    const val SECRET_HIDDEN = 2
-    const val TYPE_ACHIEVEMENT = "achievement"
-    const val TYPE_GENERAL = "general"
-    const val TYPE_COMBAT = "combat"
-    const val TYPE_SCAVENGE = "scavenge"
-    const val TYPE_CONSTRUCTION = "construct"
-    const val TYPE_COMMUNITY = "community"
-    const val TYPE_WORLD = "world"
-    const val TYPE_DYNAMIC = "dynamic"
-    const val TRACKING_TRACKED = "tracked"
-    const val TRACKING_UNTRACKED = "untracked"
-    const val TRACKING_MAX_TRACKED = "maxTracked"
+    val SECRET_NONE = QuestSecret(0u)
+    val SECRET_TITLE_ONLY = QuestSecret(1u)
+    val SECRET_HIDDEN = QuestSecret(2u)
+
+    val TYPE_ACHIEVEMENT = QuestType("achievement")
+    val TYPE_GENERAL = QuestType("general")
+    val TYPE_COMBAT = QuestType("combat")
+    val TYPE_SCAVENGE = QuestType("scavenge")
+    val TYPE_CONSTRUCTION = QuestType("construct")
+    val TYPE_COMMUNITY = QuestType("community")
+    val TYPE_WORLD = QuestType("world")
+    val TYPE_DYNAMIC = QuestType("dynamic")
+
+    val TRACKING_TRACKED = QuestTracking("tracked")
+    val TRACKING_UNTRACKED = QuestTracking("untracked")
+    val TRACKING_MAX_TRACKED = QuestTracking("maxTracked")
 }

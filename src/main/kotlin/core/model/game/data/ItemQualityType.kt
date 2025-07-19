@@ -1,14 +1,20 @@
 package dev.deadzone.core.model.game.data
 
-object ItemQualityType {
-    const val NONE = -2147483648
-    const val GREY = -1
-    const val WHITE = 0
-    const val GREEN = 1
-    const val BLUE = 2
-    const val PURPLE = 3
-    const val RARE = 50
-    const val UNIQUE = 51
-    const val INFAMOUS = 52
-    const val PREMIUM = 100
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class ItemQualityType(val value: Int)
+
+object ItemQualityType_Constants {
+    val NONE = ItemQualityType(-2147483648)
+    val GREY = ItemQualityType(-1)
+    val WHITE = ItemQualityType(0)
+    val GREEN = ItemQualityType(1)
+    val BLUE = ItemQualityType(2)
+    val PURPLE = ItemQualityType(3)
+    val RARE = ItemQualityType(50)
+    val UNIQUE = ItemQualityType(51)
+    val INFAMOUS = ItemQualityType(52)
+    val PREMIUM = ItemQualityType(100)
 }

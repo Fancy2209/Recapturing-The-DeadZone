@@ -1,5 +1,11 @@
 package dev.deadzone.core.model.game.data.quests
 
-object DynamicQuestPenaltyEnum {
-    const val morale = "morale"
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class DynamicQuestPenaltyEnum(val value: String)
+
+object DynamicQuestPenaltyEnum_Constants {
+    val morale = DynamicQuestPenaltyEnum("morale")
 }

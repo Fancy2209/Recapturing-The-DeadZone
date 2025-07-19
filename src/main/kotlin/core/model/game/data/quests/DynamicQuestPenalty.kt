@@ -7,6 +7,6 @@ import dev.deadzone.core.model.game.data.MoraleConstants
 @Serializable
 data class DynamicQuestPenalty(
     val type: DynamicQuestPenaltyEnum,
-    val value: Any,
+    val value: String, // actually string and int
     val moraleType: MoraleConstants?,  // Only if type == "morale"
 )

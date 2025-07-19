@@ -1,15 +1,21 @@
 package dev.deadzone.core.model.game.data
 
-object WeaponClass {
-    const val ASSAULT_RIFLE = "assault_rifle"
-    const val BOW = "bow"
-    const val LAUNCHER = "launcher"
-    const val LONG_RIFLE = "long_rifle"
-    const val MELEE = "melee"
-    const val PISTOL = "pistol"
-    const val SHOTGUN = "shotgun"
-    const val SMG = "smg"
-    const val LMG = "lmg"
-    const val THROWN = "thrown"
-    const val HEAVY = "heavy"
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class WeaponClass(val value: String)
+
+object WeaponClass_Constants {
+    val ASSAULT_RIFLE = WeaponClass("assault_rifle")
+    val BOW = WeaponClass("bow")
+    val LAUNCHER = WeaponClass("launcher")
+    val LONG_RIFLE = WeaponClass("long_rifle")
+    val MELEE = WeaponClass("melee")
+    val PISTOL = WeaponClass("pistol")
+    val SHOTGUN = WeaponClass("shotgun")
+    val SMG = WeaponClass("smg")
+    val LMG = WeaponClass("lmg")
+    val THROWN = WeaponClass("thrown")
+    val HEAVY = WeaponClass("heavy")
 }

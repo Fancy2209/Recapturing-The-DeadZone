@@ -1,10 +1,16 @@
 package dev.deadzone.core.model.game.data.injury
 
-object InjuryCause {
-    const val UNKNOWN = "unknown"
-    const val BLUNT = "blunt"
-    const val SHARP = "sharp"
-    const val HEAT = "heat"
-    const val BULLET = "bullet"
-    const val ILLNESS = "illness"
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class InjuryCause(val value: String)
+
+object InjuryCause_Constants {
+    val UNKNOWN = InjuryCause("unknown")
+    val BLUNT = InjuryCause("blunt")
+    val SHARP = InjuryCause("sharp")
+    val HEAT = InjuryCause("heat")
+    val BULLET = InjuryCause("bullet")
+    val ILLNESS = InjuryCause("illness")
 }

@@ -1,7 +1,13 @@
 package dev.deadzone.core.model.game.data.assignment
 
-object AssignmentType {
-    const val None = "None"
-    const val Raid = "Raid"
-    const val Arena = "Arena"
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class AssignmentType(val value: String)
+
+object AssignmentType_Constants {
+    val None = AssignmentType("None")
+    val Raid = AssignmentType("Raid")
+    val Arena = AssignmentType("Arena")
 }

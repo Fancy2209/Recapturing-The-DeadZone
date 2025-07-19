@@ -1,6 +1,12 @@
 package dev.deadzone.core.model.game.data
 
-object WeaponFlags {
-    const val NONE = 0
-    const val SUPPRESSED = 1
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class WeaponFlags(val value: UInt)
+
+object WeaponFlags_Constants {
+    val NONE = WeaponFlags(0u)
+    val SUPPRESSED = WeaponFlags(1u)
 }

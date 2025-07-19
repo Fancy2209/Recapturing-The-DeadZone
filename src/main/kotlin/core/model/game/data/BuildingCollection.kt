@@ -5,5 +5,5 @@ import dev.deadzone.core.model.game.data.Building
 
 @Serializable
 data class BuildingCollection(
-    val list: List<Building>
+    val list: List<Building> = listOf()
 )

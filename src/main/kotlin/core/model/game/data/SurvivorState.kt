@@ -1,9 +1,15 @@
 package dev.deadzone.core.model.game.data
 
-object SurvivorState {
-    const val AVAILABLE = 0
-    const val ON_MISSION = 1
-    const val ON_TASK = 2
-    const val REASSIGNING = 4
-    const val ON_ASSIGNMENT = 8
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class SurvivorState(val value: UInt)
+
+object SurvivorState_Constants {
+    val AVAILABLE = SurvivorState(0u)
+    val ON_MISSION = SurvivorState(1u)
+    val ON_TASK = SurvivorState(2u)
+    val REASSIGNING = SurvivorState(4u)
+    val ON_ASSIGNMENT = SurvivorState(8u)
 }

@@ -1,6 +1,12 @@
 package dev.deadzone.core.model.game.data
 
-object TaskType {
-    const val JUNK_REMOVAL = "junk_removal"
-    const val ITEM_CRAFTING = "item_crafting"
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class TaskType(val value: String)
+
+object TaskType_Constants {
+    val JUNK_REMOVAL = TaskType("junk_removal")
+    val ITEM_CRAFTING = TaskType("item_crafting")
 }

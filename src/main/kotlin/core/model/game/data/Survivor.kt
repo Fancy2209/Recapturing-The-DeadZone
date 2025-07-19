@@ -29,4 +29,30 @@ data class Survivor(
     val voice: String,
     val accessories: Map<Int, String>,  // string is accessory id
     val maxClothingAccessories: Int
-)
+) {
+    companion object {
+        fun dummy(id: String, classId: SurvivorClass, gender: Gender): Survivor {
+            return Survivor(
+                id = id,
+                title = "The survivor",
+                firstName = "The",
+                lastName = "survivor",
+                gender = Gender_Constants.MALE,
+                portrait = null,
+                classId = classId,
+                morale = null,
+                injuries = null,
+                level = 1,
+                xp = 0,
+                missionId = null,
+                assignmentId = null,
+                reassignTimer = null,
+                appearance = null,
+                scale = 1.22,
+                voice = "asian-m",
+                accessories = mapOf(),
+                maxClothingAccessories = TODO()
+            )
+        }
+    }
+}

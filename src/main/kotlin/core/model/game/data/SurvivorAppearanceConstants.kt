@@ -1,6 +1,12 @@
 package dev.deadzone.core.model.game.data
 
-object SurvivorAppearanceConstants {
-    const val SLOT_UPPER_BODY = "clothing_upper"
-    const val SLOT_LOWER_BODY = "clothing_lower"
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class SurvivorAppearanceConstants(val value: String)
+
+object SurvivorAppearanceConstants_Constants {
+    val SLOT_UPPER_BODY = SurvivorAppearanceConstants("clothing_upper")
+    val SLOT_LOWER_BODY = SurvivorAppearanceConstants("clothing_lower")
 }

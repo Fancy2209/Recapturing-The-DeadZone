@@ -5,5 +5,5 @@ import dev.deadzone.core.model.game.data.MissionData
 
 @Serializable
 data class MissionCollection(
-    val list: List<MissionData>
+    val list: List<MissionData> = listOf()
 )

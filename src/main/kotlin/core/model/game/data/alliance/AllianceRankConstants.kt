@@ -1,16 +1,22 @@
 package dev.deadzone.core.model.game.data.alliance
 
-object AllianceRank {
-    const val RANK_1 = 1
-    const val RANK_2 = 2
-    const val RANK_3 = 3
-    const val RANK_4 = 4
-    const val RANK_5 = 5
-    const val RANK_6 = 6
-    const val RANK_7 = 7
-    const val RANK_8 = 8
-    const val RANK_9 = 9
-    const val RANK_10 = 10
-    const val FOUNDER = 10
-    const val TWO_IC = 9
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class AllianceRankConstants(val value: UInt)
+
+object AllianceRankConstants_Constants {
+    val RANK_1 = AllianceRankConstants(1u)
+    val RANK_2 = AllianceRankConstants(2u)
+    val RANK_3 = AllianceRankConstants(3u)
+    val RANK_4 = AllianceRankConstants(4u)
+    val RANK_5 = AllianceRankConstants(5u)
+    val RANK_6 = AllianceRankConstants(6u)
+    val RANK_7 = AllianceRankConstants(7u)
+    val RANK_8 = AllianceRankConstants(8u)
+    val RANK_9 = AllianceRankConstants(9u)
+    val RANK_10 = AllianceRankConstants(10u)
+    val FOUNDER = AllianceRankConstants(10u)
+    val TWO_IC = AllianceRankConstants(9u)
 }

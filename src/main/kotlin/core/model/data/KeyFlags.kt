@@ -1,7 +1,13 @@
 package dev.deadzone.core.model.data
 
-object KeyFlags {
-    const val NONE = 0
-    const val CONTROL = 1
-    const val SHIFT = 2
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class KeyFlags(val value: UInt)
+
+object KeyFlags_Constants {
+    val NONE = KeyFlags(0u)
+    val CONTROL = KeyFlags(1u)
+    val SHIFT = KeyFlags(2u)
 }

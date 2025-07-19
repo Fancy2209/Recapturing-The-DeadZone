@@ -1,5 +1,6 @@
 package dev.deadzone.api.message.db
 
+import dev.deadzone.core.model.data.PlayerData
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -8,6 +9,7 @@ data class LoadObjectsOutput(
 ) {
     companion object {
         fun playerObjects(): LoadObjectsOutput {
+            PlayerData()
             return LoadObjectsOutput()
         }
 

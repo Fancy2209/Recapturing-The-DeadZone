@@ -1,10 +1,16 @@
 package dev.deadzone.core.model.game.data.effects
 
-object EffectType {
-    const val WOOD_PRODUCTION = "WoodProduction"
-    const val METAL_PRODUCTION = "MetalProduction"
-    const val CLOTH_PRODUCTION = "ClothProduction"
-    const val AMMO_PRODUCTION = "AmmoProduction"
-    const val FOOD_PRODUCTION = "FoodProduction"
-    const val WATER_PRODUCTION = "WaterProduction"
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class EffectType(val value: String)
+
+object EffectType_Constants {
+    val WOOD_PRODUCTION = EffectType("WoodProduction")
+    val METAL_PRODUCTION = EffectType("MetalProduction")
+    val CLOTH_PRODUCTION = EffectType("ClothProduction")
+    val AMMO_PRODUCTION = EffectType("AmmoProduction")
+    val FOOD_PRODUCTION = EffectType("FoodProduction")
+    val WATER_PRODUCTION = EffectType("WaterProduction")
 }

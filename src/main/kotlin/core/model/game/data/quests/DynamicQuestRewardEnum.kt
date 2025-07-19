@@ -1,7 +1,13 @@
 package dev.deadzone.core.model.game.data.quests
 
-object DynamicQuestRewardEnum {
-    const val xp = "xp"
-    const val itm = "itm"
-    const val morale = "morale"
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class DynamicQuestRewardEnum(val value: String)
+
+object DynamicQuestRewardEnum_Constants {
+    val xp = DynamicQuestRewardEnum("xp")
+    val itm = DynamicQuestRewardEnum("itm")
+    val morale = DynamicQuestRewardEnum("morale")
 }

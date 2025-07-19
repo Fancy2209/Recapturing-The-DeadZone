@@ -1,9 +1,15 @@
 package dev.deadzone.core.model.data
 
-object NavigationLocation {
-    const val PLAYER_COMPOUND = "playerCompound"
-    const val NEIGHBOR_COMPOUND = "neighborCompound"
-    const val MISSION = "mission"
-    const val MISSION_PLANNING = "missionPlanning"
-    const val WORLD_MAP = "worldmap"
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class NavigationLocation(val value: String)
+
+object NavigationLocation_Constants {
+    val PLAYER_COMPOUND = NavigationLocation("playerCompound")
+    val NEIGHBOR_COMPOUND = NavigationLocation("neighborCompound")
+    val MISSION = NavigationLocation("mission")
+    val MISSION_PLANNING = NavigationLocation("missionPlanning")
+    val WORLD_MAP = NavigationLocation("worldmap")
 }

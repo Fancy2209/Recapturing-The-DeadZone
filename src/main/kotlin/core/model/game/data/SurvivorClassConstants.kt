@@ -1,11 +1,17 @@
 package dev.deadzone.core.model.game.data
 
-object SurvivorClassConstants {
-    const val FIGHTER = "fighter"
-    const val MEDIC = "medic"
-    const val SCAVENGER = "scavenger"
-    const val ENGINEER = "engineer"
-    const val RECON = "recon"
-    const val PLAYER = "player"
-    const val UNASSIGNED = "unassigned"
+import kotlinx.serialization.Serializable
+
+@Serializable
+@JvmInline
+value class SurvivorClassConstants(val value: String)
+
+object SurvivorClassConstants_Constants {
+    val FIGHTER = SurvivorClassConstants("fighter")
+    val MEDIC = SurvivorClassConstants("medic")
+    val SCAVENGER = SurvivorClassConstants("scavenger")
+    val ENGINEER = SurvivorClassConstants("engineer")
+    val RECON = SurvivorClassConstants("recon")
+    val PLAYER = SurvivorClassConstants("player")
+    val UNASSIGNED = SurvivorClassConstants("unassigned")
 }

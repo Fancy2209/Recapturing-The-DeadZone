@@ -14,8 +14,8 @@ data class Weapon(
     val reloadAnim: String,
     val swingAnims: List<String>,
     val playSwingExertionSound: Boolean = true,
-    val flags: UInt = 0,
-    val weaponType: UInt = 0,
-    val ammoType: UInt = 0,
+    val flags: UInt = 0u,
+    val weaponType: UInt = 0u,
+    val ammoType: UInt = 0u,
     val survivorClasses: List<String> = listOf()
 )

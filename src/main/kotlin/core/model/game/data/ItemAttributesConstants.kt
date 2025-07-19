@@ -1,6 +1,6 @@
 package dev.deadzone.core.model.game.data
 
-object ItemAttributes {
+object ItemAttributesConstants {
     const val GEAR = "gear"
     const val SURVIVOR = "srv"
     const val WEAPON = "weap"
