@@ -22,6 +22,7 @@ import dev.deadzone.core.model.game.data.TaskCollection
 import dev.deadzone.core.model.game.data.assignment.AssignmentData
 import dev.deadzone.core.model.game.data.quests.GQDataObj
 import dev.deadzone.core.model.game.data.skills.SkillState
+import kotlin.experimental.or
 
 @Serializable
 data class PlayerData(
@@ -80,6 +81,7 @@ data class PlayerData(
     companion object {
         fun dummy(): PlayerData {
             val srvId = "survivor-player"
+            val exampleBools = listOf(true, true, true, false, false, false, false, false)
 
             return PlayerData(
                 key = "exampleKey",
@@ -122,7 +124,7 @@ data class PlayerData(
                 defenceLoadout = null,
                 quests = null,
                 questsCollected = null,
-                achievements = null,
+                achievements = boolsToByteArray(exampleBools),
                 dailyQuest = null,
                 questsTracked = null,
                 gQuestsV2 = null,
@@ -137,8 +139,23 @@ data class PlayerData(
                 offersEnabled = false,
                 prevLogin = null,
                 lastLogin = null,
-                notifications = listOf(),
+                notifications = null,
             )
+        }
+
+        private fun boolsToByteArray(bools: List<Boolean>): ByteArray? {
+            val byteCount = (bools.size + 7) / 8
+            val bytes = ByteArray(byteCount)
+
+            for (i in bools.indices) {
+                if (bools[i]) {
+                    val byteIndex = i / 8
+                    val bitIndex = i % 8
+                    bytes[byteIndex] = bytes[byteIndex] or (1 shl bitIndex).toByte()
+                }
+            }
+
+            return bytes
         }
     }
 
