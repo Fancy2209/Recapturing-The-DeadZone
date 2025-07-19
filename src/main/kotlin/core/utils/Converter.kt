@@ -51,11 +51,14 @@ object Converter {
     }
 
     fun toObjectProperties(obj: Any): List<ObjectProperty> {
+        val reserved = setOf("key", "creator", "version")
+
         return obj::class.members
             .filterIsInstance<kotlin.reflect.KProperty1<Any, *>>()
             .filter { it.visibility == kotlin.reflect.KVisibility.PUBLIC }
-            .map { prop ->
+            .mapNotNull { prop ->
                 val name = prop.name
+                if (name in reserved) return@mapNotNull null
                 val value = try {
                     prop.get(obj)
                 } catch (e: Exception) {
