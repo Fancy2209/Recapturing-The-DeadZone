@@ -5,6 +5,15 @@ import dev.deadzone.core.model.game.data.Item
 
 @Serializable
 data class Inventory(
-    val inventory: List<Item>,
-    val schematics: ByteArray,  // see line 643 of Inventory.as
-)
+    val inventory: List<Item> = listOf(),
+    val schematics: ByteArray = byteArrayOf(),  // see line 643 of Inventory.as
+) {
+    companion object {
+        fun dummy(): Inventory {
+            return Inventory(
+                inventory = listOf(),
+                schematics = byteArrayOf()
+            )
+        }
+    }
+}

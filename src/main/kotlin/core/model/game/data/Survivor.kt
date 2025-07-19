@@ -16,7 +16,7 @@ data class Survivor(
     val lastName: String = "",
     val gender: Gender,
     val portrait: String? = null,
-    val classId: SurvivorClass,
+    val classId: SurvivorClassConstants,
     val morale: Morale?,
     val injuries: InjuryList?,
     val level: Int,
@@ -31,7 +31,7 @@ data class Survivor(
     val maxClothingAccessories: Int
 ) {
     companion object {
-        fun dummy(id: String, classId: SurvivorClass, gender: Gender): Survivor {
+        fun dummy(id: String, classId: SurvivorClassConstants, gender: Gender): Survivor {
             return Survivor(
                 id = id,
                 title = "The survivor",
@@ -51,7 +51,7 @@ data class Survivor(
                 scale = 1.22,
                 voice = "asian-m",
                 accessories = mapOf(),
-                maxClothingAccessories = TODO()
+                maxClothingAccessories = 10
             )
         }
     }

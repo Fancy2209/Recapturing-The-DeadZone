@@ -12,10 +12,12 @@ import dev.deadzone.core.model.data.FlagSet
 import dev.deadzone.core.model.game.data.GameResources
 import dev.deadzone.core.model.game.data.quests.GlobalQuestData
 import dev.deadzone.core.model.data.HighActivity
+import dev.deadzone.core.model.game.data.Gender_Constants
 import dev.deadzone.core.model.game.data.bounty.InfectedBounty
 import dev.deadzone.core.model.game.data.Inventory
 import dev.deadzone.core.model.game.data.MissionCollection
 import dev.deadzone.core.model.game.data.Survivor
+import dev.deadzone.core.model.game.data.SurvivorClassConstants_Constants
 import dev.deadzone.core.model.network.RemotePlayerData
 import dev.deadzone.core.model.game.data.research.ResearchState
 import dev.deadzone.core.model.game.data.skills.SkillCollection
@@ -64,14 +66,23 @@ data class PlayerData(
     val questsTracked: String?,  // each quest separated with |
     val gQuestsV2: GlobalQuestData?,
     val bountyCap: Int,
-    val lastogout: Long?,
+    val lastLogout: Long?,
     val dzBounty: InfectedBounty?,
     val nextDZBountyIssue: Long,
     val highActivity: HighActivity?,  // unknown which class is this so we make custom class
-    val invsize: Int
+    val invsize: Int,
+    val zombieAttack: Boolean,
+    val zombieAttackLogins: Int,
+    val offersEnabled: Boolean,
+    val prevLogin: PrevLogin?,
+    val lastLogin: Long?,
+    val notifications: List<Notification?>?,
+
 ) {
     companion object {
         fun dummy(): PlayerData {
+            val srvId = "survivor-player"
+
             return PlayerData(
                 key = "exampleKey",
                 admin = true,
@@ -80,39 +91,52 @@ data class PlayerData(
                 flags = null,
                 upgrades = null,
                 nickname = "dzplayer",
-                playerSurvivor = "survivor-player",
+                playerSurvivor = srvId,
                 neighbors = null,
                 friends = null,
                 neighborHistory = null,
                 research = null,
                 skills = null,
                 resources = GameResources(cash = 100000, wood = 100, 100, 100, 100, 100, 100),
-                survivors = SurvivorCollection(Survivor()),
-                playerAttributes = TODO(),
-                buildings = TODO(),
-                rally = TODO(),
-                tasks = TODO(),
-                missions = TODO(),
-                assignments = TODO(),
-                inventory = TODO(),
-                effects = TODO(),
-                globalEffects = TODO(),
-                cooldowns = TODO(),
-                batchRecycles = TODO(),
-                offenceLoadout = TODO(),
-                defenceLoadout = TODO(),
-                quests = TODO(),
-                questsCollected = TODO(),
-                achievements = TODO(),
-                dailyQuest = TODO(),
-                questsTracked = TODO(),
-                gQuestsV2 = TODO(),
-                bountyCap = TODO(),
-                lastogout = TODO(),
-                dzBounty = TODO(),
-                nextDZBountyIssue = TODO(),
-                highActivity = TODO(),
-                invsize = TODO()
+                survivors = SurvivorCollection(
+                    list = listOf(
+                        Survivor.dummy(
+                            srvId, SurvivorClassConstants_Constants.PLAYER,
+                            Gender_Constants.MALE
+                        )
+                    )
+                ),
+                playerAttributes = Attributes.dummy(),
+                buildings = BuildingCollection(),
+                rally = null,
+                tasks = TaskCollection(),
+                missions = null,
+                assignments = null,
+                inventory = null,
+                effects = null,
+                globalEffects = null,
+                cooldowns = null,
+                batchRecycles = null,
+                offenceLoadout = null,
+                defenceLoadout = null,
+                quests = null,
+                questsCollected = null,
+                achievements = null,
+                dailyQuest = null,
+                questsTracked = null,
+                gQuestsV2 = null,
+                bountyCap = 0,
+                lastLogout = null,
+                dzBounty = null,
+                nextDZBountyIssue = 1_000_000_000,
+                highActivity = null,
+                invsize = 9,
+                zombieAttack = false,
+                zombieAttackLogins = 0,
+                offersEnabled = false,
+                prevLogin = null,
+                lastLogin = null,
+                notifications = listOf(),
             )
         }
     }

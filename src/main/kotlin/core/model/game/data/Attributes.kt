@@ -14,4 +14,21 @@ data class Attributes(
     val trapSpotting: Double = 0.0,
     val trapDisarming: Double = 0.0,
     val injuryChance: Double = 0.0
-)
+) {
+    companion object {
+        fun dummy(): Attributes {
+            return Attributes(
+                health = 100.0,
+                combatProjectile = 2.0,
+                combatMelee = 2.0,
+                combatImprovised = 2.0,
+                movement = 2.0,
+                scavenge = 2.0,
+                healing = 2.0,
+                trapSpotting = 2.0,
+                trapDisarming = 2.0,
+                injuryChance = 2.0,
+            )
+        }
+    }
+}
