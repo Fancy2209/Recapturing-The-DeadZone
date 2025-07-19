@@ -3,23 +3,9 @@
     "volume": 0.8,
     "language": "en"
   },
-  "news": {
-    "event": "Double XP Weekend"
-  },
-  "sales": [
-    [
-      "weapons",
-      "discount"
-    ],
-    [
-      "armor",
-      "clearance"
-    ]
-  ],
-  "allianceWinnings": {
-    "gold": 500,
-    "medals": 2
-  },
+  "news": {},
+  "sales": [],
+  "allianceWinnings": {},
   "recentPVPList": [
     {
       "opponent": "Player123",
@@ -30,8 +16,8 @@
       "result": "loss"
     }
   ],
-  "invsize": 50,
-  "upgrades": "AAAAAAAAAAAAAA==",
+  "invsize": 8,
+  "upgrades": "",
   "allianceId": null,
   "allianceTag": null,
   "longSession": true,

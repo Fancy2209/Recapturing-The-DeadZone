@@ -5,4 +5,18 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class FlagSet(
     val byteArray: ByteArray = byteArrayOf()
-)
+) {
+    companion object {
+        fun mockFlagSetByteArray(bitCount: Int = 64): ByteArray {
+            val byteSize = (bitCount + 7) / 8 // round up
+            val data = ByteArray(byteSize)
+
+            // For example, just set first few flags
+            for (i in 0 until byteSize) {
+                data[i] = 0b00000001 // only first bit set
+            }
+
+            return data
+        }
+    }
+}
