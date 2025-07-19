@@ -355,7 +355,7 @@ const val loginState = """
   "promoSale": null,
   "dealItem": null,
   "leaderResets": 0,
-  "unequipItemBinds": null,
+  "unequipItemBinds": [],
   "globalStats": {
     "idList": []
   },
