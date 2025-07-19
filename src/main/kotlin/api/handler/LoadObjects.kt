@@ -1,5 +1,6 @@
 package dev.deadzone.api.handler
 
+import dev.deadzone.api.message.db.BigDBObject
 import dev.deadzone.api.message.db.LoadObjectsArgs
 import dev.deadzone.api.message.db.LoadObjectsOutput
 import dev.deadzone.core.BigDB
@@ -30,9 +31,27 @@ suspend fun RoutingContext.loadObjects(db: BigDB) {
 
     logApiMessage(loadObjectsArgs)
 
-    val loadObjectsOutput = ProtoBuf.encodeToByteArray<LoadObjectsOutput>(
-        LoadObjectsOutput.playerObjects()
-    )
+    val validUsers = setOf("user123", "userABC")
+    val objs = mutableListOf<BigDBObject>()
+
+    for (objId in loadObjectsArgs.objectIds) {
+        val key = objId.keys.firstOrNull() ?: continue
+        if (key !in validUsers) continue
+
+        val obj: BigDBObject? = when (objId.table) {
+            "PlayerObjects" -> LoadObjectsOutput.playerObjects()
+            "NeighborHistory" -> LoadObjectsOutput.neighborHistory()
+            "Inventory" -> LoadObjectsOutput.inventory()
+            else -> {
+                println("UNIMPLEMENTED table: ${objId.table}")
+                null
+            }
+        }
+
+        if (obj != null) objs.add(obj)
+    }
+
+    val loadObjectsOutput = ProtoBuf.encodeToByteArray(LoadObjectsOutput(objects = objs))
 
     logApiOutput(loadObjectsOutput)
 

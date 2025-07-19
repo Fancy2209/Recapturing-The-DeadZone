@@ -5,6 +5,10 @@ import dev.deadzone.core.BigDB
 import io.ktor.server.application.Application
 import org.bson.Document
 
+// Start MongoDB community edition (local)
+// "C:\Program Files\MongoDB\Server\8.0\bin\mongod.exe" --dbpath="c:\data\db"
+// use mongod if installed in PATH
+// Must be cmd in Windows not powershell
 suspend fun Application.configureDatabase() {
     val mongoc = MongoClient.create("mongodb://localhost:27017")
 

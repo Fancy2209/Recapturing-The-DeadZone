@@ -11,29 +11,23 @@ data class LoadObjectsOutput(
     val objects: List<BigDBObject> = listOf()
 ) {
     companion object {
-        fun playerObjects(): LoadObjectsOutput {
+        fun playerObjects(): BigDBObject {
             val data = PlayerData.dummy()
-            val dbObject = Converter.toBigDBObject<PlayerData>(obj = data)
-
-            return LoadObjectsOutput(objects = listOf(dbObject))
+            return Converter.toBigDBObject<PlayerData>(obj = data)
         }
 
         data class NeighborHistory(
             val map: Map<String, RemotePlayerData>?
         )
 
-        fun neighborHistory(): LoadObjectsOutput {
+        fun neighborHistory(): BigDBObject {
             val data = NeighborHistory(mapOf())
-            val dbObject = Converter.toBigDBObject<NeighborHistory>(obj = data)
-
-            return LoadObjectsOutput(objects = listOf(dbObject))
+            return Converter.toBigDBObject<NeighborHistory>(obj = data)
         }
 
-        fun inventory(): LoadObjectsOutput {
+        fun inventory(): BigDBObject {
             val data = Inventory()
-            val dbObject = Converter.toBigDBObject<Inventory>(obj = data)
-
-            return LoadObjectsOutput(objects = listOf(dbObject))
+            return Converter.toBigDBObject<Inventory>(obj = data)
         }
     }
 }
