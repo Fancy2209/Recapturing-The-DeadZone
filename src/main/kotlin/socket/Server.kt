@@ -5,6 +5,7 @@ import dev.deadzone.core.utils.PIODeserializer
 import dev.deadzone.core.utils.SocketMessage
 import dev.deadzone.core.utils.SocketMessageDispatcher
 import dev.deadzone.socket.handler.JoinHandler
+import dev.deadzone.socket.handler.QuestProgressHandler
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
@@ -28,6 +29,7 @@ class Server(
     private val clients = Collections.synchronizedList(mutableListOf<Connection>())
     val dispatcher = SocketMessageDispatcher().apply {
         register(JoinHandler(db))
+        register(QuestProgressHandler(db))
     }
 
     fun start() {

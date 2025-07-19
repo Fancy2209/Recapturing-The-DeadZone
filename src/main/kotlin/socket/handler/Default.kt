@@ -13,7 +13,7 @@ class DefaultHandler() : SocketMessageHandler {
         message: SocketMessage,
         send: suspend (ByteArray) -> Unit
     ) {
-        println("[SOCKET]: DEFAULT HANDLER NOT IMPLEMENTED")
+        println("[SOCKET]: DEFAULT HANDLER NOT REGISTERED or IMPLEMENTED")
         send(PIOSerializer.serialize(listOf("\u0000\u0000\u0000\u0000")))
     }
 }
