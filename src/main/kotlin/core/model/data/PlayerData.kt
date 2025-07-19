@@ -113,7 +113,9 @@ data class PlayerData(
                     food = 100,
                     ammunition = 100
                 ),
-                survivors = SurvivorCollection.dummy(srvId),
+                survivors = SurvivorCollection.dummy(
+                    srvId, classId = SurvivorClassConstants_Constants.FIGHTER
+                ),
                 playerAttributes = Attributes.dummy(),
                 buildings = BuildingCollection().list,
                 rally = null,
@@ -208,6 +210,7 @@ data class PlayerData(
 
         return true
     }
+
     override fun hashCode(): Int {
         var result = admin.hashCode()
         result = 31 * result + restXP

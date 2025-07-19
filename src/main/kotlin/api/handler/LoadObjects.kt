@@ -53,7 +53,7 @@ suspend fun RoutingContext.loadObjects(db: BigDB) {
 
     val loadObjectsOutput = ProtoBuf.encodeToByteArray(LoadObjectsOutput(objects = objs))
 
-    logApiOutput(loadObjectsOutput)
+    logApiOutput(loadObjectsOutput, true)
 
     call.respondBytes(loadObjectsOutput.PIOFraming())
 }

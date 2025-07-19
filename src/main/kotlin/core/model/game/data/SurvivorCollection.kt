@@ -8,10 +8,10 @@ data class SurvivorCollection(
     val list: List<Survivor> = listOf()
 ) {
     companion object {
-        fun dummy(srvId: String): List<Survivor> {
+        fun dummy(srvId: String, classId: SurvivorClassConstants): List<Survivor> {
             return listOf(
                 Survivor.dummy(
-                    srvId, SurvivorClassConstants_Constants.PLAYER,
+                    srvId, classId,
                     Gender_Constants.MALE
                 )
             )

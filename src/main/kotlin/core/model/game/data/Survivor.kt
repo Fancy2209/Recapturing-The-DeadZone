@@ -1,12 +1,8 @@
 package dev.deadzone.core.model.game.data
 
+import dev.deadzone.core.model.game.data.injury.Injury
 import kotlinx.serialization.Serializable
-import dev.deadzone.core.model.game.data.Gender
-import dev.deadzone.core.model.game.data.HumanAppearance
 import dev.deadzone.core.model.game.data.injury.InjuryList
-import dev.deadzone.core.model.game.data.Morale
-import dev.deadzone.core.model.game.data.SurvivorClass
-import dev.deadzone.core.model.game.data.TimerData
 
 @Serializable
 data class Survivor(
@@ -16,9 +12,9 @@ data class Survivor(
     val lastName: String = "",
     val gender: Gender,
     val portrait: String? = null,
-    val classId: SurvivorClassConstants,
-    val morale: Morale?,
-    val injuries: InjuryList?,
+    val classId: String,
+    val morale: Map<String, Double>,
+    val injuries: List<Injury>,
     val level: Int,
     val xp: Int,
     val missionId: String?,
@@ -37,11 +33,11 @@ data class Survivor(
                 title = "The survivor",
                 firstName = "The",
                 lastName = "survivor",
-                gender = Gender_Constants.MALE,
+                gender = gender,
                 portrait = null,
-                classId = classId,
-                morale = null,
-                injuries = null,
+                classId = classId.value,
+                morale = Morale().maps,
+                injuries = InjuryList().list,
                 level = 1,
                 xp = 0,
                 missionId = null,

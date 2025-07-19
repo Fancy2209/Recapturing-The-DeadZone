@@ -5,5 +5,5 @@ import dev.deadzone.core.model.game.data.injury.Injury
 
 @Serializable
 data class InjuryList(
-    val list: List<Injury>,  // casted to array in code
+    val list: List<Injury> = listOf(),  // casted to array in code
 )
