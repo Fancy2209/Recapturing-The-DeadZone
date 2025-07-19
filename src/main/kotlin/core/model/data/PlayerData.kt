@@ -12,10 +12,13 @@ import dev.deadzone.core.model.data.FlagSet
 import dev.deadzone.core.model.game.data.GameResources
 import dev.deadzone.core.model.game.data.quests.GlobalQuestData
 import dev.deadzone.core.model.data.HighActivity
+import dev.deadzone.core.model.game.data.BatchRecycleJob
+import dev.deadzone.core.model.game.data.Building
 import dev.deadzone.core.model.game.data.Gender_Constants
 import dev.deadzone.core.model.game.data.bounty.InfectedBounty
 import dev.deadzone.core.model.game.data.Inventory
 import dev.deadzone.core.model.game.data.MissionCollection
+import dev.deadzone.core.model.game.data.MissionData
 import dev.deadzone.core.model.game.data.Survivor
 import dev.deadzone.core.model.game.data.SurvivorClassConstants_Constants
 import dev.deadzone.core.model.network.RemotePlayerData
@@ -23,7 +26,11 @@ import dev.deadzone.core.model.game.data.research.ResearchState
 import dev.deadzone.core.model.game.data.skills.SkillCollection
 import dev.deadzone.core.model.game.data.SurvivorCollection
 import dev.deadzone.core.model.game.data.SurvivorLoadoutEntry
+import dev.deadzone.core.model.game.data.Task
 import dev.deadzone.core.model.game.data.TaskCollection
+import dev.deadzone.core.model.game.data.assignment.AssignmentData
+import dev.deadzone.core.model.game.data.quests.GQDataObj
+import dev.deadzone.core.model.game.data.skills.SkillState
 
 @Serializable
 data class PlayerData(
@@ -43,20 +50,20 @@ data class PlayerData(
     val friends: Map<String, RemotePlayerData>?,
     val neighborHistory: Map<String, RemotePlayerData>?,
     val research: ResearchState?,
-    val skills: SkillCollection?,
+    val skills: Map<String, SkillState>?,
     val resources: GameResources,
-    val survivors: SurvivorCollection,
+    val survivors: List<Survivor>,
     val playerAttributes: Attributes,
-    val buildings: BuildingCollection,
+    val buildings: List<Building>,
     val rally: Map<String, List<String>>?,  // key building id, value list of survivor ids
-    val tasks: TaskCollection,
-    val missions: MissionCollection?,
-    val assignments: AssignmentCollection?,
+    val tasks: List<Task>,
+    val missions: List<MissionData>?,
+    val assignments: List<AssignmentData>?,
     val inventory: Inventory?,
     val effects: Map<String, String>?,
     val globalEffects: Map<String, String>?,
-    val cooldowns: CooldownCollection?,
-    val batchRecycles: BatchRecycleJobCollection?,
+    val cooldowns: Map<String, ByteArray>?,
+    val batchRecycles: List<BatchRecycleJob>?,
     val offenceLoadout: Map<String, SurvivorLoadoutEntry>?,
     val defenceLoadout: Map<String, SurvivorLoadoutEntry>?,
     val quests: ByteArray?,  // parsed by booleanArrayFromByteArray
@@ -64,7 +71,7 @@ data class PlayerData(
     val achievements: ByteArray?,  // parsed by booleanArrayFromByteArray
     val dailyQuest: DynamicQuest?,
     val questsTracked: String?,  // each quest separated with |
-    val gQuestsV2: GlobalQuestData?,
+    val gQuestsV2: Map<String, GQDataObj>?,
     val bountyCap: Int,
     val lastLogout: Long?,
     val dzBounty: InfectedBounty?,
@@ -106,18 +113,11 @@ data class PlayerData(
                     food = 100,
                     ammunition = 100
                 ),
-                survivors = SurvivorCollection(
-                    list = listOf(
-                        Survivor.dummy(
-                            srvId, SurvivorClassConstants_Constants.PLAYER,
-                            Gender_Constants.MALE
-                        )
-                    )
-                ),
+                survivors = SurvivorCollection.dummy(srvId),
                 playerAttributes = Attributes.dummy(),
-                buildings = BuildingCollection(),
+                buildings = BuildingCollection().list,
                 rally = null,
-                tasks = TaskCollection(),
+                tasks = TaskCollection().list,
                 missions = null,
                 assignments = null,
                 inventory = null,

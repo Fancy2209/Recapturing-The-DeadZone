@@ -16,4 +16,21 @@ data class Building(
     val resourceValue: Double = 0.0,
     val upgrade: TimerData?,
     val repair: TimerData?
-)
+) {
+    companion object {
+        fun dummy(id: String = "", type: String = ""): Building {
+            return Building(
+                id = id,
+                type = type,
+                level = 1,
+                rotation = 0,
+                tx = 10,
+                ty = 10,
+                destroyed = false,
+                resourceValue = 0.0,
+                upgrade = null,
+                repair = null,
+            )
+        }
+    }
+}
