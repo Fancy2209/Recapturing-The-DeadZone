@@ -1,6 +1,7 @@
 package dev.deadzone.socket.handler
 
 import dev.deadzone.core.BigDB
+import dev.deadzone.core.data.InMemoryDataProvider
 import dev.deadzone.core.utils.PIOSerializer
 import dev.deadzone.core.utils.SocketMessage
 import dev.deadzone.core.utils.SocketMessageHandler
@@ -129,8 +130,7 @@ class JoinHandler(private val db: BigDB) : SocketMessageHandler {
     }
 
     fun loadRawJson(path: String): String {
-        return object {}.javaClass.getResource("/data/$path")?.readText()
-            ?: error("Resource not found: $path")
+        return InMemoryDataProvider.loadRawJson(path) // use in memory data for now
     }
 }
 

@@ -1,3 +1,23 @@
+package dev.deadzone.core.data
+
+/**
+ * In memory data provider
+ *
+ * Used to replace retrieving data directly from DB
+ */
+object InMemoryDataProvider : DataProvider {
+    private val mockData = mapOf(
+        "login_state.json" to loginState.trimIndent(),
+        "cost_table.json" to costTable.trimIndent(),
+        "srv_table.json" to SrvTable.trimIndent()
+    )
+
+    override fun loadRawJson(path: String): String {
+        return mockData[path] ?: error("Missing mock data for: $path")
+    }
+}
+
+const val SrvTable = """
 {
   "fighter": {
     "id": "fighter",
@@ -280,3 +300,72 @@
     "hideHair": false
   }
 }
+    
+"""
+
+const val costTable = """
+{
+  "buildings": {
+    "barricade": {
+      "wood": 10,
+      "metal": 5
+    },
+    "turret": {
+      "wood": 50,
+      "metal": 25
+    }
+  },
+  "upgrades": {
+    "storage": {
+      "cost": 1000
+    },
+    "speed": {
+      "cost": 500
+    }
+  }
+}
+"""
+
+const val loginState = """
+{
+  "settings": {
+    "volume": 0.8,
+    "language": "en"
+  },
+  "news": {},
+  "sales": [],
+  "allianceWinnings": {},
+  "recentPVPList": [
+    {
+      "opponent": "Player123",
+      "result": "win"
+    },
+    {
+      "opponent": "Player456",
+      "result": "loss"
+    }
+  ],
+  "invsize": 8,
+  "upgrades": "",
+  "allianceId": null,
+  "allianceTag": null,
+  "longSession": true,
+  "leveledUp": false,
+  "promos": [],
+  "promoSale": null,
+  "dealItem": null,
+  "leaderResets": 0,
+  "unequipItemBinds": false,
+  "globalStats": {
+    "idList": []
+  },
+  "inventory": [],
+  "neighborHistory": {},
+  "zombieAttack": false,
+  "zombieAttackLogins": 0,
+  "offersEnabled": false,
+  "lastLogout": null,
+  "prevLogin": null
+}
+
+"""
