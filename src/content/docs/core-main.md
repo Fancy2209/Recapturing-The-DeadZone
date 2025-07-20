@@ -53,3 +53,4 @@ Always a WIP.
 - The `onNetworkGameReady` method in main listens for the game ready signal and calls the `onReady` method next, which:
   - Closes the loading dialogue and removes network listeners for loading/error/start connection events.
   - Opens the "create survivor" dialogue (if necessary).
+  - If player already has a survivor, skip the creation screen and load the compound with the `gotoCompound` method of `Game.as`.
