@@ -8,7 +8,7 @@ This class represents a client connection to the socket server. It manages real-
 
 ## Internal Logic
 
-Connection class is constructed with the given endpoint from API server responding to [API 27](/glossary#api-27).
+Connection class is constructed with the given endpoint from API server responding to [API 27](/api-server#api-27).
 
 ### Constructor
 

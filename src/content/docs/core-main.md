@@ -18,7 +18,7 @@ Always a WIP.
 
 - Begin connection to socket server.
   - This is triggered by calling the `connect()` method on the [Network](/thelaststand/app/network/network) class, which internally invokes a private `joinRoom()` method.
-  - `joinRoom()` uses the PlayerIO [Multiplayer](/playerio/multiplayer) API to request [create and join room (API 27)](/glossary#api-27).
+  - `joinRoom()` uses the PlayerIO [Multiplayer](/playerio/multiplayer) API to request [create and join room (API 27)](/api-server#api-27).
   - API server responds room data and the endpoint for the socket server.
   - Client connects to the socket server from the given endpoint and port.
   - Client sends the initial `"join"` message which includes the data received from API 27.
@@ -40,7 +40,7 @@ Always a WIP.
       5. JSON login player state, allegedly updates from server (like news, sales) and other events that has occured while player is logged out.
   - The `onNetworkGameDataReceived` from core `Main.as` will be triggered every time the game receives XML files from server. This method updates the game's currently loaded XML with the newly received XML.
   - The JSON dumps are parsed and stored in local variables in the `Network` class for later use.
-  - Next is loading `PlayerObjects`, `NeighborHistory`, and `Inventory` from BigDB by making request to [API 85](/glossary#api-85). A network error (which force disconnects the player) will be raised if the loaded objects are empty or null.
+  - Next is loading `PlayerObjects`, `NeighborHistory`, and `Inventory` from BigDB by making request to [API 85](/api-server#api-85). A network error (which force disconnects the player) will be raised if the loaded objects are empty or null.
 - When all three objects are loaded successfully, [`onPlayerDataLoaded`](/thelaststand/app/network/network#onplayerdataloaded) is called.
 - `onPlayerDataLoaded`
   - Create in-game `Survivor` objects using the `AHBuildSrvs` method. This method internally reads the parsed survivor class table from the server, loads local assets and data, and maps them to the corresponding survivor object.
@@ -53,4 +53,4 @@ Always a WIP.
 - The `onNetworkGameReady` method in main listens for the game ready signal and calls the `onReady` method next, which:
   - Closes the loading dialogue and removes network listeners for loading/error/start connection events.
   - Opens the "create survivor" dialogue (if necessary).
-  - If player already has a survivor, skip the creation screen and load the compound with the `gotoCompound` method of `Game.as`.
+  - If player already has a survivor, skip the creation screen and load the compound with the [`gotoCompound`](/game#gotocompound) method of `Game.as`.

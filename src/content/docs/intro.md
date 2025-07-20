@@ -38,7 +38,7 @@ See [preloader](/preloader-main) and [core](/core-main) to know how the game wor
 
 ### Current Investigation
 
-We have implemented [API 85](/glossary#api-85) and successfully respond with a valid mocked data for `PlayerObjects`. As a result, the game get past the loading screen. Many of the data is left empty and null for the sake of progressing. We will need to understand these eventually.
+We have implemented [API 85](/api-server#api-85) and successfully respond with a valid mocked data for `PlayerObjects`. As a result, the game get past the loading screen. Many of the data is left empty and null for the sake of progressing. We will need to understand these eventually.
 
 Any action results in error, so there are many things that need to be implemented. The primary error after getting inside the game is loading the compound. Other issues:
 
@@ -53,7 +53,7 @@ Basically: do something > if there is an error or something unintended > fix it.
 Unlike getting past the loading screen, there isn't a specific thing to focus now. However, the end target is to make the private server able to handle basic gameplay loop (like upgrading building, creating survivor, reading items, and raiding).
 
 :::tip
-After connected to socket server, client errors are sent to the server through [API 50](/glossary#api-50). In our private server, these errors are logged in `write_error.log`. This is particularly helpful for debugging, as the flash debugger does not always report errors. Additionally, you can modify the SWF to intentionally trigger an error, which will help you trace the issue.
+After connected to socket server, client errors are sent to the server through [API 50](/api-server#api-50). In our private server, these errors are logged in `write_error.log`. This is particularly helpful for debugging, as the flash debugger does not always report errors. Additionally, you can modify the SWF to intentionally trigger an error, which will help you trace the issue.
 
 `Logch` is command is also useful to send log to the console of the game (can be activated by pressing `=`). Log command can be written like `Cc.logch("<identifier>", "<logmsg>")`.
 :::

@@ -14,7 +14,7 @@ Exchange of data between game and the server is done with protobuf format via AP
 
 ## load
 
-The `load` method is used to call the internally generated PlayerIO class that again call `_loadObjects`, which makes the request to [API 85](/glossary#api-85).
+The `load` method is used to call the internally generated PlayerIO class that again call `_loadObjects`, which makes the request to [API 85](/api-server#api-85).
 
 The input for `load`:
 
