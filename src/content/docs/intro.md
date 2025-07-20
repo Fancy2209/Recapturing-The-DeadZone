@@ -17,7 +17,11 @@ TLSDZ uses [PlayerIO backend service](https://playerio.com/). Our task is to des
 
 This is the furthest we have been (the latest change may have not been approved yet):
 
-![Last progress](../../assets/progress.png)
+<video width="800" height="600" controls>
+  <source src="progress.mp4" type="video/mp4">
+</video>
+
+Past the loading screen, with nothing implemented further that.
 
 ### What's Next?
 
@@ -34,9 +38,19 @@ See [preloader](/preloader-main) and [core](/core-main) to know how the game wor
 
 ### Current Investigation
 
-We have implemented [API 85](/glossary#api-85) with the response of mocked data. As a result, the game throw an NPE when calling the method `readObject` of Network class to the `PlayerObjects`. This means the game expects a data field to be present in the object, but it actually isn't in our mocked data.
+We have implemented [API 85](/glossary#api-85) and successfully respond with a valid mocked data for `PlayerObjects`. As a result, the game get past the loading screen. Many of the data is left empty and null for the sake of progressing. We will need to understand these eventually.
 
-To fix this, we need to know how `readObject` method works, and what it reads/expects for the `PlayerObjects`. The player object is a nested object of player's data and preference. Some data is another object which may have their own `readObject`. We will need to trace each `readObject` call and find out which data field is missing.
+Any action results in error, so there are many things that need to be implemented. The primary error after getting inside the game is loading the compound. Other issues:
+
+- Survivor portrait is still empty.
+- Survivor appearance is still null.
+- Clicking survivor avatar, and doing related thing such as commit, clicking the (+) button, these are all unimplemented.
+- Radio system on the bottom.
+- We skipped survivor creation because we provided one survivor data. Perhaps we should try providing an empty survivor, so the game switches to the survivor creation screen. This must be implemented if we intend to release a demo of the game.
+
+Basically: do something > if there is an error or something unintended > fix it.
+
+Unlike getting past the loading screen, there isn't a specific thing to focus now. However, the end target is to make the private server able to handle basic gameplay loop (like upgrading building, creating survivor, reading items, and raiding).
 
 :::tip
 After connected to socket server, client errors are sent to the server through [API 50](/glossary#api-50). In our private server, these errors are logged in `write_error.log`. This is particularly helpful for debugging, as the flash debugger does not always report errors. Additionally, you can modify the SWF to intentionally trigger an error, which will help you trace the issue.
