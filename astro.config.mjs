@@ -54,8 +54,11 @@ export default defineConfig({
       sidebar: [
         { label: "Intro", slug: "index" },
         { label: "Glossary", slug: "glossary" },
+        { label: "Architecture", slug: "architecture" },
+        { label: "API Server", slug: "api-server" },
         { label: "preloader/Main.as", slug: "preloader-main" },
         { label: "core/Main.as", slug: "core-main" },
+        { label: "core/Game.as", slug: "game" },
         {
           label: "playerio",
           collapsed: true,
