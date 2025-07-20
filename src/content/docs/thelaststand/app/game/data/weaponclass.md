@@ -4,20 +4,23 @@ slug: thelaststand/app/game/data/weaponclass
 description: WeaponClass
 ---
 
-The class of weapons in TLSDZ, not to be confused with [weapon type](/thelaststand/app/game/data/weapontype).
+WeaponClass class
 
-List of static string constants:
+## Object structure
 
-- `WeaponClass.ASSAULT_RIFLE` = `"assault_rifle"`
-- `WeaponClass.BOW` = `"bow"`
-- `WeaponClass.LAUNCHER` = `"launcher"`
-- `WeaponClass.LONG_RIFLE` = `"long_rifle"`
-- `WeaponClass.MELEE` = `"melee"`
-- `WeaponClass.PISTOL` = `"pistol"`
-- `WeaponClass.SHOTGUN` = `"shotgun"`
-- `WeaponClass.SMG` = `"smg"`
-- `WeaponClass.LMG` = `"lmg"`
-- `WeaponClass.THROWN` = `"thrown"`
-- `WeaponClass.HEAVY` = `"heavy"`
+```scala
+enum WeaponClass
 
-Usage in [`SurvivorClass`](/thelaststand/app/game/data/survivorclass): A survivor class can equip multiple types of weapons, which is why `SurvivorClass` contains an array of `WeaponClass`.
+ASSAULT_RIFLE: String = "assault_rifle"
+BOW: String = "bow"
+LAUNCHER: String = "launcher"
+LONG_RIFLE: String = "long_rifle"
+MELEE: String = "melee"
+PISTOL: String = "pistol"
+SHOTGUN: String = "shotgun"
+SMG: String = "smg"
+LMG: String = "lmg"
+THROWN: String = "thrown"
+HEAVY: String = "heavy"
+
+```

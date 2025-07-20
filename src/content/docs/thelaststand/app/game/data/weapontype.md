@@ -4,20 +4,23 @@ slug: thelaststand/app/game/data/weapontype
 description: WeaponType
 ---
 
-The type of weapons in TLSDZ, not to be confused with [weapon class](/thelaststand/app/game/data/weaponclass).
+WeaponType class
 
-List of static _unsigned integer_ constants:
+## Object structure
 
-- `NONE` = 0
-- `AUTO` = 1
-- `SEMI_AUTO` = 2
-- `ONE_HANDED` = 4
-- `TWO_HANDED` = 8
-- `IMPROVISED` = 16
-- `EXPLOSIVE` = 32
-- `BLADE` = 64
-- `BLUNT` = 128
-- `AXE` = 256
-- `SPECIAL` = 512
+```scala
+enum WeaponType
+      
+NONE: UInt = 0
+AUTO: UInt = 1
+SEMI_AUTO: UInt = 2
+ONE_HANDED: UInt = 4
+TWO_HANDED: UInt = 8
+IMPROVISED: UInt = 16
+EXPLOSIVE: UInt = 32
+BLADE: UInt = 64
+BLUNT: UInt = 128
+AXE: UInt = 256
+SPECIAL: UInt = 512
 
-Usage in [`SurvivorClass`](/thelaststand/app/game/data/survivorclass): A survivor class can be proficient at multiple types of weapons, with its specialties represented as bitmask where each bit corresponds to a `WeaponType` constants.
+```

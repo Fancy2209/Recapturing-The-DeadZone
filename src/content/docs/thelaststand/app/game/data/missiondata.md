@@ -1,0 +1,37 @@
+---
+title: MissionData
+slug: thelaststand/app/game/data/missiondata
+description: MissionData
+---
+
+MissionData class
+
+## Object structure
+
+```scala
+data MissionData
+
+id: String!
+player: SurvivorData!
+stats: MissionStats?
+xpEarned: Int!
+xp: Map<String, Int> = {}
+completed: Boolean!
+assignmentId: String!
+assignmentType: String!
+playerId: String?
+compound: Boolean!
+areaLevel: Int!
+areaId: String!
+type: String!
+suburb: String!
+automated: Boolean!
+survivors: List<String> = [] // survivor ids
+srvDown: List<String> = [] // survivor ids
+buildingsDestroyed: List<String> = [] // building ids
+returnTimer: TimerData?
+lockTimer: TimerData?
+loot: List<Item> = []
+highActivityIndex: Int?
+
+```

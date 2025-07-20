@@ -4,10 +4,15 @@ slug: thelaststand/app/game/data/gender
 description: Gender
 ---
 
-Gender of TLSDZ survivors. Only contains static string constants:
+Gender class
 
-- `Gender.MALE`: `"male"`
-- `Gender.FEMALE`: `"female"`
-- `Gender.UNKNOWN`: `"unknown"`
+## Object structure
 
-Used in [`Survivor`](/thelaststand/app/game/data/survivor) class.
+```scala
+enum Gender
+
+MALE: String = "male"
+FEMALE: String = "female"
+UNKNOWN: String = "unknown"
+
+```
