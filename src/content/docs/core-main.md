@@ -21,6 +21,7 @@ Always a WIP.
   - `joinRoom()` uses the PlayerIO [Multiplayer](/playerio/multiplayer) API to request [create and join room (API 27)](/api-server#api-27).
   - API server responds room data and the endpoint for the socket server.
   - Client connects to the socket server from the given endpoint and port.
+  - Client initially send `<policy-file-request/>` and server must reply appropriately, by allowing request from any domain to the server port (with byte 0 appended after the policy file response).
   - Client sends the initial `"join"` message which includes the data received from API 27.
   - The socket server replies with a `playerio.joinresult` message:
     - If the join is valid, send a true boolean value.
