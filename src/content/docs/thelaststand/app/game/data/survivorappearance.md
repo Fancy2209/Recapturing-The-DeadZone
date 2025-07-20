@@ -26,3 +26,13 @@ forceHair: Boolean = false
 hideGear: Boolean = false
 
 ```
+
+## Constants
+
+```scala
+enum SurvivorAppearanceConstants
+
+SLOT_UPPER_BODY: String = "clothing_upper"
+SLOT_LOWER_BODY: String = "clothing_lower"
+
+```

@@ -15,3 +15,16 @@ raw: ByteArray!
 map: Map<String, GQDataObj> = {}
 
 ```
+
+## Custom Definition
+
+```scala
+data GQDataObj
+
+id: String!
+collected: Boolean!
+contributed: Boolean!
+contributedLevel: Int!
+statValues: List<UInt> = []
+
+```

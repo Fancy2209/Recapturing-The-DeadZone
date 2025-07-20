@@ -64,3 +64,55 @@ prevLogin: PrevLogin?
 lastLogin: Long?
 notifications: List<Notification?>?
 ```
+
+### Custom Definition
+
+```scala
+data AbstractUser
+
+data: UserData!
+email: String!
+time: Long!
+defaultCurrency: String! // Currency constants
+
+```
+
+```scala
+data PlayerIOUser
+
+abstractUser: AbstractUser!
+profile: PublishingNetworkProfile!
+
+```
+
+```scala
+data PublishingNetworkProfile
+
+userId: String!
+displayName: String!
+avatarUrl: String!
+lastOnline: Long!
+countryCode: String!
+
+```
+
+```scala
+data UserData
+
+email: String!
+
+```
+
+```scala
+data HighActivity
+
+buildings: List<String>! // building ids
+
+```
+
+```scala
+data PrevLogin
+
+date: Long!
+
+```

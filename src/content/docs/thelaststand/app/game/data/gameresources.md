@@ -21,3 +21,17 @@ food: Int = 0
 ammunition: Int = 0
 
 ```
+
+## Constants
+
+```scala
+enum GameResourcesConstants
+
+CASH: String = "cash"
+WOOD: String = "wood"
+METAL: String = "metal"
+CLOTH: String = "cloth"
+WATER: String = "water"
+FOOD: String = "food"
+AMMUNITION: String = "ammunition"
+```

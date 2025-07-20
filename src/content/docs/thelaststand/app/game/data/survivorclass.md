@@ -24,3 +24,18 @@ hideHair: Boolean = false
 weapons: List<SurvivorClassWeapons>
 
 ```
+
+## Constants
+
+```scala
+enum SurvivorClassConstants
+
+FIGHTER: String = "fighter"
+MEDIC: String = "medic"
+SCAVENGER: String = "scavenger"
+ENGINEER: String = "engineer"
+RECON: String = "recon"
+PLAYER: String = "player"
+UNASSIGNED: String = "unassigned"
+
+```

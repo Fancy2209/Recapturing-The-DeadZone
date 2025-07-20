@@ -35,3 +35,17 @@ loot: List<Item> = []
 highActivityIndex: Int?
 
 ```
+
+## Constants
+
+```scala
+enum MissionDataConstants
+
+DANGER_NORMAL: Int = 0
+DANGER_LOW: Int = 0
+DANGER_MODERATE: Int = 1
+DANGER_DANGEROUS: Int = 2
+DANGER_HIGH: Int = 3
+DANGER_EXTREME: Int = 4
+
+```

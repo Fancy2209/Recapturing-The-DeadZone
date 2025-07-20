@@ -19,3 +19,16 @@ gearActive: SurvivorLoadoutData!
 supressChanges: Boolean = false
 
 ```
+
+## Constants
+
+```scala
+enum SurvivorLoadoutConstants
+
+SLOT_WEAPON: String = "weapon"
+SLOT_GEAR_PASSIVE: String = "gearPassive"
+SLOT_GEAR_ACTIVE: String = "gearActive"
+TYPE_OFFENCE: String = "offence"
+TYPE_DEFENCE: String = "defence"
+
+```

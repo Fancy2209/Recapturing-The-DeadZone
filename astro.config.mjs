@@ -105,28 +105,6 @@ export default defineConfig({
               collapsed: true,
               items: [
                 {
-                  label: "user",
-                  collapsed: true,
-                  items: [
-                    {
-                      label: "AbstractUser",
-                      slug: "thelaststand/app/data/user/abstractuser",
-                    },
-                    {
-                      label: "PlayerIOUser",
-                      slug: "thelaststand/app/data/user/playeriouser",
-                    },
-                    {
-                      label: "PublishingNetworkProfile",
-                      slug: "thelaststand/app/data/user/publishingnetworkprofile",
-                    },
-                    {
-                      label: "UserData",
-                      slug: "thelaststand/app/data/user/userdata",
-                    },
-                  ],
-                },
-                {
                   label: "AllianceDialogState",
                   slug: "thelaststand/app/data/alliancedialogstate",
                 },
@@ -145,10 +123,6 @@ export default defineConfig({
                 {
                   label: "FlagSet",
                   slug: "thelaststand/app/data/flagset",
-                },
-                {
-                  label: "HighActivity",
-                  slug: "thelaststand/app/data/highactivity",
                 },
                 {
                   label: "KeyFlags",
@@ -177,10 +151,6 @@ export default defineConfig({
                 {
                   label: "PlayerUpgrades",
                   slug: "thelaststand/app/data/playerupgrades",
-                },
-                {
-                  label: "PrevLogin",
-                  slug: "thelaststand/app/data/prevlogin",
                 },
                 {
                   label: "RequirementTypes",
@@ -239,10 +209,6 @@ export default defineConfig({
                         {
                           label: "AllianceRank",
                           slug: "thelaststand/app/game/data/alliance/alliancerank",
-                        },
-                        {
-                          label: "AllianceRankConstants",
-                          slug: "thelaststand/app/game/data/alliance/alliancerankconstants",
                         },
                         {
                           label: "AllianceRankPrivilege",
@@ -395,48 +361,12 @@ export default defineConfig({
                           slug: "thelaststand/app/game/data/quests/dynamicquest",
                         },
                         {
-                          label: "DynamicQuestGoal",
-                          slug: "thelaststand/app/game/data/quests/dynamicquestgoal",
-                        },
-                        {
-                          label: "DynamicQuestGoalEnum",
-                          slug: "thelaststand/app/game/data/quests/dynamicquestgoalenum",
-                        },
-                        {
-                          label: "DynamicQuestPenalty",
-                          slug: "thelaststand/app/game/data/quests/dynamicquestpenalty",
-                        },
-                        {
-                          label: "DynamicQuestPenaltyEnum",
-                          slug: "thelaststand/app/game/data/quests/dynamicquestpenaltyenum",
-                        },
-                        {
-                          label: "DynamicQuestReward",
-                          slug: "thelaststand/app/game/data/quests/dynamicquestreward",
-                        },
-                        {
-                          label: "DynamicQuestRewardEnum",
-                          slug: "thelaststand/app/game/data/quests/dynamicquestrewardenum",
-                        },
-                        {
-                          label: "DynamicQuestType",
-                          slug: "thelaststand/app/game/data/quests/dynamicquesttype",
-                        },
-                        {
                           label: "GlobalQuestData",
                           slug: "thelaststand/app/game/data/quests/globalquestdata",
                         },
                         {
-                          label: "GQDataObj",
-                          slug: "thelaststand/app/game/data/quests/gqdataobj",
-                        },
-                        {
                           label: "Quest",
                           slug: "thelaststand/app/game/data/quests/quest",
-                        },
-                        {
-                          label: "QuestConstants",
-                          slug: "thelaststand/app/game/data/quests/questconstants",
                         },
                       ],
                     },
@@ -557,10 +487,6 @@ export default defineConfig({
                       slug: "thelaststand/app/game/data/attributes",
                     },
                     {
-                      label: "AttributesConstants",
-                      slug: "thelaststand/app/game/data/attributesconstants",
-                    },
-                    {
                       label: "BatchRecycleJob",
                       slug: "thelaststand/app/game/data/batchrecyclejob",
                     },
@@ -613,10 +539,6 @@ export default defineConfig({
                       slug: "thelaststand/app/game/data/gameresources",
                     },
                     {
-                      label: "GameResourcesConstants",
-                      slug: "thelaststand/app/game/data/gameresourcesconstants",
-                    },
-                    {
                       label: "Gear",
                       slug: "thelaststand/app/game/data/gear",
                     },
@@ -647,10 +569,6 @@ export default defineConfig({
                     {
                       label: "ItemAttributes",
                       slug: "thelaststand/app/game/data/itemattributes",
-                    },
-                    {
-                      label: "ItemAttributesConstants",
-                      slug: "thelaststand/app/game/data/itemattributesconstants",
                     },
                     {
                       label: "ItemBindState",
@@ -689,10 +607,6 @@ export default defineConfig({
                       slug: "thelaststand/app/game/data/missiondata",
                     },
                     {
-                      label: "MissionDataConstants",
-                      slug: "thelaststand/app/game/data/missiondataconstants",
-                    },
-                    {
                       label: "MissionStats",
                       slug: "thelaststand/app/game/data/missionstats",
                     },
@@ -700,11 +614,6 @@ export default defineConfig({
                       label: "Morale",
                       slug: "thelaststand/app/game/data/morale",
                     },
-                    {
-                      label: "MoraleConstants",
-                      slug: "thelaststand/app/game/data/moraleconstants",
-                    },
-
                     {
                       label: "SchematicItem",
                       slug: "thelaststand/app/game/data/schematicitem",
@@ -719,16 +628,8 @@ export default defineConfig({
                       slug: "thelaststand/app/game/data/survivorappearance",
                     },
                     {
-                      label: "SurvivorAppearanceConstants",
-                      slug: "thelaststand/app/game/data/survivorappearanceconstants",
-                    },
-                    {
                       label: "SurvivorClass",
                       slug: "thelaststand/app/game/data/survivorclass",
-                    },
-                    {
-                      label: "SurvivorClassConstants",
-                      slug: "thelaststand/app/game/data/survivorclassconstants",
                     },
                     {
                       label: "SurvivorClassWeapons",
@@ -745,10 +646,6 @@ export default defineConfig({
                     {
                       label: "SurvivorLoadout",
                       slug: "thelaststand/app/game/data/survivorloadout",
-                    },
-                    {
-                      label: "SurvivorLoadoutConstants",
-                      slug: "thelaststand/app/game/data/survivorloadoutconstants",
                     },
                     {
                       label: "SurvivorLoadoutData",
@@ -813,10 +710,6 @@ export default defineConfig({
                 {
                   label: "RemotePlayerData",
                   slug: "thelaststand/app/network/remoteplayerdata",
-                },
-                {
-                  label: "RemotePlayerDataConstants",
-                  slug: "thelaststand/app/network/remoteplayerdataconstants",
                 },
               ],
             },
