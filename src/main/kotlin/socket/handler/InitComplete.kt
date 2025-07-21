@@ -11,7 +11,7 @@ import dev.deadzone.socket.Connection
  * 1. IC
  *
  */
-class InitComplete(private val db: BigDB) : SocketMessageHandler {
+class InitCompleteHandler(private val db: BigDB) : SocketMessageHandler {
     override fun match(message: SocketMessage): Boolean {
         return message.getString("ic") != null
     }

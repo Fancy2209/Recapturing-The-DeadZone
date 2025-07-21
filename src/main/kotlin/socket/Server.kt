@@ -2,6 +2,7 @@ package dev.deadzone.socket
 
 import dev.deadzone.core.BigDB
 import dev.deadzone.core.utils.PIODeserializer
+import dev.deadzone.socket.handler.InitCompleteHandler
 import dev.deadzone.socket.utils.SocketMessage
 import dev.deadzone.socket.utils.SocketMessageDispatcher
 import dev.deadzone.socket.handler.JoinHandler
@@ -34,6 +35,7 @@ class Server(
     val socketMessageDispatcher = SocketMessageDispatcher().apply {
         register(JoinHandler(db))
         register(QuestProgressHandler(db))
+        register(InitCompleteHandler(db))
     }
     val pushTaskDispatcher = ServerPushTaskDispatcher().apply {
         register(TimeUpdate())
