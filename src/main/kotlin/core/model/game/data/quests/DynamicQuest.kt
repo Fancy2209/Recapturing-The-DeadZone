@@ -23,78 +23,64 @@ data class DynamicQuest(
     val failurePenalties: List<DynamicQuestPenalty> = listOf()
 ) {
     companion object {
+        // Still wrong! EOF error
         fun dummy(): ByteArray {
-            val buffer = ByteBuffer.allocate(1024).order(ByteOrder.LITTLE_ENDIAN)
+            val buffer = ByteBuffer.allocate(2048).order(ByteOrder.LITTLE_ENDIAN)
 
-            buffer.putShort(2)
-
-            // Quest Type
-            buffer.putShort(1)
+            // Version and quest type
+            buffer.putShort(2)      // version
+            buffer.putShort(1)      // quest type
 
             // Quest ID
-            val questId = "comfortQuest"
-            buffer.putUTF(questId)
+            val questIdBytes = ByteArrayOutputStream()
+            DataOutputStream(questIdBytes).writeUTF("comfortQuest")
+            buffer.put(questIdBytes.toByteArray())
 
             // Booleans
-            buffer.put(0) // accepted = true
-            buffer.put(0) // complete = false
-            buffer.put(0) // collected = false
-            buffer.put(0) // failed = false
+            buffer.put(0) // accepted
+            buffer.put(0) // complete
+            buffer.put(0) // collected
+            buffer.put(0) // failed
 
-            // End time (Date)
-            buffer.putDouble(getTimeMillis().toDouble())
+            // End Time
+            buffer.putDouble(System.currentTimeMillis().toDouble())
 
-            // Goals length
+            // ----- Goals -----
             buffer.putShort(1) // 1 goal
-
-            // Create sub-bytearray for goal
             val goalData = ByteArrayOutputStream()
-            val goal = DataOutputStream(goalData)
-            // write length before each string, but this is done via writeUTF
-            goal.writeUTF("statInc")         // goal type
-            goal.writeUTF("kills")           // stat
-            goal.writeInt(10)                // goal count
-
+            val goalOut = DataOutputStream(goalData)
+            goalOut.writeUTF("statInc")
+            goalOut.writeUTF("zombieKills")
+            goalOut.writeInt(10)
             val goalBytes = goalData.toByteArray()
             buffer.putShort(goalBytes.size.toShort())
             buffer.put(goalBytes)
 
-            // ---------- Rewards ----------
+            // ----- Rewards -----
             buffer.putShort(1) // 1 reward
-
             val rewardData = ByteArrayOutputStream()
-            val reward = DataOutputStream(rewardData)
-            reward.writeShort(0)             // type = 0 (xp)
-            reward.writeInt(500)             // XP amount
-
+            val rewardOut = DataOutputStream(rewardData)
+            rewardOut.writeShort(0)      // type = xp
+            rewardOut.writeInt(500)      // xp amount
             val rewardBytes = rewardData.toByteArray()
             buffer.putShort(rewardBytes.size.toShort())
             buffer.put(rewardBytes)
 
-            // ---------- Failure Penalties ----------
+            // ----- Failure Penalties -----
             buffer.putShort(1) // 1 penalty
-
             val penaltyData = ByteArrayOutputStream()
-            val penalty = DataOutputStream(penaltyData)
-            penalty.writeShort(2)                 // type = 2 (morale)
-            penalty.writeUTF("food")             // moraleType
-            penalty.writeDouble(5.0)             // value
-
+            val penaltyOut = DataOutputStream(penaltyData)
+            penaltyOut.writeShort(2)         // type = morale
+            penaltyOut.writeUTF("comfort")      // morale type
+            penaltyOut.writeDouble(5.0)      // morale amount
             val penaltyBytes = penaltyData.toByteArray()
             buffer.putShort(penaltyBytes.size.toShort())
             buffer.put(penaltyBytes)
 
-            // ---------- Version-specific int ----------
+            // ----- Version-specific field (v2+) -----
             buffer.putInt(12345678)
 
             return buffer.array().sliceArray(0 until buffer.position())
         }
     }
-}
-
-private fun ByteBuffer.putUTF(questId: String) {
-    val utfBytes = questId.toByteArray(Charsets.UTF_8)
-    require(utfBytes.size <= 65535) { "String too long for UTF format." }
-    this.putShort(utfBytes.size.toShort()) // Length prefix
-    this.put(utfBytes)
 }

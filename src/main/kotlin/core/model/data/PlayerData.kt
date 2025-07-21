@@ -8,6 +8,7 @@ import dev.deadzone.core.model.game.data.quests.DynamicQuest
 import dev.deadzone.core.model.game.data.GameResources
 import dev.deadzone.core.model.game.data.BatchRecycleJob
 import dev.deadzone.core.model.game.data.Building
+import dev.deadzone.core.model.game.data.EffectCollection
 import dev.deadzone.core.model.game.data.bounty.InfectedBounty
 import dev.deadzone.core.model.game.data.Inventory
 import dev.deadzone.core.model.game.data.MissionData
@@ -52,7 +53,7 @@ data class PlayerData(
     val missions: List<MissionData>?,
     val assignments: List<AssignmentData>?,
     val inventory: Inventory?,
-    val effects: Map<String, String>?,
+    val effects: List<ByteArray>?, // can also be map<string, string>
     val globalEffects: Map<String, String>?,
     val cooldowns: Map<String, ByteArray>?,
     val batchRecycles: List<BatchRecycleJob>?,
@@ -61,7 +62,7 @@ data class PlayerData(
     val quests: ByteArray?,  // parsed by booleanArrayFromByteArray
     val questsCollected: ByteArray?,  // parsed by booleanArrayFromByteArray
     val achievements: ByteArray?,  // parsed by booleanArrayFromByteArray
-    val dailyQuest: DynamicQuest?,
+    val dailyQuest: ByteArray?,   // parsed to DynamicQuest via constructor
     val questsTracked: String?,  // each quest separated with |
     val gQuestsV2: Map<String, GQDataObj>?,
     val bountyCap: Int,
@@ -95,7 +96,7 @@ data class PlayerData(
                 neighbors = null,
                 friends = null,
                 neighborHistory = null,
-                research = null,
+                research = ResearchState(active = listOf(), mapOf()),
                 skills = null,
                 resources = GameResources(
                     cash = 100000,
@@ -110,13 +111,13 @@ data class PlayerData(
                     srvId, classId = SurvivorClassConstants_Constants.PLAYER
                 ),
                 playerAttributes = Attributes.dummy(),
-                buildings = BuildingCollection().list,
+                buildings = BuildingCollection.dummy(),
                 rally = null,
                 tasks = TaskCollection().list,
                 missions = null,
                 assignments = null,
                 inventory = null,
-                effects = null,
+                effects = EffectCollection().list,
                 globalEffects = null,
                 cooldowns = null,
                 batchRecycles = null,
@@ -125,7 +126,7 @@ data class PlayerData(
                 quests = boolsToByteArray(exampleBools),
                 questsCollected = boolsToByteArray(exampleBools),
                 achievements = boolsToByteArray(exampleBools),
-                dailyQuest = null,
+                dailyQuest = DynamicQuest.dummy(),
                 questsTracked = null,
                 gQuestsV2 = null,
                 bountyCap = 0,

@@ -35,7 +35,7 @@ defenceLoadout: Map<String, SurvivorLoadoutEntry?>?
 quests: ByteArray?              // parsed by booleanArrayFromByteArray
 questsCollected: ByteArray?     // parsed by booleanArrayFromByteArray
 achievements: ByteArray?        // parsed by booleanArrayFromByteArray
-dailyQuest: DynamicQuest?
+dailyQuest: ByteArray?          // parsed to DynamicQuest via constructor
 questsTracked: String?          // each quest separated with |
 gQuestsV2: Map<String, GQDataObj>?
 bountyCap: Int!
