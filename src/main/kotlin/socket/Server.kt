@@ -78,9 +78,7 @@ class Server(
             val input = socket.openReadChannel()
 
             val pushJob = coroutineScope.launch {
-                while (socket.isActive) {
-                    pushTaskDispatcher.runReadyTasks(connection)
-                }
+                pushTaskDispatcher.runReadyTasks(connection, this)
             }
 
             try {
@@ -120,6 +118,7 @@ class Server(
                 print("Error with client ${connection.socket.remoteAddress}: ${e.message}")
             } finally {
                 print("Client ${connection.socket.remoteAddress} disconnected")
+                pushTaskDispatcher.stopAllPushTasks()
                 pushJob.cancelAndJoin()
                 clients.remove(connection)
                 connection.socket.close()

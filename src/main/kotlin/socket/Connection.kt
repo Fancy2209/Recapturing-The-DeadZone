@@ -15,8 +15,6 @@ class Connection(
     var playerId: String? = null,
     private val output: ByteWriteChannel,
 ) {
-    private val readyTasks = mutableSetOf<String>()
-    private val taskSignals = mutableMapOf<String, CompletableDeferred<Unit>>()
 
     /**
      * Send raw unserialized message (non-PIO) to client
@@ -42,23 +40,6 @@ class Connection(
         val bytes = PIOSerializer.serialize(msg)
         print("Sending ${bytes.printString()}")
         output.writeFully(bytes)
-    }
-
-    /**
-     * Signal that a task is ready to be started now
-     */
-    fun signalTaskReady(taskKey: String) {
-        if (!readyTasks.contains(taskKey)) {
-            readyTasks.add(taskKey)
-            taskSignals[taskKey]?.complete(Unit)
-        }
-    }
-
-    suspend fun awaitTaskReady(taskKey: String) {
-        if (readyTasks.contains(taskKey)) return
-        val signal = CompletableDeferred<Unit>()
-        taskSignals[taskKey] = signal
-        signal.await()
     }
 
     override fun toString(): String {

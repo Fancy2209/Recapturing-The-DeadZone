@@ -11,5 +11,6 @@ import dev.deadzone.socket.Connection
  */
 interface ServerPushTask {
     val key: String
+    var shouldRun: Boolean
     suspend fun run(connection: Connection)
 }

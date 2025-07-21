@@ -2,6 +2,11 @@ package dev.deadzone.socket.utils
 
 import dev.deadzone.module.Logger
 import dev.deadzone.socket.Connection
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 /**
  * Manages and dispatches registered [ServerPushTask]s for a given socket connection.
@@ -9,28 +14,64 @@ import dev.deadzone.socket.Connection
  * This is used to modularly register tasks that the server runs independently
  * to push messages to connected clients (e.g., time update, real-time events).
  *
+ * @property tasks keep tracks registered tasks
+ * @property runningTasks List of registered tasks key which are currently run.
+ * Each has reference to coroutine job for cancellation.
+ * @property taskSignals List of pending tasks which are waiting to be started.
  */
 class ServerPushTaskDispatcher {
     private val tasks = mutableListOf<ServerPushTask>()
+    private val runningTasks = mutableMapOf<String, Job>()
+    private val taskSignals = mutableMapOf<String, CompletableDeferred<Unit>>()
 
     fun register(task: ServerPushTask) {
         tasks.add(task)
     }
 
-    /**
-     * Run ready tasks registered from [Connection.signalTaskReady]
-     */
-    suspend fun runReadyTasks(connection: Connection) {
-        tasks.forEach { task ->
-            connection.awaitTaskReady(task.key)
-            Logger.socketPrint("${task.key} is ready to run.")
+    fun signalTaskReady(taskKey: String) {
+        taskSignals.remove(taskKey)?.complete(Unit)
+    }
 
-            try {
-                task.run(connection)
-                Logger.socketPrint("${task.key} ran successfully.")
-            } catch (e: Exception) {
-                Logger.socketPrint("Error running push task '${task.key}': ${e}")
+    fun signalTaskStop(taskKey: String) {
+        runningTasks.remove(taskKey)?.cancel()
+    }
+
+    fun runReadyTasks(connection: Connection, scope: CoroutineScope) {
+        tasks.forEach { task ->
+            if (runningTasks.containsKey(task.key)) return@forEach
+
+            val job = scope.launch {
+                val signal = CompletableDeferred<Unit>()
+                taskSignals[task.key] = signal
+                signal.await()
+                Logger.socketPrint("${task.key} is ready to run.")
+
+                try {
+                    task.shouldRun = true // allow it to start
+                    task.run(connection)
+                    Logger.socketPrint("${task.key} ran successfully.")
+                } catch (_: CancellationException) {
+                    Logger.socketPrint("Push task '${task.key}' was cancelled.")
+                } catch (e: Exception) {
+                    Logger.socketPrint("Error running push task '${task.key}': ${e}")
+                } finally {
+                    runningTasks.remove(task.key)
+                }
             }
+
+            runningTasks[task.key] = job
+        }
+    }
+
+    fun stopAllPushTasks() {
+        runningTasks.values.forEach { it.cancel() }
+        runningTasks.clear()
+    }
+
+    fun onTaskComplete(taskKey: String, callback: () -> Unit) {
+        runningTasks[taskKey]?.invokeOnCompletion {
+            Logger.socketPrint("Task ${taskKey} has stopped running.")
+            callback()
         }
     }
 }
