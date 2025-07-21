@@ -2,6 +2,9 @@ package dev.deadzone.socket.utils
 
 import dev.deadzone.socket.handler.DefaultHandler
 
+/**
+ * Dispatch [SocketMessage] to a registered handler
+ */
 class SocketMessageDispatcher() {
     private val handlers = mutableListOf<SocketMessageHandler>()
 
