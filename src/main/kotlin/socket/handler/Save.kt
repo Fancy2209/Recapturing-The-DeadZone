@@ -1,10 +1,10 @@
 package dev.deadzone.socket.handler
 
-import dev.deadzone.core.BigDB
-import dev.deadzone.socket.utils.SocketMessage
-import dev.deadzone.socket.utils.SocketMessageHandler
 import dev.deadzone.module.Logger
 import dev.deadzone.socket.Connection
+import dev.deadzone.socket.ServerContext
+import dev.deadzone.socket.utils.SocketMessage
+import dev.deadzone.socket.utils.SocketMessageHandler
 
 /**
  * Handle `save` message by:
@@ -16,7 +16,7 @@ import dev.deadzone.socket.Connection
  * Client send save message and expects server to save it, that's it.
  *
  */
-class SaveHandler(private val db: BigDB) : SocketMessageHandler {
+class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
     override fun match(message: SocketMessage): Boolean {
         return message.getString("s") != null
     }

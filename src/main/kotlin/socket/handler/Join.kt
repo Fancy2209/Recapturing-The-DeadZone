@@ -1,12 +1,12 @@
 package dev.deadzone.socket.handler
 
-import dev.deadzone.core.BigDB
 import dev.deadzone.core.data.game.InMemoryDataProvider
 import dev.deadzone.core.utils.PIOSerializer
-import dev.deadzone.socket.utils.SocketMessage
-import dev.deadzone.socket.utils.SocketMessageHandler
 import dev.deadzone.module.Logger
 import dev.deadzone.socket.Connection
+import dev.deadzone.socket.ServerContext
+import dev.deadzone.socket.utils.SocketMessage
+import dev.deadzone.socket.utils.SocketMessageHandler
 import io.ktor.util.date.*
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
@@ -19,7 +19,7 @@ import java.nio.ByteOrder
  * 2. Sending `gr` message
  *
  */
-class JoinHandler(private val db: BigDB) : SocketMessageHandler {
+class JoinHandler(private val context: ServerContext) : SocketMessageHandler {
     override fun match(message: SocketMessage): Boolean {
         return message.getString("join") != null
     }

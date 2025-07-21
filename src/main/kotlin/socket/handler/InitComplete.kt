@@ -1,9 +1,9 @@
 package dev.deadzone.socket.handler
 
-import dev.deadzone.core.BigDB
 import dev.deadzone.socket.utils.SocketMessage
 import dev.deadzone.socket.utils.SocketMessageHandler
 import dev.deadzone.socket.Connection
+import dev.deadzone.socket.ServerContext
 
 /**
  * Handle `ic` message by:
@@ -11,7 +11,7 @@ import dev.deadzone.socket.Connection
  * 1. IC
  *
  */
-class InitCompleteHandler(private val db: BigDB) : SocketMessageHandler {
+class InitCompleteHandler(private val context: ServerContext) : SocketMessageHandler {
     override fun match(message: SocketMessage): Boolean {
         // IC message is null, so only check for "ic" present
         return message.contains("ic")
@@ -24,6 +24,6 @@ class InitCompleteHandler(private val db: BigDB) : SocketMessageHandler {
     ) {
         // Client part sends network INIT_COMPLETE message, with no handler attached
         // not sure the purpose of that or what it expects the server to do
-        connection.signalTaskReady("tu")
+        context.serverPushTaskDispatcher.signalTaskReady("tu")
     }
 }

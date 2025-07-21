@@ -32,13 +32,17 @@ class Server(
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
 ) {
     private val clients = Collections.synchronizedList(mutableListOf<Connection>())
-    val socketMessageDispatcher = SocketMessageDispatcher().apply {
-        register(JoinHandler(db))
-        register(QuestProgressHandler(db))
-        register(InitCompleteHandler(db))
-    }
-    val pushTaskDispatcher = ServerPushTaskDispatcher().apply {
-        register(TimeUpdate())
+    val socketDispatcher = SocketMessageDispatcher()
+    val taskDispatcher = ServerPushTaskDispatcher()
+    private val serverContext = ServerContext(socketDispatcher, taskDispatcher, db)
+
+    init {
+        with (serverContext) {
+            socketDispatcher.register(JoinHandler(this))
+            socketDispatcher.register(QuestProgressHandler(this))
+            socketDispatcher.register(InitCompleteHandler(this))
+            taskDispatcher.register(TimeUpdate(this))
+        }
     }
 
     fun start() {
@@ -78,7 +82,7 @@ class Server(
             val input = socket.openReadChannel()
 
             val pushJob = coroutineScope.launch {
-                pushTaskDispatcher.runReadyTasks(connection, this)
+                taskDispatcher.runReadyTasks(connection, this)
             }
 
             try {
@@ -105,7 +109,7 @@ class Server(
                     val deserialized = PIODeserializer.deserialize(data2)
                     val msg = SocketMessage.fromRaw(deserialized)
 
-                    socketMessageDispatcher.findHandlerFor(msg).let { handler ->
+                    socketDispatcher.findHandlerFor(msg).let { handler ->
                         handler.handle(connection, msg) { response ->
                             // Each handler serialize the message, so sendRaw directly
                             connection.sendRaw(response)
@@ -118,7 +122,7 @@ class Server(
                 print("Error with client ${connection.socket.remoteAddress}: ${e.message}")
             } finally {
                 print("Client ${connection.socket.remoteAddress} disconnected")
-                pushTaskDispatcher.stopAllPushTasks()
+                taskDispatcher.stopAllPushTasks()
                 pushJob.cancelAndJoin()
                 clients.remove(connection)
                 connection.socket.close()
