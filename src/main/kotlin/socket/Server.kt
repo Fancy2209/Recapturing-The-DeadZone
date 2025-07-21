@@ -34,10 +34,15 @@ class Server(
     private val clients = Collections.synchronizedList(mutableListOf<Connection>())
     private val socketDispatcher = SocketMessageDispatcher()
     private val taskDispatcher = ServerPushTaskDispatcher()
-    private val serverContext = ServerContext(socketDispatcher, taskDispatcher, db)
+    private val context = ServerContext(
+        db = db,
+        runTask = { key -> taskDispatcher.signalTaskReady(key) },
+        stopTask = { key -> taskDispatcher.signalTaskStop(key) },
+        onTaskStopped = { key, cb -> taskDispatcher.onTaskComplete(key, cb) }
+    )
 
     init {
-        with (serverContext) {
+        with(context) {
             socketDispatcher.register(JoinHandler(this))
             socketDispatcher.register(QuestProgressHandler(this))
             socketDispatcher.register(InitCompleteHandler(this))

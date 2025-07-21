@@ -5,7 +5,8 @@ import dev.deadzone.socket.utils.ServerPushTaskDispatcher
 import dev.deadzone.socket.utils.SocketMessageDispatcher
 
 data class ServerContext(
-    val socketMessageDispatcher: SocketMessageDispatcher,
-    val serverPushTaskDispatcher: ServerPushTaskDispatcher,
     val db: BigDB,
+    val runTask: (String) -> Unit,
+    val stopTask: (String) -> Unit,
+    val onTaskStopped: (String, () -> Unit) -> Unit,
 )

@@ -26,6 +26,6 @@ class InitCompleteHandler(private val context: ServerContext) : SocketMessageHan
         // not sure the purpose of that or what it expects the server to do
 
         // When game init is completed, periodically send time update to client
-        context.serverPushTaskDispatcher.signalTaskReady("tu")
+        context.runTask("tu")
     }
 }
