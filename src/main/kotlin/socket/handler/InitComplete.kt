@@ -28,7 +28,7 @@ class InitCompleteHandler(private val context: ServerContext) : SocketMessageHan
 
         // When game init is completed, periodically send time update to client
         context.runTask("tu")
-        context.addCompletionCallback("tu") {
+        context.addTaskCompletionCallback("tu") {
             Logger.socketPrint("tu completed from ic")
         }
     }
