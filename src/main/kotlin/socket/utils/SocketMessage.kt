@@ -31,6 +31,10 @@ class SocketMessage(private val raw: List<Any>) {
      */
     fun get(key: String): Any? = map[key]
 
+    fun contains(key: String): Boolean {
+        return map.containsKey(key)
+    }
+
     fun getString(key: String): String? = map[key] as? String
     fun getInt(key: String): Int? = (map[key] as? Number)?.toInt()
     fun getBoolean(key: String): Boolean? = map[key] as? Boolean

@@ -13,7 +13,8 @@ import dev.deadzone.socket.Connection
  */
 class InitCompleteHandler(private val db: BigDB) : SocketMessageHandler {
     override fun match(message: SocketMessage): Boolean {
-        return message.getString("ic") != null
+        // IC message is null, so only check for "ic" present
+        return message.contains("ic")
     }
 
     override suspend fun handle(
