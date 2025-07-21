@@ -50,7 +50,7 @@ class Server(
 
                     val connection = Connection(
                         socket = socket,
-                        send = { data -> socket.openWriteChannel(autoFlush = true).writeFully(data) }
+                        output = socket.openWriteChannel(autoFlush = true)
                     )
                     clients.add(connection)
                     print("New client: ${connection.socket.remoteAddress}")

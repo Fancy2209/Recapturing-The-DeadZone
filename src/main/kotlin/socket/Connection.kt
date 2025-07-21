@@ -2,6 +2,8 @@ package dev.deadzone.socket
 
 import dev.deadzone.core.utils.PIOSerializer
 import io.ktor.network.sockets.Socket
+import io.ktor.utils.io.ByteWriteChannel
+import io.ktor.utils.io.writeFully
 
 /**
  * Representation of a player connection.
@@ -10,7 +12,7 @@ import io.ktor.network.sockets.Socket
 class Connection(
     val socket: Socket,
     var playerId: String? = null,
-    private val send: suspend (ByteArray) -> Unit,
+    private val output: ByteWriteChannel,
 ) {
 
     /**
@@ -19,7 +21,7 @@ class Connection(
      * @param b raw message in bytearray
      */
     suspend fun sendRaw(b: ByteArray) {
-        send(b)
+        output.writeFully(b)
     }
 
     /**
@@ -34,7 +36,7 @@ class Connection(
             addAll(args)
         }
         val bytes = PIOSerializer.serialize(msg)
-        send(bytes)
+        output.writeFully(bytes)
     }
 
     override fun toString(): String {
