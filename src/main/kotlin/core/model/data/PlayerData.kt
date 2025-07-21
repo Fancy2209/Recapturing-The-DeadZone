@@ -32,7 +32,7 @@ data class PlayerData(
     val admin: Boolean,
     val allianceId: String,
     val allianceTag: String,
-    val flags: ByteArray?,         // deserialized to flagset
+    val flags: ByteArray?,  // deserialized to flagset (see PlayerFlags), indicates tutorial stuff
     val upgrades: ByteArray?,      // deserialized to flagset
     val nickname: String,
     val playerSurvivor: String,
@@ -83,13 +83,14 @@ data class PlayerData(
         fun dummy(): PlayerData {
             val srvId = "survivor-player"
             val exampleBools = IntRange(0, 8).map { false }
+            val exampleBools2 = listOf(true, false, true, true, true, true, true, true, true, true, true)
 
             return PlayerData(
                 key = "exampleKey",
                 admin = true,
                 allianceId = "",
                 allianceTag = "",
-                flags = FlagSet.mockFlagSetByteArray(),
+                flags = boolsToByteArray(exampleBools2),
                 upgrades = FlagSet.mockFlagSetByteArray(),
                 nickname = "dzplayer",
                 playerSurvivor = srvId,
@@ -126,7 +127,7 @@ data class PlayerData(
                 quests = boolsToByteArray(exampleBools),
                 questsCollected = boolsToByteArray(exampleBools),
                 achievements = boolsToByteArray(exampleBools),
-                dailyQuest = DynamicQuest.dummy(),
+                dailyQuest = null,
                 questsTracked = null,
                 gQuestsV2 = null,
                 bountyCap = 0,

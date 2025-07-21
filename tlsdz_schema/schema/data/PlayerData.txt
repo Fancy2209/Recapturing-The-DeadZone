@@ -5,7 +5,7 @@ user: Map<String, AbstractUser> = {}
 admin: Boolean!
 allianceId: String!              // from loginPlayerState
 allianceTag: String!             // from loginPlayerState
-flags: ByteArray?                // deserialized to FlagSet
+flags: ByteArray?,               // deserialized to flagset (see PlayerFlags), indicates tutorial stuff
 upgrades: ByteArray?             // from loginPlayerState, deserialized to FlagSet
 nickname: String!
 playerSurvivor: String!
