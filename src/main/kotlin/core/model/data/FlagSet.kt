@@ -12,7 +12,7 @@ data class FlagSet(
     val byteArray: ByteArray = byteArrayOf()
 ) {
     companion object {
-        fun mockFlagSetByteArray(bitCount: Int = 64): ByteArray {
+        fun mockFlagSetByteArray(bitCount: Int = 256): ByteArray {
             val byteSize = (bitCount + 7) / 8 // round up
             val data = ByteArray(byteSize)
 

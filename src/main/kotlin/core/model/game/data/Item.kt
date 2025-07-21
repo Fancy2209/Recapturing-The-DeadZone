@@ -26,4 +26,31 @@ data class Item(
     val name: String?,
     val specData: ItemBonusStats?,
     val duplicate: Boolean,  // added from deserialize of Inventory
-)
+) {
+    companion object {
+        fun crateTutorial(): Item {
+            return Item(
+                id = "crate-tutorial",
+                new = false,
+                storeId = null,
+                bought = false,
+                mod1 = null,
+                mod2 = null,
+                mod3 = null,
+                type = "crate",
+                level = 0,
+                qty = 1u,
+                quality = 1,
+                bind = 1u,
+                tradable = true,
+                disposable = true,
+                ctrType = null,
+                ctrVal = null,
+                craft = null,
+                name = "Crate tutorial?",
+                specData = null,
+                duplicate = TODO()
+            )
+        }
+    }
+}

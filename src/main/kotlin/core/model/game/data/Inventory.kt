@@ -11,7 +11,7 @@ data class Inventory(
     companion object {
         fun dummy(): Inventory {
             return Inventory(
-                inventory = listOf(),
+                inventory = listOf(Item.crateTutorial()),
                 schematics = byteArrayOf()
             )
         }
