@@ -2,8 +2,8 @@ package dev.deadzone.socket
 
 import dev.deadzone.core.BigDB
 import dev.deadzone.core.utils.PIODeserializer
-import dev.deadzone.core.utils.SocketMessage
-import dev.deadzone.core.utils.SocketMessageDispatcher
+import dev.deadzone.socket.utils.SocketMessage
+import dev.deadzone.socket.utils.SocketMessageDispatcher
 import dev.deadzone.socket.handler.JoinHandler
 import dev.deadzone.socket.handler.QuestProgressHandler
 import io.ktor.network.selector.*
@@ -12,6 +12,7 @@ import io.ktor.utils.io.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -68,8 +69,12 @@ class Server(
             val socket = connection.socket
             val input = socket.openReadChannel()
 
-            // Game loop here later
-            // connection.sendMessage("tick")
+            launch {
+                while (true) {
+
+                    delay(1000)
+                }
+            }
 
             try {
                 val buffer = ByteArray(4096)

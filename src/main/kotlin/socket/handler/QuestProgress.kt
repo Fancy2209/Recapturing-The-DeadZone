@@ -2,8 +2,8 @@ package dev.deadzone.socket.handler
 
 import dev.deadzone.core.BigDB
 import dev.deadzone.core.utils.PIOSerializer
-import dev.deadzone.core.utils.SocketMessage
-import dev.deadzone.core.utils.SocketMessageHandler
+import dev.deadzone.socket.utils.SocketMessage
+import dev.deadzone.socket.utils.SocketMessageHandler
 import dev.deadzone.socket.Connection
 
 /**

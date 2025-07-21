@@ -1,4 +1,4 @@
-package dev.deadzone.core.utils
+package dev.deadzone.socket.utils
 
 /**
  * A higher-level representation of game message sent to the socket server.

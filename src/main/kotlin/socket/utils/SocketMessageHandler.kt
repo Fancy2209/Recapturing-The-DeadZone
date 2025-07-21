@@ -1,4 +1,4 @@
-package dev.deadzone.core.utils
+package dev.deadzone.socket.utils
 
 import dev.deadzone.socket.Connection
 
