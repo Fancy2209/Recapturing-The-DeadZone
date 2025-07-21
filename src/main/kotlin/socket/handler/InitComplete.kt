@@ -5,14 +5,14 @@ import dev.deadzone.core.utils.SocketMessage
 import dev.deadzone.core.utils.SocketMessageHandler
 
 /**
- * Handle `save` message by:
+ * Handle `ic` message by:
  *
- * 1. Save
+ * 1. IC
  *
  */
-class SaveHandler(private val db: BigDB) : SocketMessageHandler {
+class InitComplete(private val db: BigDB) : SocketMessageHandler {
     override fun match(message: SocketMessage): Boolean {
-        return message.getString("s") != null
+        return message.getString("ic") != null
     }
 
     override suspend fun handle(
