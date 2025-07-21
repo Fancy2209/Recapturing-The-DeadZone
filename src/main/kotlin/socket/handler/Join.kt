@@ -1,7 +1,7 @@
 package dev.deadzone.socket.handler
 
 import dev.deadzone.core.BigDB
-import dev.deadzone.core.data.InMemoryDataProvider
+import dev.deadzone.core.data.game.InMemoryDataProvider
 import dev.deadzone.core.utils.PIOSerializer
 import dev.deadzone.core.utils.SocketMessage
 import dev.deadzone.core.utils.SocketMessageHandler
