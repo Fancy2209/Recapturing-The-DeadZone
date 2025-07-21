@@ -14,7 +14,7 @@ class DefaultHandler() : SocketMessageHandler {
         message: SocketMessage,
         send: suspend (ByteArray) -> Unit
     ) {
-        println("[SOCKET]: DEFAULT HANDLER NOT REGISTERED or IMPLEMENTED")
+        Logger.socketPrint("DEFAULT HANDLER NOT REGISTERED or IMPLEMENTED")
         Logger.unimplementedSocket(message)
         send(PIOSerializer.serialize(listOf("\u0000\u0000\u0000\u0000")))
     }
