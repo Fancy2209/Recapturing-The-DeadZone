@@ -4,6 +4,7 @@ import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.plugins.calllogging.CallLogging
 import io.ktor.server.routing.RoutingContext
+import java.io.File
 import kotlin.text.decodeToString
 
 fun Application.configureLogging() {
@@ -38,4 +39,17 @@ fun RoutingContext.logApiOutput(message: ByteArray, printFull: Boolean = false) 
     }
 
     call.application.environment.log.info("Sent [API ${call.parameters["path"]}]: $truncated")
+}
+
+object FileLogger {
+    private val errorLog = File("write_error.log")
+    private val unimplementedLog = File("unimplemented.log")
+
+    fun writeError(txt: Any) {
+        errorLog.appendText(txt.toString())
+    }
+
+    fun unimplementedSocket(txt: Any) {
+        unimplementedLog.appendText(txt.toString())
+    }
 }
