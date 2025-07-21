@@ -36,7 +36,7 @@ class Server(
         register(QuestProgressHandler(db))
     }
     val pushTaskDispatcher = ServerPushTaskDispatcher().apply {
-        register("tu", TimeUpdate())
+        register(TimeUpdate())
     }
 
     fun start() {
@@ -75,9 +75,9 @@ class Server(
             val socket = connection.socket
             val input = socket.openReadChannel()
 
-            val pushJob = launch {
+            val pushJob = coroutineScope.launch {
                 while (socket.isActive) {
-                    pushTaskDispatcher.runSelected(connection, listOf("tu"))
+                    pushTaskDispatcher.runReadyTasks(connection)
                 }
             }
 

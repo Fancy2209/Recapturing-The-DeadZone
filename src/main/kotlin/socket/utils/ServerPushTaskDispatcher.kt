@@ -11,25 +11,23 @@ import dev.deadzone.socket.Connection
  *
  */
 class ServerPushTaskDispatcher {
-    private val tasks = mutableMapOf<String, ServerPushTask>()
+    private val tasks = mutableListOf<ServerPushTask>()
 
-    fun register(name: String, task: ServerPushTask) {
-        tasks[name] = task
+    fun register(task: ServerPushTask) {
+        tasks.add(task)
     }
 
-    fun getTask(name: String): ServerPushTask? = tasks[name]
+    /**
+     * Run ready tasks registered from [Connection.signalTaskReady]
+     */
+    suspend fun runReadyTasks(connection: Connection) {
+        tasks.forEach { task ->
+            connection.awaitTaskReady(task.key)
 
-    suspend fun runSelected(connection: Connection, taskNames: List<String>) {
-        taskNames.forEach { name ->
-            val task = tasks[name]
-            if (task != null) {
-                try {
-                    task.run(connection)
-                } catch (e: Exception) {
-                    Logger.socketPrint("Error running push task [$name]: $e")
-                }
-            } else {
-                Logger.socketPrint("No push task registered with name: $name")
+            try {
+                task.run(connection)
+            } catch (e: Exception) {
+                Logger.socketPrint("Error running push task '${task.key}': ${e}")
             }
         }
     }

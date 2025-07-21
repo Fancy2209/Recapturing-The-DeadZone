@@ -10,5 +10,6 @@ import dev.deadzone.socket.Connection
  * without requiring a client-initiated message.
  */
 interface ServerPushTask {
+    val key: String
     suspend fun run(connection: Connection)
 }
