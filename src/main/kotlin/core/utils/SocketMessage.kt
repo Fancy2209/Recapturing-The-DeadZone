@@ -35,6 +35,12 @@ class SocketMessage(private val raw: List<Any>) {
     fun getInt(key: String): Int? = (map[key] as? Number)?.toInt()
     fun getBoolean(key: String): Boolean? = map[key] as? Boolean
     fun getBytes(key: String): ByteArray? = map[key] as? ByteArray
+    fun getMap(key: String): Map<String, Any?>? = (map[key] as? Map<*, *>)?.mapNotNull {
+        val k = it.key as? String
+        if (k != null) k to it.value else null
+    }?.toMap()
+
+    fun getList(key: String): List<Any?>? = map[key] as? List<*>
 
     fun keys(): Set<String> = map.keys
     fun values(): Collection<Any?> = map.values
