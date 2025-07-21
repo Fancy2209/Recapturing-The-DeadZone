@@ -10,7 +10,7 @@ package dev.deadzone.core.utils
  *
  */
 class SocketMessage(private val raw: List<Any>) {
-    val type: String? = if (raw.size % 2 == 1) raw.firstOrNull() as? String else null
+    val type: String? = if (raw.size % 2 == 1 && raw.size != 1) raw.firstOrNull() as? String else null
 
     private val map: Map<String, Any?> = buildMap {
         val start = if (type != null) 1 else 0
