@@ -4,6 +4,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ResearchTask(
-    val active: List<ResearchTask>?,
-    val levels: Map<String, Int>?
+    val start: Long,
+    val id: String,
+    val length: Int,
+    val category: String,
+    val group: String,
+    val level: Int,
+    val completed: Boolean,
 )
