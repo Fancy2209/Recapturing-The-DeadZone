@@ -21,6 +21,7 @@ import dev.deadzone.core.model.game.data.SurvivorLoadoutEntry
 import dev.deadzone.core.model.game.data.Task
 import dev.deadzone.core.model.game.data.TaskCollection
 import dev.deadzone.core.model.game.data.assignment.AssignmentData
+import dev.deadzone.core.model.game.data.effects.Effect
 import dev.deadzone.core.model.game.data.quests.GQDataObj
 import dev.deadzone.core.model.game.data.skills.SkillState
 import io.ktor.util.date.getTimeMillis
@@ -119,8 +120,8 @@ data class PlayerData(
                 missions = listOf(MissionData.dummy(srvId)),
                 assignments = null,
                 inventory = null,
-                effects = EffectCollection().list,
-                globalEffects = EffectCollection().list,
+                effects = listOf(Effect.dummyEffectByteArray()),
+                globalEffects = listOf(Effect.dummyEffectByteArray()),
                 cooldowns = null,
                 batchRecycles = null,
                 offenceLoadout = null,
