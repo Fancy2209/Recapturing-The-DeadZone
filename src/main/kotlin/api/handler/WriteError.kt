@@ -3,6 +3,7 @@ package dev.deadzone.api.handler
 import dev.deadzone.api.message.utils.WriteErrorArgs
 import dev.deadzone.api.message.utils.WriteErrorError
 import dev.deadzone.core.BigDB
+import dev.deadzone.module.FileLogger
 import dev.deadzone.module.PIOFraming
 import dev.deadzone.module.logApiMessage
 import dev.deadzone.module.logApiOutput
@@ -29,6 +30,7 @@ suspend fun RoutingContext.writeError(db: BigDB) {
     )
 
     logApiMessage("\n" + writeErrorArgs, true)
+    FileLogger.writeError("\n" + writeErrorArgs)
 
     val writeErrorError = ProtoBuf.encodeToByteArray<WriteErrorError>(
         WriteErrorError.dummy()

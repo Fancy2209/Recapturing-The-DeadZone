@@ -21,7 +21,10 @@ fun Application.configureRouting(db: BigDB) {
                 "27" -> createJoinRoom(db)
                 "50" -> writeError(db)
                 "85" -> loadObjects(db)
-                else -> call.respond(HttpStatusCode.NotFound, "Unimplemented API: $path")
+                else -> {
+                    FileLogger.unimplementedApi("Unimplemented API route: ${path}")
+                    call.respond(HttpStatusCode.NotFound, "Unimplemented API: $path")
+                }
             }
         }
     }
