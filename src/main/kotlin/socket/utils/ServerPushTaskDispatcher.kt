@@ -47,7 +47,6 @@ class ServerPushTaskDispatcher {
                 Logger.socketPrint("${task.key} is ready to run.")
 
                 try {
-                    task.shouldRun = true // allow it to start
                     task.run(connection)
                     Logger.socketPrint("${task.key} ran successfully.")
                 } catch (_: CancellationException) {
