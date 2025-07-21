@@ -106,10 +106,7 @@ class Server(
                     val msg = SocketMessage.fromRaw(deserialized)
 
                     socketMessageDispatcher.findHandlerFor(msg).let { handler ->
-                        print("Got msg: $msg")
-                        print("Dispatching to $handler")
                         handler.handle(connection, msg) { response ->
-                            print("Sending ${response.printString()}")
                             // Each handler serialize the message, so sendRaw directly
                             connection.sendRaw(response)
                         }

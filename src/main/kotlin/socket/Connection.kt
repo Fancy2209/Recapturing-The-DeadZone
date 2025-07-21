@@ -24,6 +24,7 @@ class Connection(
      * @param b raw message in bytearray
      */
     suspend fun sendRaw(b: ByteArray) {
+        print("Sending ${b.printString()}")
         output.writeFully(b)
     }
 
@@ -39,6 +40,7 @@ class Connection(
             addAll(args)
         }
         val bytes = PIOSerializer.serialize(msg)
+        print("Sending ${bytes.printString()}")
         output.writeFully(bytes)
     }
 

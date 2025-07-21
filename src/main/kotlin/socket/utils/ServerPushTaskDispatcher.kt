@@ -23,9 +23,11 @@ class ServerPushTaskDispatcher {
     suspend fun runReadyTasks(connection: Connection) {
         tasks.forEach { task ->
             connection.awaitTaskReady(task.key)
+            Logger.socketPrint("${task.key} is ready to run.")
 
             try {
                 task.run(connection)
+                Logger.socketPrint("${task.key} ran successfully.")
             } catch (e: Exception) {
                 Logger.socketPrint("Error running push task '${task.key}': ${e}")
             }
