@@ -19,7 +19,7 @@ data class AuthenticateOutput(
         fun dummy(): AuthenticateOutput {
             return AuthenticateOutput(
                 token = HardcodedData.TOKEN,
-                userId = HardcodedData.USER_ID,
+                userId = HardcodedData.PLAYER_ID,
                 showBranding = false,
                 playerInsightState = "",
                 isSocialNetworkUser = false,

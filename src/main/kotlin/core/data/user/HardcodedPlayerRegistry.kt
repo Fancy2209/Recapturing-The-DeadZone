@@ -5,13 +5,13 @@ import dev.deadzone.core.data.HardcodedData
 object HardcodedPlayerRegistry : PlayerRegistry {
     override val playersInfo = listOf(
         PlayerInfo(
-            userId = HardcodedData.USER_ID,
+            playerId = HardcodedData.PLAYER_ID,
             nickname = HardcodedData.NICKNAME,
             isAdmin = true
         ),
     )
 
-    override fun getPlayerById(userId: String): PlayerInfo {
-        return playersInfo.find { it.userId == userId } ?: playersInfo[0]
+    override fun getPlayerById(playerId: String): PlayerInfo {
+        return playersInfo.find { it.playerId == playerId } ?: playersInfo[0]
     }
 }
