@@ -2,6 +2,11 @@ package dev.deadzone.core.model.data
 
 import kotlinx.serialization.Serializable
 
+/**
+ * Bytearray of booleans
+ *
+ * Content of booleans depend on [PlayerFlags]
+ */
 @Serializable
 data class FlagSet(
     val byteArray: ByteArray = byteArrayOf()
