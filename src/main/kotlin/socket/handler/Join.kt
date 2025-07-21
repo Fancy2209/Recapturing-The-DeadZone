@@ -6,6 +6,7 @@ import dev.deadzone.core.utils.PIOSerializer
 import dev.deadzone.core.utils.SocketMessage
 import dev.deadzone.core.utils.SocketMessageHandler
 import dev.deadzone.module.Logger
+import dev.deadzone.socket.Connection
 import io.ktor.util.date.*
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
@@ -23,9 +24,12 @@ class JoinHandler(private val db: BigDB) : SocketMessageHandler {
         return message.getString("join") != null
     }
 
-    override suspend fun handle(message: SocketMessage, send: suspend (ByteArray) -> Unit) {
+    override suspend fun handle(connection: Connection, message: SocketMessage, send: suspend (ByteArray) -> Unit) {
         val joinKey = message.getString("join")
         Logger.socketPrint("Handling join with key: $joinKey")
+
+        val userId = message.getString("serviceUserId")
+        connection.playerId = userId
 
         // First message: join result
         val joinResultMsg = listOf("playerio.joinresult", true)

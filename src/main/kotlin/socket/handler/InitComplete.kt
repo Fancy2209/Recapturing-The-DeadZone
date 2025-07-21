@@ -3,6 +3,7 @@ package dev.deadzone.socket.handler
 import dev.deadzone.core.BigDB
 import dev.deadzone.core.utils.SocketMessage
 import dev.deadzone.core.utils.SocketMessageHandler
+import dev.deadzone.socket.Connection
 
 /**
  * Handle `ic` message by:
@@ -16,6 +17,7 @@ class InitComplete(private val db: BigDB) : SocketMessageHandler {
     }
 
     override suspend fun handle(
+        connection: Connection,
         message: SocketMessage,
         send: suspend (ByteArray) -> Unit
     ) {

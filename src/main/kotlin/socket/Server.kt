@@ -48,11 +48,13 @@ class Server(
                         continue
                     }
 
-                    val connection = Connection(socket = socket)
+                    val connection = Connection(
+                        socket = socket,
+                        send = { data -> socket.openWriteChannel(autoFlush = true).writeFully(data) }
+                    )
                     clients.add(connection)
                     print("New client: ${connection.socket.remoteAddress}")
                     handleClient(connection)
-
                 }
             } catch (e: Exception) {
                 print("ERROR starting server $e")
@@ -65,7 +67,9 @@ class Server(
         coroutineScope.launch {
             val socket = connection.socket
             val input = socket.openReadChannel()
-            val output = socket.openWriteChannel(autoFlush = true)
+
+            // Game loop here later
+            // connection.sendMessage("tick")
 
             try {
                 val buffer = ByteArray(4096)
@@ -78,7 +82,7 @@ class Server(
                     print("Received raw: ${data.printString()}")
 
                     if (data.startsWithBytes(POLICY_FILE_REQUEST.toByteArray())) {
-                        output.writeFully(POLICY_FILE_RESPONSE.toByteArray())
+                        connection.sendRaw(POLICY_FILE_RESPONSE.toByteArray())
                         print("Sent policy response")
                         break
                     }
@@ -94,9 +98,10 @@ class Server(
                     dispatcher.findHandlerFor(msg).let { handler ->
                         print("Got msg: $msg")
                         print("Dispatching to $handler")
-                        handler.handle(msg) { response ->
+                        handler.handle(connection, msg) { response ->
                             print("Sending ${response.printString()}")
-                            output.writeFully(response)
+                            // Each handler serialize the message, so sendRaw directly
+                            connection.sendRaw(response)
                         }
                     }
 
@@ -119,7 +124,6 @@ class Server(
         }
         print("Server closed.")
     }
-
 }
 
 private const val MAX_PRINT_STRING_LENGTH = 300

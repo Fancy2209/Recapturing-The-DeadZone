@@ -4,6 +4,7 @@ import dev.deadzone.core.BigDB
 import dev.deadzone.core.utils.PIOSerializer
 import dev.deadzone.core.utils.SocketMessage
 import dev.deadzone.core.utils.SocketMessageHandler
+import dev.deadzone.socket.Connection
 
 /**
  * Handle `qp` message by:
@@ -16,7 +17,7 @@ class QuestProgressHandler(private val db: BigDB) : SocketMessageHandler {
         return message.getString("qp") != null
     }
 
-    override suspend fun handle(message: SocketMessage, send: suspend (ByteArray) -> Unit) {
+    override suspend fun handle(connection: Connection, message: SocketMessage, send: suspend (ByteArray) -> Unit) {
         val message = listOf("qp", questProgressJson.trimIndent())
         send(PIOSerializer.serialize(message))
     }
