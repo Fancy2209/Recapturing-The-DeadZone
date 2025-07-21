@@ -6,9 +6,9 @@ import dev.deadzone.core.utils.SocketMessage
 import dev.deadzone.core.utils.SocketMessageHandler
 
 /**
- * Handle `join` message by:
+ * Handle `qp` message by:
  *
- * 1. Sending `qp` message
+ * 1. Sending quest progress JSON
  *
  */
 class QuestProgressHandler(private val db: BigDB) : SocketMessageHandler {
