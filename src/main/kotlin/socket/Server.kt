@@ -32,8 +32,8 @@ class Server(
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
 ) {
     private val clients = Collections.synchronizedList(mutableListOf<Connection>())
-    val socketDispatcher = SocketMessageDispatcher()
-    val taskDispatcher = ServerPushTaskDispatcher()
+    private val socketDispatcher = SocketMessageDispatcher()
+    private val taskDispatcher = ServerPushTaskDispatcher()
     private val serverContext = ServerContext(socketDispatcher, taskDispatcher, db)
 
     init {

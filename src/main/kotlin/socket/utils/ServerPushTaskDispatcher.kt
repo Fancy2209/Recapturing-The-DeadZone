@@ -44,11 +44,11 @@ class ServerPushTaskDispatcher {
                 val signal = CompletableDeferred<Unit>()
                 taskSignals[task.key] = signal
                 signal.await()
-                Logger.socketPrint("${task.key} is ready to run.")
+                Logger.socketPrint("Push task ${task.key} is ready to run.")
 
                 try {
                     task.run(connection)
-                    Logger.socketPrint("${task.key} ran successfully.")
+                    Logger.socketPrint("Push task ${task.key} ran successfully.")
                 } catch (_: CancellationException) {
                     Logger.socketPrint("Push task '${task.key}' was cancelled.")
                 } catch (e: Exception) {
@@ -69,7 +69,7 @@ class ServerPushTaskDispatcher {
 
     fun onTaskComplete(taskKey: String, callback: () -> Unit) {
         runningTasks[taskKey]?.invokeOnCompletion {
-            Logger.socketPrint("Task ${taskKey} has stopped running.")
+            Logger.socketPrint("Push task $taskKey has stopped running.")
             callback()
         }
     }
