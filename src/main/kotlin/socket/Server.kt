@@ -6,13 +6,16 @@ import dev.deadzone.socket.utils.SocketMessage
 import dev.deadzone.socket.utils.SocketMessageDispatcher
 import dev.deadzone.socket.handler.JoinHandler
 import dev.deadzone.socket.handler.QuestProgressHandler
+import dev.deadzone.socket.tasks.TimeUpdate
+import dev.deadzone.socket.utils.ServerPushTaskDispatcher
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -28,9 +31,12 @@ class Server(
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
 ) {
     private val clients = Collections.synchronizedList(mutableListOf<Connection>())
-    val dispatcher = SocketMessageDispatcher().apply {
+    val socketMessageDispatcher = SocketMessageDispatcher().apply {
         register(JoinHandler(db))
         register(QuestProgressHandler(db))
+    }
+    val pushTaskDispatcher = ServerPushTaskDispatcher().apply {
+        register(TimeUpdate())
     }
 
     fun start() {
@@ -69,10 +75,9 @@ class Server(
             val socket = connection.socket
             val input = socket.openReadChannel()
 
-            launch {
-                while (true) {
-
-                    delay(1000)
+            val pushJob = launch {
+                while (socket.isActive) {
+                    pushTaskDispatcher.startAll(connection)
                 }
             }
 
@@ -100,7 +105,7 @@ class Server(
                     val deserialized = PIODeserializer.deserialize(data2)
                     val msg = SocketMessage.fromRaw(deserialized)
 
-                    dispatcher.findHandlerFor(msg).let { handler ->
+                    socketMessageDispatcher.findHandlerFor(msg).let { handler ->
                         print("Got msg: $msg")
                         print("Dispatching to $handler")
                         handler.handle(connection, msg) { response ->
@@ -116,6 +121,7 @@ class Server(
                 print("Error with client ${connection.socket.remoteAddress}: ${e.message}")
             } finally {
                 print("Client ${connection.socket.remoteAddress} disconnected")
+                pushJob.cancelAndJoin()
                 clients.remove(connection)
                 connection.socket.close()
             }
