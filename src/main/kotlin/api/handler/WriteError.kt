@@ -30,7 +30,7 @@ suspend fun RoutingContext.writeError(db: BigDB) {
     )
 
     logApiMessage("\n" + writeErrorArgs, true)
-    FileLogger.writeError("\n" + writeErrorArgs)
+    FileLogger.writeError(writeErrorArgs)
 
     val writeErrorError = ProtoBuf.encodeToByteArray<WriteErrorError>(
         WriteErrorError.dummy()

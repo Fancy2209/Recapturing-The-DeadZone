@@ -42,19 +42,19 @@ fun RoutingContext.logApiOutput(message: ByteArray, printFull: Boolean = false) 
 }
 
 object FileLogger {
-    private val errorLog = File("write_error.log")
-    private val unimplementedApiLog = File("unimplemented.log")
-    private val unimplementedSocketLog = File("unimplemented.log")
+    private val errorLog = File("logs/write_error.log")
+    private val unimplementedApiLog = File("logs/unimplemented.log")
+    private val unimplementedSocketLog = File("logs/unimplemented.log")
 
     fun writeError(txt: Any) {
-        errorLog.appendText(txt.toString())
+        errorLog.appendText("\n" + txt.toString())
     }
 
     fun unimplementedApi(txt: Any) {
-        unimplementedApiLog.appendText(txt.toString())
+        unimplementedApiLog.appendText("\n" + txt.toString())
     }
 
     fun unimplementedSocket(txt: Any) {
-        unimplementedSocketLog.appendText(txt.toString())
+        unimplementedSocketLog.appendText("\n" + txt.toString())
     }
 }
