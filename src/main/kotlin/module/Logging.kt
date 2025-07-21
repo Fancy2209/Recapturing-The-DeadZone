@@ -41,7 +41,7 @@ fun RoutingContext.logApiOutput(message: ByteArray, printFull: Boolean = false) 
     call.application.environment.log.info("Sent [API ${call.parameters["path"]}]: $truncated")
 }
 
-object FileLogger {
+object Logger {
     private val logDir = File("logs").apply { mkdirs() }
     private val errorLog = File(logDir, "write_error.log")
     private val unimplementedApiLog = File(logDir, "unimplemented_api.log")
@@ -54,4 +54,8 @@ object FileLogger {
     fun writeError(message: Any) = logTo(errorLog, message)
     fun unimplementedApi(message: Any) = logTo(unimplementedApiLog, message)
     fun unimplementedSocket(message: Any) = logTo(unimplementedSocketLog, message)
+
+    fun socketPrint(txt: Any) {
+        println("[SOCKET]: $txt")
+    }
 }

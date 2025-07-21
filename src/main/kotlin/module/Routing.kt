@@ -22,7 +22,7 @@ fun Application.configureRouting(db: BigDB) {
                 "50" -> writeError(db)
                 "85" -> loadObjects(db)
                 else -> {
-                    FileLogger.unimplementedApi("Unimplemented API route: ${path}")
+                    Logger.unimplementedApi("Unimplemented API route: ${path}")
                     call.respond(HttpStatusCode.NotFound, "Unimplemented API: $path")
                 }
             }

@@ -3,7 +3,7 @@ package dev.deadzone.socket.handler
 import dev.deadzone.core.utils.PIOSerializer
 import dev.deadzone.core.utils.SocketMessage
 import dev.deadzone.core.utils.SocketMessageHandler
-import dev.deadzone.module.FileLogger
+import dev.deadzone.module.Logger
 
 class DefaultHandler() : SocketMessageHandler {
     override fun match(message: SocketMessage): Boolean {
@@ -15,7 +15,7 @@ class DefaultHandler() : SocketMessageHandler {
         send: suspend (ByteArray) -> Unit
     ) {
         println("[SOCKET]: DEFAULT HANDLER NOT REGISTERED or IMPLEMENTED")
-        FileLogger.unimplementedSocket(message)
+        Logger.unimplementedSocket(message)
         send(PIOSerializer.serialize(listOf("\u0000\u0000\u0000\u0000")))
     }
 }
