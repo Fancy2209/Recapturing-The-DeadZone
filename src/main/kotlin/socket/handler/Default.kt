@@ -4,6 +4,7 @@ import dev.deadzone.core.utils.PIOSerializer
 import dev.deadzone.core.utils.SocketMessage
 import dev.deadzone.core.utils.SocketMessageHandler
 import dev.deadzone.module.Logger
+import dev.deadzone.socket.Connection
 
 class DefaultHandler() : SocketMessageHandler {
     override fun match(message: SocketMessage): Boolean {
@@ -11,6 +12,7 @@ class DefaultHandler() : SocketMessageHandler {
     }
 
     override suspend fun handle(
+        connection: Connection,
         message: SocketMessage,
         send: suspend (ByteArray) -> Unit
     ) {
