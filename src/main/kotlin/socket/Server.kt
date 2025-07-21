@@ -36,7 +36,7 @@ class Server(
         register(QuestProgressHandler(db))
     }
     val pushTaskDispatcher = ServerPushTaskDispatcher().apply {
-        register(TimeUpdate())
+        register("tu", TimeUpdate())
     }
 
     fun start() {
@@ -77,7 +77,7 @@ class Server(
 
             val pushJob = launch {
                 while (socket.isActive) {
-                    pushTaskDispatcher.startAll(connection)
+                    pushTaskDispatcher.runSelected(connection, listOf("tu"))
                 }
             }
 
