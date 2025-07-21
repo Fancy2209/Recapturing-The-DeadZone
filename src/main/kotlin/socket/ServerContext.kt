@@ -8,5 +8,5 @@ data class ServerContext(
     val db: BigDB,
     val runTask: (String) -> Unit,
     val stopTask: (String) -> Unit,
-    val onTaskStopped: (String, () -> Unit) -> Unit,
+    val addCompletionCallback: (String, () -> Unit) -> Unit
 )

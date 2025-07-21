@@ -38,7 +38,7 @@ class Server(
         db = db,
         runTask = { key -> taskDispatcher.signalTaskReady(key) },
         stopTask = { key -> taskDispatcher.signalTaskStop(key) },
-        onTaskStopped = { key, cb -> taskDispatcher.onTaskComplete(key, cb) }
+        addCompletionCallback = { key, cb -> taskDispatcher.addCompletionListener(key, cb) }
     )
 
     init {

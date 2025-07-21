@@ -23,6 +23,7 @@ class ServerPushTaskDispatcher {
     private val tasks = mutableListOf<ServerPushTask>()
     private val runningTasks = mutableMapOf<String, Job>()
     private val taskSignals = mutableMapOf<String, CompletableDeferred<Unit>>()
+    private val completionListeners = mutableMapOf<String, MutableList<() -> Unit>>()
 
     fun register(task: ServerPushTask) {
         tasks.add(task)
@@ -55,6 +56,7 @@ class ServerPushTaskDispatcher {
                     Logger.socketPrint("Error running push task '${task.key}': ${e}")
                 } finally {
                     runningTasks.remove(task.key)
+                    notifyCompletion(task.key)
                 }
             }
 
@@ -67,10 +69,11 @@ class ServerPushTaskDispatcher {
         runningTasks.clear()
     }
 
-    fun onTaskComplete(taskKey: String, callback: () -> Unit) {
-        runningTasks[taskKey]?.invokeOnCompletion {
-            Logger.socketPrint("Push task $taskKey has stopped running.")
-            callback()
-        }
+    fun addCompletionListener(key: String, listener: () -> Unit) {
+        completionListeners.getOrPut(key) { mutableListOf() }.add(listener)
+    }
+
+    private fun notifyCompletion(key: String) {
+        completionListeners.remove(key)?.forEach { it.invoke() }
     }
 }

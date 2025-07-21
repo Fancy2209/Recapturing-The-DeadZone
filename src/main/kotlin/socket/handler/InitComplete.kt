@@ -1,5 +1,6 @@
 package dev.deadzone.socket.handler
 
+import dev.deadzone.module.Logger
 import dev.deadzone.socket.utils.SocketMessage
 import dev.deadzone.socket.utils.SocketMessageHandler
 import dev.deadzone.socket.Connection
@@ -27,5 +28,8 @@ class InitCompleteHandler(private val context: ServerContext) : SocketMessageHan
 
         // When game init is completed, periodically send time update to client
         context.runTask("tu")
+        context.addCompletionCallback("tu") {
+            Logger.socketPrint("tu completed from ic")
+        }
     }
 }
