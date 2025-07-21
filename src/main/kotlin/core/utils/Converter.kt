@@ -58,7 +58,7 @@ object Converter {
 
     fun toObjectProperties(obj: Any): List<ObjectProperty> {
         val reserved = setOf("key", "creator", "version")
-        val knownDateKeys = setOf("nextDZBountyIssue")
+        val knownDateKeys = setOf("nextDZBountyIssue", "lastLogout", "lastLogin", "prevLogin")
 
         return obj::class.members
             .filterIsInstance<kotlin.reflect.KProperty1<Any, *>>()

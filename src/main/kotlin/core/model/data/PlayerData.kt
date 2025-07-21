@@ -23,6 +23,7 @@ import dev.deadzone.core.model.game.data.TaskCollection
 import dev.deadzone.core.model.game.data.assignment.AssignmentData
 import dev.deadzone.core.model.game.data.quests.GQDataObj
 import dev.deadzone.core.model.game.data.skills.SkillState
+import io.ktor.util.date.getTimeMillis
 import kotlin.experimental.or
 
 @Serializable
@@ -54,7 +55,7 @@ data class PlayerData(
     val assignments: List<AssignmentData>?,
     val inventory: Inventory?,
     val effects: List<ByteArray>?, // can also be map<string, string>
-    val globalEffects: Map<String, String>?,
+    val globalEffects: List<ByteArray>?, // can also be map<string, string>
     val cooldowns: Map<String, ByteArray>?,
     val batchRecycles: List<BatchRecycleJob>?,
     val offenceLoadout: Map<String, SurvivorLoadoutEntry>?,
@@ -81,7 +82,7 @@ data class PlayerData(
     ) {
     companion object {
         fun dummy(): PlayerData {
-            val srvId = "survivor-player"
+            val srvId = "srv-player"
             val exampleBools = IntRange(0, 8).map { false }
             val exampleBools2 = listOf(true, false, true, true, true, true, true, true, true, true, true)
 
@@ -115,11 +116,11 @@ data class PlayerData(
                 buildings = BuildingCollection.dummy(),
                 rally = null,
                 tasks = TaskCollection().list,
-                missions = null,
+                missions = listOf(MissionData.dummy(srvId)),
                 assignments = null,
                 inventory = null,
                 effects = EffectCollection().list,
-                globalEffects = null,
+                globalEffects = EffectCollection().list,
                 cooldowns = null,
                 batchRecycles = null,
                 offenceLoadout = null,
@@ -131,7 +132,7 @@ data class PlayerData(
                 questsTracked = null,
                 gQuestsV2 = null,
                 bountyCap = 0,
-                lastLogout = null,
+                lastLogout = getTimeMillis() - 100000,
                 dzBounty = null,
                 nextDZBountyIssue = 1230768000000,
                 highActivity = null,
@@ -139,8 +140,8 @@ data class PlayerData(
                 zombieAttack = false,
                 zombieAttackLogins = 0,
                 offersEnabled = false,
-                prevLogin = null,
-                lastLogin = null,
+                prevLogin = PrevLogin(getTimeMillis() - 100000),
+                lastLogin = getTimeMillis() - 100000,
                 notifications = null,
             )
         }
