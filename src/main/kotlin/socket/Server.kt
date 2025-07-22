@@ -7,6 +7,7 @@ import dev.deadzone.socket.utils.SocketMessage
 import dev.deadzone.socket.utils.SocketMessageDispatcher
 import dev.deadzone.socket.handler.JoinHandler
 import dev.deadzone.socket.handler.QuestProgressHandler
+import dev.deadzone.socket.handler.SaveHandler
 import dev.deadzone.socket.tasks.TimeUpdate
 import dev.deadzone.socket.utils.ServerPushTaskDispatcher
 import io.ktor.network.selector.*
@@ -45,6 +46,7 @@ class Server(
             socketDispatcher.register(JoinHandler(this))
             socketDispatcher.register(QuestProgressHandler(this))
             socketDispatcher.register(InitCompleteHandler(this))
+            socketDispatcher.register(SaveHandler(this))
             taskDispatcher.register(TimeUpdate(this))
         }
     }
@@ -123,7 +125,7 @@ class Server(
                     print("============END=============")
                 }
             } catch (e: Exception) {
-                print("Error with client ${connection.socket.remoteAddress}: ${e.message}")
+                print("Error in socket for ${connection.socket.remoteAddress}: $e")
             } finally {
                 print("Client ${connection.socket.remoteAddress} disconnected")
                 taskDispatcher.stopAllPushTasks()
