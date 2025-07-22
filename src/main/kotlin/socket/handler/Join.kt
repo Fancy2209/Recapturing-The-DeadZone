@@ -5,12 +5,18 @@ import dev.deadzone.core.utils.PIOSerializer
 import dev.deadzone.module.Logger
 import dev.deadzone.socket.Connection
 import dev.deadzone.socket.ServerContext
+import dev.deadzone.socket.printString
 import dev.deadzone.socket.utils.SocketMessage
 import dev.deadzone.socket.utils.SocketMessageHandler
 import io.ktor.util.date.*
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+
+/**
+ *
+ *
+ */
 
 /**
  * Handle `join` message by:
@@ -50,30 +56,33 @@ class JoinHandler(private val context: ServerContext) : SocketMessageHandler {
     /**
      * Pack all xml.gz resources in data/xml/ and manually added compressed
      * resources_secondary.xml.gz in data/
+     *
+     * Core.swf doesn't request these, the server has to send it manually.
      */
     fun produceBinaries(): ByteArray {
         val xmlResources = listOf(
-            "alliances.xml.gz",
-            "arenas.xml.gz",
-            "attire.xml.gz",
-            "badwords.xml.gz",
-            "buildings.xml.gz",
-            "config.xml.gz",
-            "crafting.xml.gz",
-            "effects.xml.gz",
-            "humanenemies.xml.gz",
-            "injury.xml.gz",
-            "itemmods.xml.gz",
-            "items.xml.gz",
-            "quests.xml.gz",
-            "quests_global.xml.gz",
-            "raids.xml.gz",
-            "skills.xml.gz",
-            "streetstructs.xml.gz",
-            "survivor.xml.gz",
-            "vehiclenames.xml.gz",
-            "zombie.xml.gz",
-            "resources_secondary.xml.gz"
+            "static/game/data/resources_secondary.xml.gz",
+            "static/game/data/xml/alliances.xml.gz",
+            "static/game/data/xml/arenas.xml.gz",
+            "static/game/data/xml/attire.xml.gz",
+            "static/game/data/xml/badwords.xml.gz",
+            "static/game/data/xml/buildings.xml.gz",
+            "static/game/data/xml/config.xml.gz",
+            "static/game/data/xml/crafting.xml.gz",
+            "static/game/data/xml/effects.xml.gz",
+            "static/game/data/xml/humanenemies.xml.gz",
+            "static/game/data/xml/injury.xml.gz",
+            "static/game/data/xml/itemmods.xml.gz",
+            "static/game/data/xml/items.xml.gz",
+            "static/game/data/xml/quests.xml.gz",
+            "static/game/data/xml/quests_global.xml.gz",
+            "static/game/data/xml/raids.xml.gz",
+            "static/game/data/xml/skills.xml.gz",
+            "static/game/data/xml/streetstructs.xml.gz",
+            "static/game/data/xml/survivor.xml.gz",
+            "static/game/data/xml/vehiclenames.xml.gz",
+            "static/game/data/xml/zombie.xml.gz",
+            "static/game/data/xml/scenes/compound.xml.gz",
         )
 
         val output = ByteArrayOutputStream()
@@ -83,17 +92,18 @@ class JoinHandler(private val context: ServerContext) : SocketMessageHandler {
 
         val classLoader = Thread.currentThread().contextClassLoader
 
-        for (filename in xmlResources) {
-            val path = if (filename == "resources_secondary.xml.gz")
-                "static/game/data/$filename"
-            else
-                "static/game/data/xml/$filename"
-
+        for (path in xmlResources) {
             val inputStream = classLoader.getResourceAsStream(path)
                 ?: throw IllegalStateException("File not found in resources: $path")
             val fileBytes = inputStream.readBytes()
 
-            val uri = "xml/" + filename.removeSuffix(".gz")
+            if (path == "static/game/data/xml/scenes/compound.xml.gz") {
+                println(fileBytes.printString())
+            }
+
+            val uri = path
+                .removePrefix("static/game/data/")
+                .removeSuffix(".gz")
             val uriBytes = uri.toByteArray(Charsets.UTF_8)
 
             // 2. Write URI length as 2-byte little endian
