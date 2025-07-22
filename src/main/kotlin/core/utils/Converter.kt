@@ -71,6 +71,9 @@ object Converter {
                 } catch (e: Exception) {
                     null
                 }
+
+                if (value == null) return@mapNotNull null
+
                 if (name in knownDateKeys) {
                     ObjectProperty(name, toValueObject(value, true))
                 } else {

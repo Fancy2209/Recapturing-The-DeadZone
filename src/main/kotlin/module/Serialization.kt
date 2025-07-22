@@ -1,13 +1,12 @@
 package dev.deadzone.module
 
-import io.ktor.serialization.kotlinx.json.json
-import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.serialization.kotlinx.protobuf.*
-import io.ktor.server.application.Application
-import kotlinx.serialization.protobuf.*
 import io.ktor.server.application.*
+import io.ktor.server.plugins.contentnegotiation.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.protobuf.ProtoBuf
 
 @OptIn(ExperimentalSerializationApi::class)
 fun Application.configureSerialization() {
@@ -16,8 +15,6 @@ fun Application.configureSerialization() {
             prettyPrint = true
             isLenient = true
         })
-        protobuf(ProtoBuf {
-            encodeDefaults = false
-        })
+        protobuf(ProtoBuf)
     }
 }

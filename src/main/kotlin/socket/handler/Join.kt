@@ -83,6 +83,11 @@ class JoinHandler(private val context: ServerContext) : SocketMessageHandler {
             "static/game/data/xml/vehiclenames.xml.gz",
             "static/game/data/xml/zombie.xml.gz",
             "static/game/data/xml/scenes/compound.xml.gz",
+            "static/game/data/xml/scenes/interior-gunstore-1.xml.gz",
+            "static/game/data/xml/scenes/street-small-1.xml.gz",
+            "static/game/data/xml/scenes/street-small-2.xml.gz",
+            "static/game/data/xml/scenes/street-small-3.xml.gz",
+            "static/game/data/xml/scenes/set-motel.xml.gz",
         )
 
         val output = ByteArrayOutputStream()

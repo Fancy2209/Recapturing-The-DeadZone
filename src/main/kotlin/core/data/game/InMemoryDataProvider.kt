@@ -328,28 +328,16 @@ const val costTable = """
 
 const val loginState = """
 {
-  "settings": {
-    "volume": 0.8,
-    "language": "en"
-  },
+  "settings": {},
   "news": {},
   "sales": [],
   "allianceWinnings": {},
-  "recentPVPList": [
-    {
-      "opponent": "Player123",
-      "result": "win"
-    },
-    {
-      "opponent": "Player456",
-      "result": "loss"
-    }
-  ],
-  "invsize": 8,
+  "recentPVPList": [],
+  "invsize": 15,
   "upgrades": "",
   "allianceId": null,
   "allianceTag": null,
-  "longSession": true,
+  "longSession": false,
   "leveledUp": false,
   "promos": [],
   "promoSale": null,
