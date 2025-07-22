@@ -54,7 +54,7 @@ data class PlayerData(
     val tasks: List<Task>,
     val missions: List<MissionData>?,
     val assignments: List<AssignmentData>?,
-    val inventory: Inventory?,
+    val inventory: Inventory? = null,
     val effects: List<ByteArray>?, // can also be map<string, string>
     val globalEffects: List<ByteArray>?, // can also be map<string, string>
     val cooldowns: Map<String, ByteArray>?,
@@ -119,12 +119,12 @@ data class PlayerData(
                 tasks = TaskCollection().list,
                 missions = listOf(MissionData.dummy(srvId)),
                 assignments = null,
-                inventory = null,
+//                inventory = null,
                 effects = listOf(Effect.dummyEffectByteArray()),
                 globalEffects = listOf(Effect.dummyEffectByteArray()),
                 cooldowns = null,
                 batchRecycles = null,
-                offenceLoadout = null,
+                offenceLoadout = mapOf(srvId to SurvivorLoadoutEntry.dummy()),
                 defenceLoadout = null,
                 quests = boolsToByteArray(exampleBools),
                 questsCollected = boolsToByteArray(exampleBools),

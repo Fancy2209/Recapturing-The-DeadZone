@@ -10,8 +10,8 @@ data class Item(
     val new: Boolean = false,
     val storeId: String?,
     val bought: Boolean = false,
-    val mod1: String?,
-    val mod2: String?,
+    val mod1: String? = null,
+    val mod2: String? = null,
     val mod3: String?,
     val type: String,
     val level: Int = 0,
@@ -37,7 +37,7 @@ data class Item(
                 mod1 = null,
                 mod2 = null,
                 mod3 = null,
-                type = "crate",
+                type = "crate-tutorial",
                 level = 0,
                 qty = 1u,
                 quality = 1,
@@ -49,7 +49,7 @@ data class Item(
                 craft = null,
                 name = "Crate tutorial?",
                 specData = null,
-                duplicate = TODO()
+                duplicate = false
             )
         }
 
@@ -62,7 +62,7 @@ data class Item(
                 mod1 = null,
                 mod2 = null,
                 mod3 = null,
-                type = "gear",
+                type = "grenade-christmas-2",
                 level = 1,
                 qty = 1u,
                 quality = 1,
@@ -74,7 +74,32 @@ data class Item(
                 craft = null,
                 name = "what is this?",
                 specData = null,
-                duplicate = TODO()
+                duplicate = false
+            )
+        }
+
+        fun p90(): Item {
+            return Item(
+                id = "p90",
+                new = true,
+                storeId = null,
+                bought = false,
+                mod1 = null,
+                mod2 = null,
+                mod3 = null,
+                type = "p90",
+                level = 32,
+                qty = 1u,
+                quality = 1,
+                bind = 1u,
+                tradable = true,
+                disposable = true,
+                ctrType = null,
+                ctrVal = null,
+                craft = null,
+                name = "what is this 2?",
+                specData = null,
+                duplicate = false
             )
         }
     }

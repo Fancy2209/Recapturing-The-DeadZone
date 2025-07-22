@@ -38,7 +38,7 @@ data class Survivor(
                 classId = classId.value,
                 morale = Morale().maps,
                 injuries = InjuryList().list,
-                level = 5,
+                level = 35,
                 xp = 100,
                 missionId = null,
                 assignmentId = null,

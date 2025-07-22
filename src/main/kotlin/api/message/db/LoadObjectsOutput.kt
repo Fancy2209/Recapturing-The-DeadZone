@@ -26,7 +26,7 @@ data class LoadObjectsOutput(
         }
 
         fun inventory(): BigDBObject {
-            val data = Inventory()
+            val data = Inventory.dummy()
             return Converter.toBigDBObject<Inventory>(obj = data)
         }
     }
