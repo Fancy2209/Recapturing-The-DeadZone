@@ -16,7 +16,14 @@ Requirements:
 ## TODO
 
 Socket message to implement:
-- s (save)
+- `s` (save)
+  - has field `data` and `id`. data contains type
+  - response for this message is an object (the data depends on the sender) with message type `ss` (save success).
+  - types:
+    - [NOT IMPORTANT] type `get_offers`. initiated by `OfferSystem` to get offers.
+    - [NOT IMPORTANT] type `chat_getContactsBlocks`. initiated by `ChatSystem` to get player's contacts and blocklist.
+- [NOT IMPORTANT] `rqa` (requested zombie attack, initiated from client using Cc command)
+- `ic` (init complete): unknown what server should do. client doesn't have listener for response of `ic` message. probably client only letting server know?
 
 API to implement:
 - 30
