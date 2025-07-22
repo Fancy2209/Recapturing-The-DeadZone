@@ -258,13 +258,26 @@ object PIODeserializer {
         val offset = data.indexOfFirst { it == '{'.code.toByte() }
         return if (offset != -1) {
             try {
+                val prefixBytes = data.copyOfRange(0, offset)
                 val jsonBytes = data.copyOfRange(offset, data.size)
-                val json = jsonBytes.toString(Charsets.UTF_8)
-                listOf(json)
+                val jsonString = jsonBytes.toString(Charsets.UTF_8)
+
+                val prefix = try {
+                    deserialize(prefixBytes)
+                } catch (e: Exception) {
+                    println("Failed to parse prefix before JSON: ${e.message}")
+                    emptyList()
+                }
+
+                val result = prefix.toMutableList()
+                result.add(jsonString)
+                result
             } catch (e: Exception) {
+                println("JSON fallback failed: ${e.message}")
                 emptyList()
             }
         } else {
+            println("No JSON found in data")
             emptyList()
         }
     }
