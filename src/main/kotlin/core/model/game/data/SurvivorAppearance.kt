@@ -12,4 +12,20 @@ data class SurvivorAppearance(
     val hairColor: String?,
     val forceHair: Boolean = false,
     val hideGear: Boolean = false
-)
+) {
+    companion object {
+        fun dummy(): SurvivorAppearance {
+            // from data/models/characters/survivorClasses
+            return SurvivorAppearance(
+                skinColor = "body-1skin-light1M.jpg",
+                upper = "body-2upper-reconM",
+                lower = "body-3lower-reconM",
+                hair = "hair-M-08",
+                facialHair = null,
+                hairColor = "hair-brown",
+                forceHair = false,
+                hideGear = false
+            )
+        }
+    }
+}

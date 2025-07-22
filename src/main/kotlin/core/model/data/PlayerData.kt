@@ -137,7 +137,7 @@ data class PlayerData(
                 dzBounty = null,
                 nextDZBountyIssue = 1230768000000,
                 highActivity = null,
-                invsize = 8,
+                invsize = 16,
                 zombieAttack = false,
                 zombieAttackLogins = 0,
                 offersEnabled = false,

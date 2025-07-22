@@ -33,13 +33,14 @@ data class Building(
             )
         }
 
-        fun bed(): Building {
+        fun bed(tx: Int = 50, ty: Int = 50): Building {
             return dummy(
                 id = "bed",
                 type = "comfort",
-                tx = 100,
-                ty = 100
+                tx = tx,
+                ty = ty
             )
         }
+
     }
 }

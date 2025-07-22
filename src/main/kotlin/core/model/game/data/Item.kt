@@ -52,5 +52,30 @@ data class Item(
                 duplicate = TODO()
             )
         }
+
+        fun grenadeChristmas2(): Item {
+            return Item(
+                id = "grenade-christmas-2",
+                new = false,
+                storeId = null,
+                bought = false,
+                mod1 = null,
+                mod2 = null,
+                mod3 = null,
+                type = "gear",
+                level = 1,
+                qty = 1u,
+                quality = 1,
+                bind = 1u,
+                tradable = true,
+                disposable = true,
+                ctrType = null,
+                ctrVal = null,
+                craft = null,
+                name = "what is this?",
+                specData = null,
+                duplicate = TODO()
+            )
+        }
     }
 }

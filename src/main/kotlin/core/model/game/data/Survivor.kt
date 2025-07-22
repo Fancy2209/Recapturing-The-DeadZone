@@ -1,8 +1,8 @@
 package dev.deadzone.core.model.game.data
 
 import dev.deadzone.core.model.game.data.injury.Injury
-import kotlinx.serialization.Serializable
 import dev.deadzone.core.model.game.data.injury.InjuryList
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class Survivor(
@@ -19,8 +19,8 @@ data class Survivor(
     val xp: Int,
     val missionId: String?,
     val assignmentId: String?,
-    val reassignTimer: TimerData?,
-    val appearance: HumanAppearance?,
+    val reassignTimer: TimerData? = null,
+    val appearance: SurvivorAppearance?, // HumanAppearance > SurvivorAppearance
     val scale: Double = 1.22,
     val voice: String,
     val accessories: Map<Int, String>,  // string is accessory id
@@ -30,20 +30,20 @@ data class Survivor(
         fun dummy(id: String, classId: SurvivorClassConstants, gender: Gender): Survivor {
             return Survivor(
                 id = id,
-                title = "The survivor",
-                firstName = "The",
+                title = "Please bro",
+                firstName = "PLSBRO",
                 lastName = "survivor",
                 gender = gender.value,
-                portrait = null,
+                portrait = "https://picsum.photos/40",
                 classId = classId.value,
                 morale = Morale().maps,
                 injuries = InjuryList().list,
-                level = 1,
-                xp = 0,
+                level = 5,
+                xp = 100,
                 missionId = null,
                 assignmentId = null,
-                reassignTimer = TimerData.hasEnded(),
-                appearance = null,
+//                reassignTimer = null,
+                appearance = SurvivorAppearance.dummy(),
                 scale = 1.22,
                 voice = "asian-m",
                 accessories = mapOf(),
