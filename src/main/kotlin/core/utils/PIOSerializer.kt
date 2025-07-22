@@ -1,5 +1,13 @@
 package dev.deadzone.core.utils
 
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.booleanOrNull
+import kotlinx.serialization.json.doubleOrNull
+import kotlinx.serialization.json.longOrNull
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -256,29 +264,39 @@ object PIODeserializer {
         }
 
         val offset = data.indexOfFirst { it == '{'.code.toByte() }
-        return if (offset != -1) {
+        return (if (offset != -1) {
             try {
-                val prefixBytes = data.copyOfRange(0, offset)
                 val jsonBytes = data.copyOfRange(offset, data.size)
-                val jsonString = jsonBytes.toString(Charsets.UTF_8)
-
-                val prefix = try {
-                    deserialize(prefixBytes)
-                } catch (e: Exception) {
-                    println("Failed to parse prefix before JSON: ${e.message}")
-                    emptyList()
-                }
-
-                val result = prefix.toMutableList()
-                result.add(jsonString)
-                result
+                val json = jsonBytes.toString(Charsets.UTF_8)
+                val parsed = parseJsonToMap(json)
+                val type = parsed["_type"] as? String ?: "s"
+                listOf(type, *flattenToPairs(parsed))
             } catch (e: Exception) {
-                println("JSON fallback failed: ${e.message}")
                 emptyList()
             }
         } else {
-            println("No JSON found in data")
             emptyList()
-        }
+        }) as List<Any>
     }
+}
+
+
+fun parseJsonToMap(json: String): Map<String, Any?> {
+    return try {
+        val parsed = Json.decodeFromString<JsonObject>(json)
+        parsed.mapValues { (_, v) -> parseJsonElement(v) }
+    } catch (e: Exception) {
+        emptyMap()
+    }
+}
+
+fun parseJsonElement(el: JsonElement): Any? = when (el) {
+    is JsonPrimitive -> el.booleanOrNull ?: el.longOrNull ?: el.doubleOrNull ?: el.content
+    is JsonObject -> el.mapValues { parseJsonElement(it.value) }
+    is JsonArray -> el.map { parseJsonElement(it) }
+    else -> null
+}
+
+fun flattenToPairs(map: Map<String, Any?>): Array<Any?> {
+    return map.flatMap { listOf(it.key, it.value) }.toTypedArray()
 }
