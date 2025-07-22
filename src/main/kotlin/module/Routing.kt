@@ -7,10 +7,12 @@ import io.ktor.server.application.*
 import io.ktor.server.http.content.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import java.io.File
 
 fun Application.configureRouting(db: BigDB) {
     routing {
         staticResources("/", "static")
+        staticFiles("/game/core.swf", File("core-swf/core.swf"))
 
         post("/api/{path}") {
             val path = call.parameters["path"] ?: return@post call.respond(HttpStatusCode.BadRequest)
