@@ -1,6 +1,7 @@
 package dev.deadzone.socket.handler
 
 import dev.deadzone.core.utils.PIOSerializer
+import dev.deadzone.core.utils.parseJsonToMap
 import dev.deadzone.module.Logger
 import dev.deadzone.socket.Connection
 import dev.deadzone.socket.ServerContext
@@ -31,9 +32,10 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
         message: SocketMessage,
         send: suspend (ByteArray) -> Unit
     ) {
-        val data = message.getMap("data")
+        val body = message.getMap("s")
+        val data = body?.get("data") as? Map<String, Any?>
         val type = data?.get("_type") as? String
-        val id = data?.get("id") as? String
+        val id = body?.get("id") as? String
 
         Logger.socketPrint("Save message got: type:$type | id:$id")
 
@@ -48,8 +50,8 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
 
             "mis_start" -> {
                 val msg = listOf(
-
-                    missionStartObjectResponse
+                    "ss",
+                    missionStartObjectResponse.copy(id = id ?: "")
                 )
                 send(PIOSerializer.serialize(msg))
             }

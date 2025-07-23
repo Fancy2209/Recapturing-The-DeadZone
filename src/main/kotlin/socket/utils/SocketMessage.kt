@@ -1,5 +1,7 @@
 package dev.deadzone.socket.utils
 
+import dev.deadzone.core.utils.parseJsonToMap
+
 /**
  * A higher-level representation of game message sent to the socket server.
  *
@@ -39,10 +41,20 @@ class SocketMessage(private val raw: List<Any>) {
     fun getInt(key: String): Int? = (map[key] as? Number)?.toInt()
     fun getBoolean(key: String): Boolean? = map[key] as? Boolean
     fun getBytes(key: String): ByteArray? = map[key] as? ByteArray
-    fun getMap(key: String): Map<String, Any?>? = (map[key] as? Map<*, *>)?.mapNotNull {
-        val k = it.key as? String
-        if (k != null) k to it.value else null
-    }?.toMap()
+    fun getMap(key: String): Map<String, Any?>? {
+        val rawValue = map[key] ?: return null
+        return when (rawValue) {
+            is Map<*, *> -> rawValue as? Map<String, Any?>
+            is String -> {
+                try {
+                    parseJsonToMap(rawValue)
+                } catch (_: Exception) {
+                    null
+                }
+            }
+            else -> null
+        }
+    }
 
     fun getList(key: String): List<Any?>? = map[key] as? List<*>
 
