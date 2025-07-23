@@ -264,19 +264,34 @@ object PIODeserializer {
         }
 
         val offset = data.indexOfFirst { it == '{'.code.toByte() }
-        return (if (offset != -1) {
+
+        return if (offset != -1) {
             try {
                 val jsonBytes = data.copyOfRange(offset, data.size)
                 val json = jsonBytes.toString(Charsets.UTF_8)
                 val parsed = parseJsonToMap(json)
-                val type = parsed["_type"] as? String ?: "s"
-                listOf(type, *flattenToPairs(parsed))
+                val type = message.firstOrNull() as? String
+
+                if (type != null) {
+                    val isAlreadyWrapped = parsed.size == 1 && parsed.containsKey(type)
+
+                    val final = if (isAlreadyWrapped) {
+                        listOf(type, parsed[type]!!)
+                    } else {
+                        listOf(type, parsed)
+                    }
+                    final
+                } else {
+                    println("Cannot determine message type from partial data")
+                    emptyList()
+                }
             } catch (e: Exception) {
+                println("JSON fallback deserialization failed: ${e.message}")
                 emptyList()
             }
         } else {
             emptyList()
-        }) as List<Any>
+        }
     }
 }
 
