@@ -8,14 +8,10 @@ data class BuildingCollection(
     val list: List<Building> = listOf()
 ) {
     companion object {
-        fun dummy(): List<Building> {
+        fun dummy(l: List<Building>): List<Building> {
             return listOf(
-                Building.bed(200, 200),
-                Building.bed(400, 400),
-                Building.bed(600, 600),
-                Building.bed(100, 100),
-                Building.bed(50, 50),
-            )
+                Building.bed(15, 30),
+            ) + l
         }
     }
 }

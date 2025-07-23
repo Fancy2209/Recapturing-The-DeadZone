@@ -103,18 +103,30 @@ data class PlayerData(
                 skills = null,
                 resources = GameResources(
                     cash = 100000,
-                    wood = 100,
-                    metal = 100,
-                    cloth = 100,
-                    water = 100,
-                    food = 100,
-                    ammunition = 100
+                    wood = 99999,
+                    metal = 999999,
+                    cloth = 99999,
+                    water = 99999,
+                    food = 99999,
+                    ammunition = 99999
                 ),
                 survivors = SurvivorCollection.dummy(
                     srvId, classId = SurvivorClassConstants_Constants.PLAYER
                 ),
                 playerAttributes = Attributes.dummy(),
-                buildings = BuildingCollection.dummy(),
+                buildings = BuildingCollection.dummy(
+                    listOf(
+                        Building(id = "storage-ammunition", tx = 36, ty = 10, level = 5, rotation = 2),
+                        Building(id = "storage-cloth", tx = 30, ty = 15, level = 5, rotation = 0),
+                        Building(id = "storage-water", tx = 15, ty = 20, level = 5, rotation = 0),
+                        Building(id = "storage-metal", tx = 20, ty = 25, level = 5, rotation = 0),
+                        Building(id = "storage-ammunition", tx = 30, ty = 35, level = 5, rotation = 1),
+                        Building(id = "recycler", tx = 30, ty = 25, level = 9, rotation = 1),
+                        Building(id = "resource-fuel", tx = 30, ty = 18, level = 3, rotation = 1),
+                        Building(id = "compound-barricade-small", tx = 40, ty = 40, level = 0, rotation = 0),
+                        Building(id = "deadend", tx = 40, ty = 49, level = 0, rotation = 0),
+                    )
+                ),
                 rally = null,
                 tasks = TaskCollection().list,
                 missions = listOf(MissionData.dummy(srvId)),

@@ -7,21 +7,21 @@ import dev.deadzone.core.model.game.data.TimerData
 data class Building(
     val id: String,
     val name: String? = null,
-    val type: String,  // junk for JunkBuilding
+    val type: String = id,  // junk for JunkBuilding
     val level: Int,
     val rotation: Int,
     val tx: Int,
     val ty: Int,
-    val destroyed: Boolean,
+    val destroyed: Boolean = false,
     val resourceValue: Double = 0.0,
-    val upgrade: TimerData?,
-    val repair: TimerData?
+    val upgrade: TimerData? = null,
+    val repair: TimerData? = null
 ) {
     companion object {
         fun dummy(id: String = "", type: String = "", tx: Int = 10, ty: Int = 10): Building {
             return Building(
                 id = id,
-                type = type,
+                type = id, // must be same with id. type lookup to XML is done in client-side
                 level = 1,
                 rotation = 0,
                 tx = tx,
@@ -36,11 +36,10 @@ data class Building(
         fun bed(tx: Int = 50, ty: Int = 50): Building {
             return dummy(
                 id = "bed",
-                type = "comfort",
+                type = "bed",
                 tx = tx,
                 ty = ty
             )
         }
-
     }
 }
