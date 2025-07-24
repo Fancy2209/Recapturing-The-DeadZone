@@ -51,21 +51,66 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
         // encode JSON response to string before using PIO serialization
 
         when (type) {
-            "get_offers" -> {
-
-            }
-
-            "chat_getContactsBlocks" -> {
-
-            }
-
+            "get_offers" -> {}
+            "chat_getContactsBlocks" -> {}
             "mis_start" -> {
+                // this depends on the mission area
+//                val sceneXMLString = loadSceneXML("street-small-1.xml.gz")
+                val sceneXMLString = loadSceneXML("raid-island-compound-human-01.xml.gz")
+
+                val missionStartObjectResponse = MissionStartResponse(
+                    id = saveId ?: "",
+                    time = 200,
+                    assignmentType = "None", // for simplicity. see AssignmentType
+                    areaClass = "riversideNorth",
+                    automated = false,
+                    sceneXML = sceneXMLString,
+                    z = listOf(
+                        Zombie.fatWalker(level = 10),
+                        Zombie.fatWalker(level = 12),
+                        Zombie.fatWalker(level = 12),
+                        Zombie.fatWalker(level = 12),
+                        Zombie.fatWalker(level = 12),
+                        Zombie.fatWalker(level = 12),
+                        Zombie.fatWalker(level = 12),
+                        Zombie.fatWalker(level = 12),
+                        Zombie.fatWalker(level = 12),
+                        Zombie.fatWalker(level = 12),
+                        Zombie.fatWalker(level = 12),
+                    ),
+                    allianceAttackerEnlisting = false,
+                    allianceAttackerLockout = false,
+                    allianceAttackerAllianceId = null,
+                    allianceAttackerAllianceTag = null,
+                    allianceMatch = false,
+                    allianceRound = 0,
+                    allianceRoundActive = false,
+                    allianceError = false,
+                    allianceAttackerWinPoints = 0
+                )
+
+                val responseJson = Dependency.json.encodeToString(missionStartObjectResponse)
+
                 val msg = listOf(
                     "r",
                     saveId ?: "m",
                     getTimeMillis(),
-                    missionStartObjectResponse.copy(id = saveId ?: "")
+                    responseJson
                 )
+                send(PIOSerializer.serialize(msg))
+            }
+
+            "mis_zombies" -> {
+                val response = GetZombieResponse(max = true)
+                val responseJson = Dependency.json.encodeToString(response)
+
+                val msg = listOf(
+                    "r",
+                    saveId ?: "m",
+                    getTimeMillis(),
+                    responseJson
+                )
+                println(responseJson)
                 send(PIOSerializer.serialize(msg))
             }
 
@@ -87,7 +132,6 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                     getTimeMillis(),
                     responseJson
                 )
-                println(msg)
                 send(PIOSerializer.serialize(msg))
             }
 
@@ -108,16 +152,17 @@ data class SaveBuildingResponse(
     val skills: Map<String, SkillState>? = null, // used in NetworkMessage.SEND_RESPONSE
 )
 
-fun loadSceneXML(filePath: String): String {
-    val file = File(filePath)
-    GZIPInputStream(FileInputStream(file)).use { gzipStream ->
+fun loadSceneXML(filename: String): String {
+    val path = "static/game/data/xml/scenes/" + filename
+    val resourceStream = object {}.javaClass.classLoader.getResourceAsStream(path)
+        ?: throw IllegalArgumentException("Resource not found: $path")
+
+    GZIPInputStream(resourceStream).use { gzipStream ->
         InputStreamReader(gzipStream, Charsets.UTF_8).use { reader ->
             return reader.readText()
         }
     }
 }
-
-val sceneXMLString = loadSceneXML("static/game/data/xml/scenes/street-small-1.xml.gz")
 
 // SaveDataMethod.MISSION_START, MissionData.as line 685
 @Serializable
@@ -138,7 +183,9 @@ data class MissionStartResponse(
     val allianceRound: Int,
     val allianceRoundActive: Boolean,
     val allianceError: Boolean,
-    val allianceAttackerWinPoints: Int
+    val allianceAttackerWinPoints: Int,
+    val coins: Int? = null,
+    val skills: Map<String, SkillState>? = null,
 )
 
 @Serializable
@@ -146,26 +193,22 @@ data class Zombie(
     val id: String,
     val type: String,
     val level: Int
-)
+) {
+    companion object {
+        fun fatWalker(level: Int): Zombie {
+            return Zombie(id = "fat-walker", type = "fat-walker", level = level)
+        }
+    }
+}
 
-val missionStartObjectResponse = MissionStartResponse(
-    id = "3C8B804F-A1FB-88DE-1C26-6980A1E97E92",
-    time = 123456,
-    assignmentType = "raid",
-    areaClass = "riversideNorth",
-    automated = false,
-    sceneXML = sceneXMLString,
-    z = listOf(
-        Zombie(id = "fat-walker", type = "fat-walker", level = 10),
-        Zombie(id = "fat-walker", type = "fat-walker", level = 12)
+@Serializable
+data class GetZombieResponse(
+    val z: List<Zombie> = listOf(
+        Zombie.fatWalker(10),
+        Zombie.fatWalker(12),
+        Zombie.fatWalker(12),
+        Zombie.fatWalker(16),
+        Zombie.fatWalker(15),
     ),
-    allianceAttackerEnlisting = false,
-    allianceAttackerLockout = false,
-    allianceAttackerAllianceId = null,
-    allianceAttackerAllianceTag = null,
-    allianceMatch = false,
-    allianceRound = 0,
-    allianceRoundActive = false,
-    allianceError = false,
-    allianceAttackerWinPoints = 0
+    val max: Boolean = true, // server spawning disabled if true
 )

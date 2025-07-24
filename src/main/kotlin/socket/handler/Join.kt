@@ -12,6 +12,7 @@ import io.ktor.util.date.*
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import java.util.zip.GZIPOutputStream
 
 /**
  *
@@ -62,6 +63,7 @@ class JoinHandler(private val context: ServerContext) : SocketMessageHandler {
     fun produceBinaries(): ByteArray {
         val xmlResources = listOf(
             "static/game/data/resources_secondary.xml.gz",
+            "static/game/data/resources_mission.xml",
             "static/game/data/xml/alliances.xml.gz",
             "static/game/data/xml/arenas.xml.gz",
             "static/game/data/xml/attire.xml.gz",
@@ -100,10 +102,17 @@ class JoinHandler(private val context: ServerContext) : SocketMessageHandler {
         for (path in xmlResources) {
             val inputStream = classLoader.getResourceAsStream(path)
                 ?: throw IllegalStateException("File not found in resources: $path")
-            val fileBytes = inputStream.readBytes()
 
-            if (path == "static/game/data/xml/scenes/compound.xml.gz") {
-                println(fileBytes.printString())
+            val rawBytes = inputStream.readBytes()
+
+            val fileBytes = if (path.endsWith(".gz")) {
+                rawBytes
+            } else {
+                val compressed = ByteArrayOutputStream()
+                GZIPOutputStream(compressed).use { gzip ->
+                    gzip.write(rawBytes)
+                }
+                compressed.toByteArray()
             }
 
             val uri = path

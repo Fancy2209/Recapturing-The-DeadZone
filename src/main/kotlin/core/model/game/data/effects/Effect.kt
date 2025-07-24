@@ -56,5 +56,84 @@ data class Effect(
 
             return output.toByteArray()
         }
+
+        /**
+         * Halloween trick pumpkin zombie effect is needed for starting mission
+         */
+        fun halloweenTrickPumpkinZombie(): ByteArray {
+            val effectType = "HalloweenTrickPumpkinZombie"
+            val effectId = "halloween-pumpkinzombies"
+
+            val output = ByteArrayOutputStream()
+            val data = DataOutputStream(output)
+
+            // Write header
+            data.writeUTF(effectType)
+            data.writeUTF(effectId)
+            data.writeByte(0)         // unused byte
+            data.writeInt(0)          // _lockTime
+            data.writeInt(0)          // _cooldownTime
+
+            data.writeByte(0)         // No _timer
+            data.writeByte(0)         // No _lockoutTimer
+
+            // Write the single Halloween effect
+            val effects = listOf(
+                // Enable effect to BarricadeHealth for example
+                // this is probably actually used to modify zombie health or something
+                EffectData(100u, 1.0)
+            )
+
+            data.writeByte(effects.size) // number of effects
+            for (effect in effects) {
+                data.writeInt(effect.type.toInt())   // int (not short)
+                data.writeDouble(effect.value)       // double (not float)
+            }
+
+            data.writeByte(0) // No itemId
+
+            return output.toByteArray()
+        }
+
+        /**
+         * Halloween trick pew pew effect is needed for starting mission
+         *
+         * This is what it should do before checking pewVal > 0
+         * pewVal = Network.getInstance().playerData.compound.getEffectValue(EffectType.getTypeValue("HalloweenTrickPewPew"));
+         */
+        fun halloweenTrickPewPew(): ByteArray {
+            val effectType = "HalloweenTrickPewPew"
+            val effectId = "halloween-pewpew"
+
+            val output = ByteArrayOutputStream()
+            val data = DataOutputStream(output)
+
+            // Write header
+            data.writeUTF(effectType)
+            data.writeUTF(effectId)
+            data.writeByte(0)         // unused byte
+            data.writeInt(0)          // _lockTime
+            data.writeInt(0)          // _cooldownTime
+
+            data.writeByte(0)         // No _timer
+            data.writeByte(0)         // No _lockoutTimer
+
+            // Write the single Halloween effect
+            val effects:List<EffectData> = listOf(
+                // Enable effect to BarricadeCover for example
+                // this is probably actually used to modify gun sound or something
+                EffectData(207u, 1.0)
+            )
+
+            data.writeByte(effects.size) // number of effects
+            for (effect in effects) {
+                data.writeInt(effect.type.toInt())   // int (not short)
+                data.writeDouble(effect.value)       // double (not float)
+            }
+
+            data.writeByte(0) // No itemId
+
+            return output.toByteArray()
+        }
     }
 }

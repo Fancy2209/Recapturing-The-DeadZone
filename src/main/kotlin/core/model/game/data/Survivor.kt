@@ -34,7 +34,7 @@ data class Survivor(
                 firstName = "PLSBRO",
                 lastName = "survivor",
                 gender = gender.value,
-                portrait = "https://picsum.photos/40",
+                portrait = null,
                 classId = classId.value,
                 morale = Morale().maps,
                 injuries = InjuryList().list,

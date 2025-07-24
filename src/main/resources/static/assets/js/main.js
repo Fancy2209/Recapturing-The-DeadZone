@@ -413,3 +413,9 @@ function getParameterByName(b) {
     return decodeURIComponent(c[1].replace(/\+/g, " "));
   }
 }
+
+// MissionData.as before mission start
+function setBeforeUnloadMessage(params) {
+    console.log("[setBeforeUnloadMessage] received:", params)
+    // implement leave mission warning before unloading
+}
