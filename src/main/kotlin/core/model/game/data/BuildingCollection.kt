@@ -10,7 +10,7 @@ data class BuildingCollection(
     companion object {
         fun dummy(l: List<Building>): List<Building> {
             return listOf(
-                Building.bed(15, 30),
+                Building.bed(25, 40),
             ) + l
         }
     }
