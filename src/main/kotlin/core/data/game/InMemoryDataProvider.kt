@@ -305,26 +305,29 @@ const val SrvTable = """
 
 const val costTable = """
 {
-  "buildings": {
-    "barricade": {
-      "wood": 10,
-      "metal": 5
-    },
-    "turret": {
-      "wood": 50,
-      "metal": 25
-    }
-  },
-  "upgrades": {
-    "storage": {
-      "cost": 1000
-    },
-    "speed": {
-      "cost": 500
-    }
-  }
+  "BatchDisposal": {},
+  "BatchRecycle": {},
+  "constructionCosts": {},
+  "CraftUpgradeItem": {},
+  "CraftItem": {},
+  "SurvivorReassign": {},
+  "ArenaLaunch_<name>": {},
+  "ResearchTask": {},
+  "AllianceCreation": {},
+  "SpeedUpInfectedBounty": {},
+  "AllianceBannerEdit": {},
+  "buy_coins_<service>": {},
+  "InventoryUpgrade1": {},
+  "InventoryUpgrade2": {},
+  "InventoryUpgrade3": {},
+  "AttributeReset": {},
+  "TradeSlotUpgrade": {},
+  "DeathMobileUpgrade": {},
+  "TradeSlotUpgrade": {},
+  "InventoryUpgrade1_UNUSED": {}
 }
 """
+
 
 const val loginState = """
 {
