@@ -11,6 +11,12 @@ import kotlinx.serialization.protobuf.ProtoBuf
 @OptIn(ExperimentalSerializationApi::class)
 fun Application.configureSerialization() {
     install(ContentNegotiation) {
+        Dependency.json = Json {
+            prettyPrint = true
+            isLenient = true
+            ignoreUnknownKeys = true
+            encodeDefaults = true
+        }
         json(Json {
             prettyPrint = true
             isLenient = true
