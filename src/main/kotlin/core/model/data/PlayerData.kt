@@ -114,19 +114,7 @@ data class PlayerData(
                     srvId, classId = SurvivorClassConstants_Constants.PLAYER
                 ),
                 playerAttributes = Attributes.dummy(),
-                buildings = BuildingCollection.dummy(
-                    listOf(
-                        Building(id = "storage-ammunition", tx = 36, ty = 25, level = 5, rotation = 2),
-//                        Building(id = "storage-cloth", tx = 30, ty = 15, level = 5, rotation = 0),
-//                        Building(id = "storage-water", tx = 15, ty = 20, level = 5, rotation = 0),
-//                        Building(id = "storage-metal", tx = 20, ty = 25, level = 5, rotation = 0),
-//                        Building(id = "storage-ammunition", tx = 30, ty = 35, level = 5, rotation = 1),
-//                        Building(id = "recycler", tx = 30, ty = 25, level = 9, rotation = 1),
-//                        Building(id = "resource-fuel", tx = 30, ty = 18, level = 3, rotation = 1),
-//                        Building(id = "compound-barricade-small", tx = 40, ty = 40, level = 0, rotation = 0),
-//                        Building(id = "deadend", tx = 40, ty = 49, level = 0, rotation = 0),
-                    )
-                ),
+                buildings = BuildingCollection.simpleBase(),
                 rally = null,
                 tasks = TaskCollection().list,
                 missions = listOf(MissionData.dummy(srvId)),
