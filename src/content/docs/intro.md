@@ -15,7 +15,7 @@ TLSDZ uses [PlayerIO backend service](https://playerio.com/). Our task is to des
 
 ## Our Progress
 
-![progress](./progress.png)
+![progress](../../assets/progress.png)
 
 We are already in the game.
 
