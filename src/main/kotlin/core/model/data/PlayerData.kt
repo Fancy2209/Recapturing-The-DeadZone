@@ -109,7 +109,7 @@ data class PlayerData(
                     food = 99999,
                     ammunition = 99999
                 ),
-                survivors = SurvivorCollection.dummy(),
+                survivors = SurvivorCollection.threeSurvivors(),
                 playerAttributes = Attributes.dummy(),
                 buildings = BuildingCollection.simpleBase(),
                 rally = null,
