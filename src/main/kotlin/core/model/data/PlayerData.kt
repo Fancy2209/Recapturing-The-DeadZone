@@ -1,5 +1,6 @@
 package dev.deadzone.core.model.data
 
+import dev.deadzone.core.data.HardcodedData
 import kotlinx.serialization.Serializable
 import dev.deadzone.core.model.data.user.AbstractUser
 import dev.deadzone.core.model.game.data.Attributes
@@ -79,11 +80,9 @@ data class PlayerData(
     val prevLogin: PrevLogin?,
     val lastLogin: Long?,
     val notifications: List<Notification?>?,
-
-    ) {
+) {
     companion object {
         fun dummy(): PlayerData {
-            val srvId = "srv-player"
             val exampleBools = IntRange(0, 8).map { false }
             val exampleBools2 = listOf(true, false, true, true, true, true, true, true, true, true, true)
 
@@ -95,7 +94,7 @@ data class PlayerData(
                 flags = boolsToByteArray(exampleBools2),
                 upgrades = FlagSet.mockFlagSetByteArray(),
                 nickname = "dzplayer",
-                playerSurvivor = srvId,
+                playerSurvivor = HardcodedData.PLAYER_SRV_ID,
                 neighbors = null,
                 friends = null,
                 neighborHistory = null,
@@ -110,21 +109,19 @@ data class PlayerData(
                     food = 99999,
                     ammunition = 99999
                 ),
-                survivors = SurvivorCollection.dummy(
-                    srvId, classId = SurvivorClassConstants_Constants.PLAYER
-                ),
+                survivors = SurvivorCollection.dummy(),
                 playerAttributes = Attributes.dummy(),
                 buildings = BuildingCollection.simpleBase(),
                 rally = null,
                 tasks = TaskCollection().list,
-                missions = listOf(MissionData.dummy(srvId)),
+                missions = listOf(MissionData.dummy(HardcodedData.PLAYER_SRV_ID)),
                 assignments = null,
 //                inventory = null,
                 effects = listOf(Effect.halloweenTrickPumpkinZombie(), Effect.halloweenTrickPewPew()),
                 globalEffects = listOf(Effect.halloweenTrickPumpkinZombie(), Effect.halloweenTrickPewPew()),
                 cooldowns = null,
                 batchRecycles = null,
-                offenceLoadout = mapOf(srvId to SurvivorLoadoutEntry.dummy()),
+                offenceLoadout = mapOf(HardcodedData.PLAYER_SRV_ID to SurvivorLoadoutEntry.dummy()),
                 defenceLoadout = null,
                 quests = boolsToByteArray(exampleBools),
                 questsCollected = boolsToByteArray(exampleBools),
