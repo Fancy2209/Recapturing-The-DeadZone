@@ -56,13 +56,13 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
             "mis_start" -> {
                 // this depends on the mission area
 //                val sceneXMLString = loadSceneXML("street-small-1.xml.gz")
-                val sceneXMLString = loadSceneXML("raid-island-compound-human-01.xml.gz")
+                val sceneXMLString = loadSceneXML("exterior-cityblock-5.xml.gz")
 
                 val missionStartObjectResponse = MissionStartResponse(
                     id = saveId ?: "",
                     time = 200,
                     assignmentType = "None", // for simplicity. see AssignmentType
-                    areaClass = "riversideNorth",
+                    areaClass = "substreet",
                     automated = false,
                     sceneXML = sceneXMLString,
                     z = listOf(
@@ -136,6 +136,14 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
             }
 
             else -> {
+
+                val msg = listOf(
+                    "r",
+                    saveId ?: "m",
+                    getTimeMillis(),
+                    "{}"
+                )
+                send(PIOSerializer.serialize(msg))
                 Logger.unimplementedSocket("Handled 's' message but unhandled data type: $type from data=$data")
             }
         }
