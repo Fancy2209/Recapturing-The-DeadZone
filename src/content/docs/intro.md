@@ -15,13 +15,13 @@ TLSDZ uses [PlayerIO backend service](https://playerio.com/). Our task is to des
 
 ## Our Progress
 
-This is the furthest we have been (the latest change may have not been approved yet):
+![progress](./progress.png)
 
-<video width="800" height="600" controls>
-  <source src="progress.mp4" type="video/mp4">
-</video>
+We are already in the game.
 
-Past the loading screen, with nothing implemented further that.
+- Loaded compound successfully
+- Items are sent from server to game
+- Can enter mission, though not finishing it
 
 ### What's Next?
 
@@ -38,22 +38,29 @@ See [preloader](/preloader-main) and [core](/core-main) to know how the game wor
 
 ### Current Investigation
 
-We have implemented [API 85](/api-server#api-85) and successfully respond with a valid mocked data for `PlayerObjects`. As a result, the game get past the loading screen. Many of the data is left empty and null for the sake of progressing. We will need to understand these eventually.
-
-Any action results in error, so there are many things that need to be implemented. The primary error after getting inside the game is loading the compound. Other issues:
-
-- Survivor portrait is still empty.
-- Survivor appearance is still null.
-- Clicking survivor avatar, and doing related thing such as commit, clicking the (+) button, these are all unimplemented.
-- Radio system on the bottom.
-- We skipped survivor creation because we provided one survivor data. Perhaps we should try providing an empty survivor, so the game switches to the survivor creation screen. This must be implemented if we intend to release a demo of the game.
+Since we are already in the game, the next task isn't specific to doing something. Feel free to explore the game and test if anything is wrong.
 
 Basically: do something > if there is an error or something unintended > fix it.
 
-Unlike getting past the loading screen, there isn't a specific thing to focus now. However, the end target is to make the private server able to handle basic gameplay loop (like upgrading building, creating survivor, reading items, and raiding).
-
-:::tip
-After connected to socket server, client errors are sent to the server through [API 50](/api-server#api-50). In our private server, these errors are logged in `write_error.log`. This is particularly helpful for debugging, as the flash debugger does not always report errors. Additionally, you can modify the SWF to intentionally trigger an error, which will help you trace the issue.
-
-`Logch` is command is also useful to send log to the console of the game (can be activated by pressing `=`). Log command can be written like `Cc.logch("<identifier>", "<logmsg>")`.
+:::note
+We skipped survivor creation because we provided survivors data. Not doing so results in null error. We are also skipping tutorial to skip the hassle of implementing it.
 :::
+
+### How to Debug
+
+There are four ways to debug (the four is easiest):
+
+1. After connected to socket server, client errors are sent to the server through [API 50](/api-server#api-50). In our private server, these errors are logged in `write_error.log`. This is particularly helpful for debugging, as the flash debugger does not always report errors. Additionally, you can modify the SWF to intentionally trigger an error (by `throw`), which will help you trace the issue.
+2. `Logch` is command is also useful to send log to the console of the game (can be activated by pressing `=`). Log command can be written like `Cc.logch("<identifier>", "<logmsg>")`.
+3. Using `trace` of AS3. You will need to place `mm.cfg` in flash folder of your computer. You will also need flash debug plugin. Logs are written to `flashlogs.txt`. I haven't been able to log via this method, so you must search yourself the detail.
+4. This is the most flexible way to debug. Another way is calling `console.log` of browser via `flash.external.ExternalInterface`. You can do this by importing the mentioned package and create this function:
+
+```
+public function log(msg: String): void {
+    ExternalInterface.call("console.log", msg);
+}
+
+and call this function by: `log("message logged:" + optionalVariable)`
+```
+
+So you would decompile the `core.swf`, add the said function and logging, then recompile it.

@@ -59,6 +59,7 @@ export default defineConfig({
         { label: "preloader/Main.as", slug: "preloader-main" },
         { label: "core/Main.as", slug: "core-main" },
         { label: "core/Game.as", slug: "game" },
+        { label: "core/Tutorial.as", slug: "tutorial" },
         {
           label: "playerio",
           collapsed: true,

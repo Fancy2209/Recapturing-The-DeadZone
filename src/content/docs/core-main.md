@@ -4,8 +4,6 @@ slug: core-main
 description: Index page of the core.swf file
 ---
 
-Always a WIP.
-
 ### Game Bootstrap
 
 - The game starts with the Main class, which is invoked by the [preloader](/preloader-main).
@@ -54,4 +52,7 @@ Always a WIP.
 - The `onNetworkGameReady` method in main listens for the game ready signal and calls the `onReady` method next, which:
   - Closes the loading dialogue and removes network listeners for loading/error/start connection events.
   - Opens the "create survivor" dialogue (if necessary).
-  - If player already has a survivor, skip the creation screen and load the compound with the [`gotoCompound`](/game#gotocompound) method of `Game.as`.
+  - After survivor is created, or if player player has already created one before, game start signal will be dispatched and `Game.as` (as well as `Tutorial.as` if not finished tutorial) will enter the stage.
+  - The most important method is loading the compound with the method [`gotoCompound`](/game#gotocompound) of `Game.as`.
+ 
+Past this, everything isn't really sequential anymore, so we stop here. See also [Game](/game) and [Tutorial](/tutorial).
