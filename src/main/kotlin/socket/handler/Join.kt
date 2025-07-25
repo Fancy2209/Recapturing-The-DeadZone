@@ -62,7 +62,7 @@ class JoinHandler(private val context: ServerContext) : SocketMessageHandler {
      */
     fun produceBinaries(): ByteArray {
         val xmlResources = listOf(
-            "static/game/data/resources_secondary.xml.gz",
+            "static/game/data/resources_secondary.xml",
             "static/game/data/resources_mission.xml",
             "static/game/data/xml/alliances.xml.gz",
             "static/game/data/xml/arenas.xml.gz",
