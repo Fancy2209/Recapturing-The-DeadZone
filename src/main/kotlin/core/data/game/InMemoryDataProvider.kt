@@ -21,20 +21,22 @@ const val SrvTable = """
 {
   "fighter": {
     "id": "fighter",
-    "maleUpper": "fighter_upper_m",
-    "maleLower": "fighter_lower_m",
-    "femaleUpper": "fighter_upper_f",
-    "femaleLower": "fighter_lower_f",
+    "maleUpper": "class_fighter",
+    "maleLower": "class_fighter",
+	"maleSkinOverlay": null,
+    "femaleUpper": "class_fighter",
+    "femaleLower": "class_fighter",
+	"femaleSkinOverlay": null,
     "baseAttributes": {
-      "health": 1,
-      "combatProjectile": 1,
-      "combatMelee": 1,
-      "combatImprovised": 1,
-      "movement": 1,
-      "scavenge": 1,
-      "healing": 0,
-      "trapSpotting": 0,
-      "trapDisarming": 0
+      "health": 1.0,
+      "combatProjectile": 1.0,
+      "combatMelee": 1.0,
+      "combatImprovised": 1.0,
+      "movement": 1.0,
+      "scavenge": 1.0,
+      "healing": 0.0,
+      "trapSpotting": 0.0,
+      "trapDisarming": 0.0
     },
     "levelAttributes": {
       "health": 0.1,
@@ -49,22 +51,23 @@ const val SrvTable = """
     },
     "weapons": {
       "classes": [
-        "rifle",
-        "melee"
+        "assault_rifle",
+        "lmg",
+		"melee",
+		"heavy"
       ],
-      "types": [
-        "primary",
-        "secondary"
-      ]
+      "types": []
     },
     "hideHair": false
   },
   "medic": {
     "id": "medic",
-    "maleUpper": "fighter_upper_m",
-    "maleLower": "fighter_lower_m",
-    "femaleUpper": "fighter_upper_f",
-    "femaleLower": "fighter_lower_f",
+    "maleUpper": "class_medic",
+    "maleLower": "class_medic",
+	"maleSkinOverlay": null,
+    "femaleUpper": "class_medic",
+    "femaleLower": "class_medic",
+	"femaleSkinOverlay": null,
     "baseAttributes": {
       "health": 1.0,
       "combatProjectile": 0.6,
@@ -89,22 +92,23 @@ const val SrvTable = """
     },
     "weapons": {
       "classes": [
-        "rifle",
-        "melee"
+        "pistol",
+        "smg"
       ],
       "types": [
-        "primary",
-        "secondary"
+        "BLADE"
       ]
     },
     "hideHair": false
   },
   "scavenger": {
     "id": "scavenger",
-    "maleUpper": "fighter_upper_m",
-    "maleLower": "fighter_lower_m",
-    "femaleUpper": "fighter_upper_f",
-    "femaleLower": "fighter_lower_f",
+    "maleUpper": "class_scavenger",
+    "maleLower": "class_scavenger",
+	"maleSkinOverlay": null,
+    "femaleUpper": "class_scavenger",
+    "femaleLower": "class_scavenger",
+	"femaleSkinOverlay": null,
     "baseAttributes": {
       "health": 0.9,
       "combatProjectile": 0.5,
@@ -129,22 +133,24 @@ const val SrvTable = """
     },
     "weapons": {
       "classes": [
-        "rifle",
-        "melee"
+        "pistol",
+        "shotgun",
+		"bow"
       ],
       "types": [
-        "primary",
-        "secondary"
+        "BLUNT"
       ]
     },
     "hideHair": false
   },
   "engineer": {
     "id": "engineer",
-    "maleUpper": "fighter_upper_m",
-    "maleLower": "fighter_lower_m",
-    "femaleUpper": "fighter_upper_f",
-    "femaleLower": "fighter_lower_f",
+    "maleUpper": "class_engineer",
+    "maleLower": "class_engineer",
+	"maleSkinOverlay": null,
+    "femaleUpper": "class_engineer",
+    "femaleLower": "class_engineer",
+	"femaleSkinOverlay": null,
     "baseAttributes": {
       "health": 1.0,
       "combatProjectile": 0.6,
@@ -168,23 +174,21 @@ const val SrvTable = """
       "trapDisarming": 0.01
     },
     "weapons": {
-      "classes": [
-        "rifle",
-        "melee"
-      ],
+      "classes": [],
       "types": [
-        "primary",
-        "secondary"
+        "IMPROVISED"
       ]
     },
     "hideHair": false
   },
   "recon": {
     "id": "recon",
-    "maleUpper": "fighter_upper_m",
-    "maleLower": "fighter_lower_m",
-    "femaleUpper": "fighter_upper_f",
-    "femaleLower": "fighter_lower_f",
+    "maleUpper": "class_recon",
+    "maleLower": "class_recon",
+	"maleSkinOverlay": null,
+    "femaleUpper": "class_recon",
+    "femaleLower": "class_recon",
+	"femaleSkinOverlay": null,
     "baseAttributes": {
       "health": 1.0,
       "combatProjectile": 1.4,
@@ -209,22 +213,23 @@ const val SrvTable = """
     },
     "weapons": {
       "classes": [
-        "rifle",
-        "melee"
+        "assault_rifle",
+        "long_rifle"
       ],
       "types": [
-        "primary",
-        "secondary"
+        "BLADE"
       ]
     },
-    "hideHair": false
+    "hideHair": true
   },
   "player": {
     "id": "player",
-    "maleUpper": "fighter_upper_m",
-    "maleLower": "fighter_lower_m",
-    "femaleUpper": "fighter_upper_f",
-    "femaleLower": "fighter_lower_f",
+    "maleUpper": "body-upper-tshirtm",
+    "maleLower": "body-lower-pantsm",
+	"maleSkinOverlay": null,
+    "femaleUpper": "body-upper-tshirtf",
+    "femaleLower": "body-lower-skirtf",
+	"femaleSkinOverlay": null,
     "baseAttributes": {
       "health": 1.0,
       "combatProjectile": 1.0,
@@ -249,22 +254,30 @@ const val SrvTable = """
     },
     "weapons": {
       "classes": [
-        "rifle",
-        "melee"
+        "assault_rifle",
+		"bow",
+		"launcher",
+		"long_rifle",
+		"melee",
+		"pistol",
+		"shotgun",
+		"smg",
+		"lmg",
+		"thrown",
+		"heavy"
       ],
-      "types": [
-        "primary",
-        "secondary"
-      ]
+      "types": []
     },
     "hideHair": false
   },
   "unassigned": {
     "id": "unassigned",
-    "maleUpper": "fighter_upper_m",
-    "maleLower": "fighter_lower_m",
-    "femaleUpper": "fighter_upper_f",
-    "femaleLower": "fighter_lower_f",
+    "maleUpper": "body-upper-tshirtm",
+    "maleLower": "body-lower-pantsm",
+	"maleSkinOverlay": null,
+    "femaleUpper": "body-upper-tshirtf",
+    "femaleLower": "body-lower-skirtf",
+	"femaleSkinOverlay": null,
     "baseAttributes": {
       "health": 0,
       "combatProjectile": 0,
