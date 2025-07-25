@@ -709,6 +709,18 @@ export default defineConfig({
               collapsed: true,
               items: [
                 {
+                  label: "Network",
+                  slug: "thelaststand/app/network/network",
+                },
+                {
+                  label: "NetworkMessage",
+                  slug: "thelaststand/app/network/networkmessage",
+                },
+                {
+                  label: "PlayerIOConnector",
+                  slug: "thelaststand/app/network/playerioconnector",
+                },
+                {
                   label: "RemotePlayerData",
                   slug: "thelaststand/app/network/remoteplayerdata",
                 },
