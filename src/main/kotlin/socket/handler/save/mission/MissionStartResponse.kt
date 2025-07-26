@@ -1,7 +1,7 @@
 package dev.deadzone.socket.handler.save.mission
 
 import dev.deadzone.core.model.game.data.Zombie
-import dev.deadzone.core.model.game.data.skills.SkillState
+import dev.deadzone.socket.handler.save.BaseResponse
 import kotlinx.serialization.Serializable
 import java.io.InputStreamReader
 import java.util.zip.GZIPInputStream
@@ -26,9 +26,7 @@ data class MissionStartResponse(
     val allianceRoundActive: Boolean,
     val allianceError: Boolean,
     val allianceAttackerWinPoints: Int,
-    val coins: Int? = null,
-    val skills: Map<String, SkillState>? = null,
-)
+): BaseResponse()
 
 fun decideSceneXML(): String {
     return ""

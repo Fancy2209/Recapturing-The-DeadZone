@@ -51,10 +51,10 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 // IMPORTANT NOTE: the scene that involves human model is not working now (e.g., raid island human)
                 // the same error is for survivor class if you fill SurvivorAppereance non-null value
                 // The error was 'cylic object' thing.
-//                val sceneXMLString = loadSceneXML("street-small-1.xml.gz")
-//                val sceneXMLString = loadSceneXML("exterior-cityblock-5.xml.gz")
-//                val sceneXMLString = loadSceneXML("exterior-stadium-1-no-spawn.xml.gz")
-                val sceneXMLString = loadSceneXML("interior-subway-large-3.xml.gz")
+//                val sceneXMLString = "street-small-1.xml.gz"
+//                val sceneXMLString = "exterior-cityblock-5.xml.gz"
+//                val sceneXMLString = "exterior-stadium-1-no-spawn.xml.gz"
+                val sceneXMLString = "interior-subway-large-3.xml.gz"
 
                 val missionStartObjectResponse = MissionStartResponse(
                     id = saveId ?: "",
@@ -105,6 +105,10 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
 
             "mis_interacted" -> {
                 Logger.socketPrint("===First interaction received===")
+            }
+
+            "mis_end" -> {
+
             }
 
             "mis_zombies" -> {

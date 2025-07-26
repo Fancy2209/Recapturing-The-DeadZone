@@ -1,6 +1,7 @@
 package dev.deadzone.socket.handler.save.mission
 
 import dev.deadzone.core.model.game.data.Zombie
+import dev.deadzone.socket.handler.save.BaseResponse
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -13,4 +14,4 @@ data class GetZombieResponse(
         Zombie.fatWalker(15),
     ),
     val max: Boolean = true, // server spawning disabled if true
-)
+): BaseResponse()
