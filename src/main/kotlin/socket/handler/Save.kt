@@ -1,33 +1,26 @@
 package dev.deadzone.socket.handler
 
-import dev.deadzone.core.model.game.data.GameResources
-import dev.deadzone.core.model.game.data.skills.SkillCollection
-import dev.deadzone.core.model.game.data.skills.SkillState
+import dev.deadzone.core.model.game.data.Zombie
 import dev.deadzone.core.utils.PIOSerializer
 import dev.deadzone.module.Dependency
 import dev.deadzone.module.Logger
 import dev.deadzone.socket.Connection
 import dev.deadzone.socket.ServerContext
+import dev.deadzone.socket.handler.save.compound.SaveBuildingResponse
+import dev.deadzone.socket.handler.save.mission.GetZombieResponse
+import dev.deadzone.socket.handler.save.mission.MissionStartResponse
+import dev.deadzone.socket.handler.save.mission.loadSceneXML
 import dev.deadzone.socket.utils.SocketMessage
 import dev.deadzone.socket.utils.SocketMessageHandler
-import io.ktor.util.date.getTimeMillis
-import kotlinx.serialization.EncodeDefault
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
-import java.io.File
-import java.io.FileInputStream
-import java.io.InputStreamReader
-import java.util.zip.GZIPInputStream
-import kotlin.collections.mapOf
+import io.ktor.util.date.*
 
 /**
  * Handle `save` message by:
  *
- * 1. Save
- *
- *
- * Save message is allegedly one-way signal from client to server.
- * Client send save message and expects server to save it, that's it.
+ * 1. Receive the `data`, `_type`, and `id` for the said message.
+ * 2. Route the save into the corresponding handler based on `_type`.
+ * 3. Handlers determine what to do based on the given `data`.
+ * 4. Optionally, response back a message of type 'r' with the expected JSON payload.
  *
  */
 class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
@@ -69,7 +62,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                     assignmentType = "None", // for simplicity. see AssignmentType
                     areaClass = "substreet",
                     automated = false,
-                    sceneXML = sceneXMLString,
+                    rawSceneXML = loadSceneXML(sceneXMLString),
                     z = listOf(
                         Zombie.fatWalker(level = 10),
                         Zombie.fatWalker(level = 12),
@@ -150,7 +143,6 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
             }
 
             else -> {
-
                 val msg = listOf(
                     "r",
                     saveId ?: "m",
@@ -163,74 +155,3 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
         }
     }
 }
-
-@Serializable
-data class SaveBuildingResponse(
-    val success: Boolean = true,
-    val x: Int,
-    val y: Int,
-    val r: Int,
-    val coins: Int? = null, // used in NetworkMessage.SEND_RESPONSE, interpreted as CASH
-    val skills: Map<String, SkillState>? = null, // used in NetworkMessage.SEND_RESPONSE
-)
-
-fun loadSceneXML(filename: String): String {
-    val path = "static/game/data/xml/scenes/" + filename
-    val resourceStream = object {}.javaClass.classLoader.getResourceAsStream(path)
-        ?: throw IllegalArgumentException("Resource not found: $path")
-
-    GZIPInputStream(resourceStream).use { gzipStream ->
-        InputStreamReader(gzipStream, Charsets.UTF_8).use { reader ->
-            return reader.readText()
-        }
-    }
-}
-
-// SaveDataMethod.MISSION_START, MissionData.as line 685
-@Serializable
-data class MissionStartResponse(
-    val disabled: Boolean = false,
-    val id: String,
-    val time: Int,
-    val assignmentType: String,
-    val areaClass: String,
-    val automated: Boolean = false,
-    val sceneXML: String,
-    val z: List<Zombie>,
-    val allianceAttackerEnlisting: Boolean,
-    val allianceAttackerLockout: Boolean,
-    val allianceAttackerAllianceId: String?,
-    val allianceAttackerAllianceTag: String?,
-    val allianceMatch: Boolean,
-    val allianceRound: Int,
-    val allianceRoundActive: Boolean,
-    val allianceError: Boolean,
-    val allianceAttackerWinPoints: Int,
-    val coins: Int? = null,
-    val skills: Map<String, SkillState>? = null,
-)
-
-@Serializable
-data class Zombie(
-    val id: String,
-    val type: String,
-    val level: Int
-) {
-    companion object {
-        fun fatWalker(level: Int): Zombie {
-            return Zombie(id = "fat-walker", type = "fat-walker", level = level)
-        }
-    }
-}
-
-@Serializable
-data class GetZombieResponse(
-    val z: List<Zombie> = listOf(
-        Zombie.fatWalker(10),
-        Zombie.fatWalker(12),
-        Zombie.fatWalker(12),
-        Zombie.fatWalker(16),
-        Zombie.fatWalker(15),
-    ),
-    val max: Boolean = true, // server spawning disabled if true
-)
