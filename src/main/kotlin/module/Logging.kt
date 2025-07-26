@@ -44,6 +44,7 @@ fun RoutingContext.logApiOutput(message: ByteArray, printFull: Boolean = false) 
 object Logger {
     private val logDir = File("logs").apply { mkdirs() }
     private val errorLog = File(logDir, "write_error.log")
+    private val missingAssetsLog = File(logDir, "missing_assets.log")
     private val unimplementedApiLog = File(logDir, "unimplemented_api.log")
     private val unimplementedSocketLog = File(logDir, "unimplemented_socket.log")
 
@@ -52,6 +53,7 @@ object Logger {
     }
 
     fun writeError(message: Any) = logTo(errorLog, message)
+    fun writeMissingAssets(message: Any) = logTo(missingAssetsLog, message)
     fun unimplementedApi(message: Any) = logTo(unimplementedApiLog, message)
     fun unimplementedSocket(message: Any) = logTo(unimplementedSocketLog, message)
 

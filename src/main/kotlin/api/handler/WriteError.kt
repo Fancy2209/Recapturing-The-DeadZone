@@ -29,8 +29,13 @@ suspend fun RoutingContext.writeError(db: BigDB) {
         call.receiveChannel().toByteArray()
     )
 
+
     logApiMessage("\n" + writeErrorArgs, true)
     Logger.writeError(writeErrorArgs)
+    if (writeErrorArgs.details.contains("Load Never Completed")) {
+        Logger.writeMissingAssets(writeErrorArgs.details)
+    }
+
 
     val writeErrorError = ProtoBuf.encodeToByteArray<WriteErrorError>(
         WriteErrorError.dummy()

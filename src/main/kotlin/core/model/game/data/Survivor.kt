@@ -71,7 +71,7 @@ data class Survivor(
 //                reassignTimer = null,
 //                appearance = SurvivorAppearance.reconF(),
                 scale = 1.22,
-                voice = "asian-f",
+                voice = "white-f",
                 accessories = mapOf(),
                 maxClothingAccessories = 10
             )
