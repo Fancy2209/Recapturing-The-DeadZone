@@ -143,6 +143,10 @@ val areaTypeToScenes = mapOf(
         "exterior-stadium-10-no-spawn",
         "exterior-stadium-11-no-spawn"
     ),
+    "subblock" to listOf(
+        "exterior-subblock-1",
+        "exterior-subblock-2"
+    ),
     "trainStation" to listOf(
         "exterior-trainstation-1",
         "exterior-trainstation-2"
@@ -274,9 +278,19 @@ val areaTypeToScenes = mapOf(
         "raid-island-monument-zombie-02",
         "raid-island-monument-zombie-03"
     ),
+    // TODO
+    "XXX" to listOf(
+        "set-concrete",
+        "set-motel",
+        "set-residential-old",
+        "set-retail-old",
+        "set-vehicles",
+        "set-vehicles-black",
+    ),
     "streetSmall" to listOf(
         "street-small-1",
         "street-small-2",
         "street-small-3"
-    )
+    ),
+    // FOREST IS NOT HERE!!
 )
