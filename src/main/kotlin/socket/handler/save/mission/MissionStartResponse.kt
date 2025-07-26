@@ -15,7 +15,7 @@ data class MissionStartResponse(
     val assignmentType: String,
     val areaClass: String,
     val automated: Boolean = false,
-    val rawSceneXML: String,
+    val sceneXML: String,
     val z: List<Zombie>,
     val allianceAttackerEnlisting: Boolean,
     val allianceAttackerLockout: Boolean,

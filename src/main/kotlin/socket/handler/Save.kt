@@ -54,7 +54,9 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
 //                val sceneXMLString = "street-small-1.xml.gz"
 //                val sceneXMLString = "exterior-cityblock-5.xml.gz"
 //                val sceneXMLString = "exterior-stadium-1-no-spawn.xml.gz"
-                val sceneXMLString = "interior-subway-large-3.xml.gz"
+//                val sceneXMLString = "interior-office-medium-1.xml.gz"
+                val sceneXMLString = "interior-office-medium-2.xml.gz"
+                Logger.socketPrint(data)
 
                 val missionStartObjectResponse = MissionStartResponse(
                     id = saveId ?: "",
@@ -62,19 +64,11 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                     assignmentType = "None", // for simplicity. see AssignmentType
                     areaClass = "substreet",
                     automated = false,
-                    rawSceneXML = loadSceneXML(sceneXMLString),
+                    sceneXML = loadSceneXML(sceneXMLString),
                     z = listOf(
                         Zombie.fatWalker(level = 10),
                         Zombie.fatWalker(level = 12),
-                        Zombie.fatWalker(level = 12),
-                        Zombie.fatWalker(level = 12),
-                        Zombie.fatWalker(level = 12),
-                        Zombie.fatWalker(level = 12),
-                        Zombie.fatWalker(level = 12),
-                        Zombie.fatWalker(level = 12),
-                        Zombie.fatWalker(level = 12),
-                        Zombie.fatWalker(level = 12),
-                        Zombie.fatWalker(level = 12),
+                        Zombie.fatWalker(level = 14),
                     ),
                     allianceAttackerEnlisting = false,
                     allianceAttackerLockout = false,
