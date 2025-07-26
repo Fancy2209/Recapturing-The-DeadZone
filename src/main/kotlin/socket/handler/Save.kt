@@ -1,5 +1,6 @@
 package dev.deadzone.socket.handler
 
+import dev.deadzone.core.model.game.data.GameResources
 import dev.deadzone.core.model.game.data.Zombie
 import dev.deadzone.core.utils.PIOSerializer
 import dev.deadzone.module.Dependency
@@ -8,8 +9,9 @@ import dev.deadzone.socket.Connection
 import dev.deadzone.socket.ServerContext
 import dev.deadzone.socket.handler.save.compound.SaveBuildingResponse
 import dev.deadzone.socket.handler.save.mission.GetZombieResponse
+import dev.deadzone.socket.handler.save.mission.MissionEndResponse
 import dev.deadzone.socket.handler.save.mission.MissionStartResponse
-import dev.deadzone.socket.handler.save.mission.loadSceneXML
+import dev.deadzone.socket.handler.save.mission.resolveAndLoadScene
 import dev.deadzone.socket.utils.SocketMessage
 import dev.deadzone.socket.utils.SocketMessageHandler
 import io.ktor.util.date.*
@@ -47,16 +49,11 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
             "get_offers" -> {}
             "chat_getContactsBlocks" -> {}
             "mis_start" -> {
-                // this depends on the mission area
                 // IMPORTANT NOTE: the scene that involves human model is not working now (e.g., raid island human)
                 // the same error is for survivor class if you fill SurvivorAppereance non-null value
                 // The error was 'cylic object' thing.
-//                val sceneXMLString = "street-small-1.xml.gz"
-//                val sceneXMLString = "exterior-cityblock-5.xml.gz"
-//                val sceneXMLString = "exterior-stadium-1-no-spawn.xml.gz"
-//                val sceneXMLString = "interior-office-medium-1.xml.gz"
-                val sceneXMLString = "interior-office-medium-2.xml.gz"
-                Logger.socketPrint(data)
+                val areaType = data["areaType"] as String
+                Logger.socketPrint(areaType)
 
                 val missionStartObjectResponse = MissionStartResponse(
                     id = saveId ?: "",
@@ -64,7 +61,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                     assignmentType = "None", // for simplicity. see AssignmentType
                     areaClass = "substreet",
                     automated = false,
-                    sceneXML = loadSceneXML(sceneXMLString),
+                    sceneXML = resolveAndLoadScene(areaType),
                     z = listOf(
                         Zombie.fatWalker(level = 10),
                         Zombie.fatWalker(level = 12),
@@ -102,7 +99,27 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
             }
 
             "mis_end" -> {
+                val response = MissionEndResponse()
+                val responseJson = Dependency.json.encodeToString(response)
+                val resourceResponse = GameResources(
+                    cash = 102000,
+                    wood = (10000..100000).random(),
+                    metal = (10000..100000).random(),
+                    cloth = (10000..100000).random(),
+                    water = (10000..100000).random(),
+                    food = (10000..100000).random(),
+                    ammunition = (10000..100000).random()
+                )
+                val resourceResponseJson = Dependency.json.encodeToString(resourceResponse)
 
+                val msg = listOf(
+                    "r",
+                    saveId ?: "m",
+                    getTimeMillis(),
+                    responseJson,
+                    resourceResponseJson
+                )
+                send(PIOSerializer.serialize(msg))
             }
 
             "mis_zombies" -> {
@@ -115,7 +132,6 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                     getTimeMillis(),
                     responseJson
                 )
-                println(responseJson)
                 send(PIOSerializer.serialize(msg))
             }
 
