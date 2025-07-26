@@ -28,6 +28,10 @@ data class MissionStartResponse(
     val allianceAttackerWinPoints: Int,
 ) : BaseResponse()
 
+fun resolveAndLoadScene(areaType: String): String {
+    return loadSceneXML(areaTypeToScenes[areaType]!!.random())
+}
+
 fun loadSceneXML(filename: String): String {
     val path = "static/game/data/xml/scenes/" + filename + ".xml.gz"
     val resourceStream = object {}.javaClass.classLoader.getResourceAsStream(path)
@@ -53,12 +57,12 @@ val areaTypeToScenes = mapOf(
         "exterior-cityblock-4",
         "exterior-cityblock-5"
     ),
-    "constructionLarge" to listOf(
+    "constSiteLarge" to listOf(
         "exterior-construction-1",
         "exterior-construction-2",
         "exterior-construction-3"
     ),
-    "constructionSmall" to listOf(
+    "constSiteSmall" to listOf(
         "exterior-construction-small-1",
         "exterior-construction-small-2",
         "exterior-construction-small-3"
@@ -85,9 +89,8 @@ val areaTypeToScenes = mapOf(
         "exterior-highway-small-1",
         "exterior-highway-small-2",
         "exterior-highway-small-3",
-
-        ),
-    "militaryBase" to listOf(
+    ),
+    "militarybase" to listOf(
         "exterior-militarybase-1",
         "exterior-militarybase-2",
         "exterior-militarybase-3"
@@ -96,7 +99,6 @@ val areaTypeToScenes = mapOf(
         "exterior-militarydock-1",
         "exterior-militarydock-2",
     ),
-
     "motel" to listOf(
         "exterior-motel-1",
         "exterior-motel-2",
@@ -180,12 +182,10 @@ val areaTypeToScenes = mapOf(
     "officeSmall" to listOf(
         "interior-office-small-1"
     ),
-    "policeLarge" to listOf(
+    "police" to listOf(
         "interior-police-large-1",
         "interior-police-large-2",
-        "interior-police-large-3"
-    ),
-    "policeMedium" to listOf(
+        "interior-police-large-3",
         "interior-police-medium-1",
         "interior-police-medium-2",
         "interior-police-medium-3"
@@ -239,7 +239,7 @@ val areaTypeToScenes = mapOf(
         "interior-warehouse-2",
         "interior-warehouse-3"
     ),
-    "warehouseSmall" to listOf(
+    "warehouseMedium" to listOf(
         "interior-warehouse-small-1",
         "interior-warehouse-small-2",
         "interior-warehouse-small-3"
@@ -280,7 +280,3 @@ val areaTypeToScenes = mapOf(
         "street-small-3"
     )
 )
-
-fun resolveAndLoadScene(areaType: String): String {
-    return loadSceneXML(areaTypeToScenes[areaType]!!.random())
-}
