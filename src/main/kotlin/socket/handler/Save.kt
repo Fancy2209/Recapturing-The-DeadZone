@@ -105,6 +105,15 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 send(PIOSerializer.serialize(msg))
             }
 
+            // mis_startFlag and mis_interacted do not expect a response
+            "mis_startFlag" -> {
+                Logger.socketPrint("===Mission start flag received===")
+            }
+
+            "mis_interacted" -> {
+                Logger.socketPrint("===First interaction received===")
+            }
+
             "mis_zombies" -> {
                 val response = GetZombieResponse(max = true)
                 val responseJson = Dependency.json.encodeToString(response)
