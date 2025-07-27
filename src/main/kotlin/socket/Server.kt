@@ -27,7 +27,6 @@ const val POLICY_FILE_RESPONSE =
 class Server(
     private val host: String = "127.0.0.1",
     private val port: Int = 7777,
-    private val maxConnections: Int = 5,
     private val db: BigDB,
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
 ) {
@@ -60,12 +59,6 @@ class Server(
 
                 while (true) {
                     val socket = serverSocket.accept()
-
-                    if (clients.size >= maxConnections) {
-                        print("Maximum connections reached. Refusing connection from ${socket.remoteAddress}")
-                        socket.close()
-                        continue
-                    }
 
                     val connection = Connection(
                         socket = socket,
