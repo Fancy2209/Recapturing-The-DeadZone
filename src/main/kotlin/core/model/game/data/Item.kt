@@ -3,29 +3,30 @@ package dev.deadzone.core.model.game.data
 import kotlinx.serialization.Serializable
 import dev.deadzone.core.model.game.data.CraftingInfo
 import dev.deadzone.core.model.game.data.ItemBonusStats
+import kotlinx.serialization.EncodeDefault
 
 @Serializable
 data class Item(
     val id: String,
     val new: Boolean = false,
-    val storeId: String?,
+    val storeId: String? = null,
     val bought: Boolean = false,
     val mod1: String? = null,
     val mod2: String? = null,
-    val mod3: String?,
+    val mod3: String? = null,
     val type: String = id,
     val level: Int = 0,
     val qty: UInt = 1u,
-    val quality: Int?,
-    val bind: UInt?,
-    val tradable: Boolean?,
-    val disposable: Boolean?,
-    val ctrType: UInt?,
-    val ctrVal: Int?,
-    val craft: CraftingInfo?,
-    val name: String?,
-    val specData: ItemBonusStats?,
-    val duplicate: Boolean,  // added from deserialize of Inventory
+    val quality: Int? = null,
+    val bind: UInt? = null,
+    val tradable: Boolean? = true,
+    val disposable: Boolean? = true,
+    val ctrType: UInt? = null,
+    val ctrVal: Int? = null,
+    val craft: CraftingInfo? = null,
+    val name: String? = null,
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val specData: ItemBonusStats? = null,
+    val duplicate: Boolean = false,  // added from deserialize of Inventory
 ) {
     companion object {
         fun crateTutorial(): Item {
@@ -39,6 +40,30 @@ data class Item(
                 mod3 = null,
                 level = 0,
                 qty = 1u,
+                quality = 1,
+                bind = 1u,
+                tradable = true,
+                disposable = true,
+                ctrType = null,
+                ctrVal = null,
+                craft = null,
+                name = "Crate tutorial?",
+                specData = null,
+                duplicate = false
+            )
+        }
+
+        fun keyHercLevel1(): Item {
+            return Item(
+                id = "key-herc-level-1",
+                new = false,
+                storeId = null,
+                bought = false,
+                mod1 = null,
+                mod2 = null,
+                mod3 = null,
+                level = 0,
+                qty = 10u,
                 quality = 1,
                 bind = 1u,
                 tradable = true,

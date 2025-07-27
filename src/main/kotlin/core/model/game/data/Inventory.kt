@@ -13,6 +13,11 @@ data class Inventory(
             return Inventory(
                 inventory = listOf(
                     Item.crateTutorial(),
+                    Item.crateTutorial(),
+                    Item.crateTutorial(),
+                    Item.crateTutorial(),
+                    Item.crateTutorial(),
+                    Item.keyHercLevel1(),
                     Item.grenadeChristmas2(),
                     Item.p90(),
                     Item.swordUnique(),

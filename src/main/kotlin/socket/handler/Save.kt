@@ -2,6 +2,7 @@ package dev.deadzone.socket.handler
 
 import dev.deadzone.core.mission.insertLoots
 import dev.deadzone.core.model.game.data.GameResources
+import dev.deadzone.core.model.game.data.Item
 import dev.deadzone.core.model.game.data.ZombieData
 import dev.deadzone.core.model.game.data.toFlatList
 import dev.deadzone.core.utils.PIOSerializer
@@ -10,6 +11,8 @@ import dev.deadzone.module.Logger
 import dev.deadzone.socket.Connection
 import dev.deadzone.socket.ServerContext
 import dev.deadzone.socket.handler.save.compound.SaveBuildingResponse
+import dev.deadzone.socket.handler.save.crate.CrateUnlockResponse
+import dev.deadzone.socket.handler.save.crate.gachaExample
 import dev.deadzone.socket.handler.save.mission.GetZombieResponse
 import dev.deadzone.socket.handler.save.mission.MissionEndResponse
 import dev.deadzone.socket.handler.save.mission.MissionStartResponse
@@ -50,6 +53,23 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
         when (type) {
             "get_offers" -> {}
             "chat_getContactsBlocks" -> {}
+            "crate_unlock" -> {
+                val responseJson = Dependency.json.encodeToString(CrateUnlockResponse(
+                    success = true,
+                    item = gachaExample(),
+                    keyId = data["keyId"] as String?,
+                    crateId = (data["crateId"] ?: "") as String?,
+                ))
+
+                println(responseJson)
+                val msg = listOf(
+                    "r",
+                    saveId ?: "m",
+                    getTimeMillis(),
+                    responseJson
+                )
+                send(PIOSerializer.serialize(msg))
+            }
             "mis_start" -> {
                 // IMPORTANT NOTE: the scene that involves human model is not working now (e.g., raid island human)
                 // the same error is for survivor class if you fill SurvivorAppereance non-null value

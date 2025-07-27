@@ -349,7 +349,7 @@ const val loginState = """
   "sales": [],
   "allianceWinnings": {},
   "recentPVPList": [],
-  "invsize": 15,
+  "invsize": 30,
   "upgrades": "",
   "allianceId": null,
   "allianceTag": null,
