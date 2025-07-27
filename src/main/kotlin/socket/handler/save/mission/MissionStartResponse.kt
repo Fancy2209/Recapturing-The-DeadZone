@@ -45,6 +45,14 @@ fun loadSceneXML(filename: String): String {
 }
 
 val areaTypeToScenes = mapOf(
+    // missing:
+    // Convenience Store (areaType: tutorialStore)
+    // Department Store (areaType: deptStore)
+    // Forest (areaType: forest)
+    // Hardware Store (areaType: hardwareStore)
+    // Suburban Street (areaType: substreet)
+    // Street (areaType: street)
+
     "bridge" to listOf(
         "exterior-bridge-1",
         "exterior-bridge-2",
@@ -99,7 +107,7 @@ val areaTypeToScenes = mapOf(
         "exterior-militarydock-1",
         "exterior-militarydock-2",
     ),
-    "motel" to listOf(
+    "motelLarge" to listOf(
         "exterior-motel-1",
         "exterior-motel-2",
         "exterior-motel-3"
@@ -124,7 +132,7 @@ val areaTypeToScenes = mapOf(
         "exterior-prison-2",
         "exterior-prison-3",
     ),
-    "shoppingStrip" to listOf(
+    "shoppingstrip" to listOf(
         "exterior-shoppingstrip-1",
         "exterior-shoppingstrip-2",
     ),
@@ -132,22 +140,11 @@ val areaTypeToScenes = mapOf(
         "exterior-shoppingstrip-small-1",
         "exterior-shoppingstrip-small-2",
     ),
-    "stadium" to listOf(
-        "exterior-stadium-1-no-spawn",
-        "exterior-stadium-3-no-spawn",
-        "exterior-stadium-5-no-spawn",
-        "exterior-stadium-6-no-spawn",
-        "exterior-stadium-7-no-spawn",
-        "exterior-stadium-8-no-spawn",
-        "exterior-stadium-9-no-spawn",
-        "exterior-stadium-10-no-spawn",
-        "exterior-stadium-11-no-spawn"
-    ),
     "subblock" to listOf(
         "exterior-subblock-1",
         "exterior-subblock-2"
     ),
-    "trainStation" to listOf(
+    "trainStationLarge" to listOf(
         "exterior-trainstation-1",
         "exterior-trainstation-2"
     ),
@@ -201,7 +198,7 @@ val areaTypeToScenes = mapOf(
         "interior-residential-4",
         "interior-residential-5"
     ),
-    "residentialLarge" to listOf(
+    "resLarge" to listOf(
         "interior-residential-large-1",
         "interior-residential-large-2",
         "interior-residential-large-3"
@@ -215,13 +212,6 @@ val areaTypeToScenes = mapOf(
         "interior-store-1",
         "interior-store-2",
         "interior-store-3"
-    ),
-    "deptStore" to listOf(
-        "interior-store-small-1",
-        "interior-store-small-2"
-    ),
-    "tutorialStore" to listOf(
-        "interior-store-small-1"
     ),
     "subway" to listOf(
         "interior-subway-1",
@@ -251,6 +241,14 @@ val areaTypeToScenes = mapOf(
         "interior-warehouse-small-2",
         "interior-warehouse-small-3"
     ),
+    "streetSmall" to listOf(
+        "street-small-1",
+        "street-small-2",
+        "street-small-3"
+    ),
+
+    // Others
+    // Raid
     "raidBridgeHuman" to listOf(
         "raid-island-bridge-human-01",
         "raid-island-bridge-human-02",
@@ -281,19 +279,17 @@ val areaTypeToScenes = mapOf(
         "raid-island-monument-zombie-02",
         "raid-island-monument-zombie-03"
     ),
-    // TODO
-    "XXX" to listOf(
-        "set-concrete",
-        "set-motel",
-        "set-residential-old",
-        "set-retail-old",
-        "set-vehicles",
-        "set-vehicles-black",
+
+    // Arena
+    "stadium" to listOf(
+        "exterior-stadium-1-no-spawn",
+        "exterior-stadium-3-no-spawn",
+        "exterior-stadium-5-no-spawn",
+        "exterior-stadium-6-no-spawn",
+        "exterior-stadium-7-no-spawn",
+        "exterior-stadium-8-no-spawn",
+        "exterior-stadium-9-no-spawn",
+        "exterior-stadium-10-no-spawn",
+        "exterior-stadium-11-no-spawn"
     ),
-    "streetSmall" to listOf(
-        "street-small-1",
-        "street-small-2",
-        "street-small-3"
-    ),
-    // FOREST IS NOT HERE!!
 )
