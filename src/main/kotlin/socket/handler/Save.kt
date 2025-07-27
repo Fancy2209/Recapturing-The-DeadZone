@@ -1,7 +1,9 @@
 package dev.deadzone.socket.handler
 
+import dev.deadzone.core.mission.insertLoots
 import dev.deadzone.core.model.game.data.GameResources
-import dev.deadzone.core.model.game.data.Zombie
+import dev.deadzone.core.model.game.data.ZombieData
+import dev.deadzone.core.model.game.data.toFlatList
 import dev.deadzone.core.utils.PIOSerializer
 import dev.deadzone.module.Dependency
 import dev.deadzone.module.Logger
@@ -55,18 +57,33 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 val areaType = data["areaType"] as String
                 Logger.socketPrint(areaType)
 
+                val sceneXML = resolveAndLoadScene(areaType)
+                val sceneXMLWithLoot = insertLoots(sceneXML)
+
+                val zombies = listOf(
+                    ZombieData.fatWalkerStrongAttack(101),
+                    ZombieData.fatWalkerStrongAttack(102),
+                    ZombieData.fatWalkerStrongAttack(103),
+                    ZombieData.fatWalkerStrongAttack(104),
+                    ZombieData.fatWalkerStrongAttack(105),
+                    ZombieData.fatWalkerStrongAttack(106),
+                    ZombieData.fatWalkerStrongAttack(107),
+                    ZombieData.fatWalkerStrongAttack(108),
+                    ZombieData.fatWalkerStrongAttack(109),
+                    ZombieData.police20ZWeakAttack(110),
+                    ZombieData.riotWalker37MediumAttack(111)
+                )
+
+                val flatZombieList: List<String> = zombies.flatMap { it.toFlatList() }
+
                 val missionStartObjectResponse = MissionStartResponse(
                     id = saveId ?: "",
                     time = 200,
                     assignmentType = "None", // for simplicity. see AssignmentType
                     areaClass = "substreet",
                     automated = false,
-                    sceneXML = resolveAndLoadScene(areaType),
-                    z = listOf(
-                        Zombie.fatWalker(level = 10),
-                        Zombie.fatWalker(level = 12),
-                        Zombie.fatWalker(level = 14),
-                    ),
+                    sceneXML = sceneXMLWithLoot,
+                    z = flatZombieList,
                     allianceAttackerEnlisting = false,
                     allianceAttackerLockout = false,
                     allianceAttackerAllianceId = null,
@@ -123,7 +140,10 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
             }
 
             "mis_zombies" -> {
-                val response = GetZombieResponse(max = true)
+                val response = GetZombieResponse(
+                    max = false,
+                    z = emptyList()
+                )
                 val responseJson = Dependency.json.encodeToString(response)
 
                 val msg = listOf(
@@ -133,6 +153,15 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                     responseJson
                 )
                 send(PIOSerializer.serialize(msg))
+            }
+
+            "stat_data" -> {
+                val stats = data["stats"]
+                Logger.socketPrint("Received stat_data with stats: $stats")
+            }
+
+            "clear_notes" -> {
+                Logger.socketPrint("Received clear_notes")
             }
 
             "bld_move" -> {

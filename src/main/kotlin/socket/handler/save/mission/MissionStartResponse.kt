@@ -1,7 +1,7 @@
 package dev.deadzone.socket.handler.save.mission
 
-import dev.deadzone.core.model.game.data.Zombie
 import dev.deadzone.socket.handler.save.BaseResponse
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import java.io.InputStreamReader
 import java.util.zip.GZIPInputStream
@@ -16,7 +16,7 @@ data class MissionStartResponse(
     val areaClass: String,
     val automated: Boolean = false,
     val sceneXML: String,
-    val z: List<Zombie>,
+    val z: List<String>,
     val allianceAttackerEnlisting: Boolean,
     val allianceAttackerLockout: Boolean,
     val allianceAttackerAllianceId: String?,
@@ -183,7 +183,7 @@ val areaTypeToScenes = mapOf(
         "interior-office-medium-1",
         "interior-office-medium-2"
     ),
-    "officeSmall" to listOf(
+    "office" to listOf(
         "interior-office-small-1"
     ),
     "police" to listOf(
@@ -216,9 +216,12 @@ val areaTypeToScenes = mapOf(
         "interior-store-2",
         "interior-store-3"
     ),
-    "storeSmall" to listOf(
+    "deptStore" to listOf(
         "interior-store-small-1",
         "interior-store-small-2"
+    ),
+    "tutorialStore" to listOf(
+        "interior-store-small-1"
     ),
     "subway" to listOf(
         "interior-subway-1",
