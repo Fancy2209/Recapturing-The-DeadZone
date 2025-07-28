@@ -54,12 +54,14 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
             "get_offers" -> {}
             "chat_getContactsBlocks" -> {}
             "crate_unlock" -> {
-                val responseJson = Dependency.json.encodeToString(CrateUnlockResponse(
-                    success = true,
-                    item = gachaExample(),
-                    keyId = data["keyId"] as String?,
-                    crateId = (data["crateId"] ?: "") as String?,
-                ))
+                val responseJson = Dependency.json.encodeToString(
+                    CrateUnlockResponse(
+                        success = true,
+                        item = gachaExample(),
+                        keyId = data["keyId"] as String?,
+                        crateId = (data["crateId"] ?: "") as String?,
+                    )
+                )
 
                 println(responseJson)
                 val msg = listOf(
@@ -70,6 +72,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 )
                 send(PIOSerializer.serialize(msg))
             }
+
             "mis_start" -> {
                 // IMPORTANT NOTE: the scene that involves human model is not working now (e.g., raid island human)
                 // the same error is for survivor class if you fill SurvivorAppereance non-null value
@@ -162,7 +165,17 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
             "mis_zombies" -> {
                 val response = GetZombieResponse(
                     max = false,
-                    z = emptyList()
+                    z = listOf(
+                        ZombieData.fatWalkerStrongAttack(1001),
+                        ZombieData.fatWalkerStrongAttack(1002),
+                        ZombieData.fatWalkerStrongAttack(1003),
+                        ZombieData.fatWalkerStrongAttack(1004),
+                        ZombieData.fatWalkerStrongAttack(1005),
+                        ZombieData.fatWalkerStrongAttack(1006),
+                        ZombieData.fatWalkerStrongAttack(1007),
+                        ZombieData.fatWalkerStrongAttack(1008),
+                        ZombieData.fatWalkerStrongAttack(1009),
+                    ).flatMap { it.toFlatList() }
                 )
                 val responseJson = Dependency.json.encodeToString(response)
 
