@@ -2,7 +2,7 @@ package dev.deadzone.api.handler
 
 import dev.deadzone.api.message.utils.WriteErrorArgs
 import dev.deadzone.api.message.utils.WriteErrorError
-import dev.deadzone.core.BigDB
+import dev.deadzone.core.data.BigDB
 import dev.deadzone.module.Logger
 import dev.deadzone.module.PIOFraming
 import dev.deadzone.module.logApiMessage

@@ -7,7 +7,7 @@ fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
 }
 
-suspend fun Application.module() {
+fun Application.module() {
     configureDatabase()
     configureHTTP()
     configureRouting(db = Dependency.database)

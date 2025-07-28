@@ -26,7 +26,6 @@ dependencies {
     implementation(libs.ktor.server.content.negotiation)
 	implementation(libs.ktor.serialization.kotlinx.protobuf)
 	implementation(libs.ktor.serialization.kotlinx.json)
-    implementation(libs.mongodb.driver.kotlin.coroutine)
     implementation(libs.ktor.server.call.logging)
     implementation(libs.ktor.server.host.common)
     implementation(libs.ktor.server.status.pages)
@@ -34,7 +33,8 @@ dependencies {
     implementation(libs.ktor.server.netty)
     implementation(libs.logback.classic)
     implementation(libs.ktor.server.config.yaml)
+    implementation(libs.classgraph)
+    implementation(libs.kotlin.document.store)
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)
-    implementation("io.github.classgraph:classgraph:4.8.181")
 }

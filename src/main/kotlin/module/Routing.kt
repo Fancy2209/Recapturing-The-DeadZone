@@ -1,7 +1,7 @@
 package dev.deadzone.module
 
 import dev.deadzone.api.handler.*
-import dev.deadzone.core.BigDB
+import dev.deadzone.core.data.BigDB
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*

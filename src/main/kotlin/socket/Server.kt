@@ -1,6 +1,6 @@
 package dev.deadzone.socket
 
-import dev.deadzone.core.BigDB
+import dev.deadzone.core.data.BigDB
 import dev.deadzone.core.utils.PIODeserializer
 import dev.deadzone.socket.handler.InitCompleteHandler
 import dev.deadzone.socket.utils.SocketMessage

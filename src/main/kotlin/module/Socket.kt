@@ -1,6 +1,6 @@
 package dev.deadzone.module
 
-import dev.deadzone.core.BigDB
+import dev.deadzone.core.data.BigDB
 import dev.deadzone.socket.Server
 import io.ktor.server.application.Application
 

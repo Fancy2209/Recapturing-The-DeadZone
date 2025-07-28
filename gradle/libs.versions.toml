@@ -2,7 +2,8 @@
 kotlin-version = "2.2.0"
 ktor-version = "3.2.1"
 logback-version = "1.4.14"
-kotlin-mongodb-version = "5.5.1"
+kotlin-document-store-version = "1.0.4"
+classgraph-version = "4.8.181"
 
 [libraries]
 ktor-network-tls = { module = "io.ktor:ktor-network-tls", version.ref = "ktor-version" }
@@ -10,7 +11,6 @@ ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor-ve
 ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor-version" }
 ktor-serialization-kotlinx-protobuf = { module = "io.ktor:ktor-serialization-kotlinx-protobuf", version.ref = "ktor-version" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor-version" }
-mongodb-driver-kotlin-coroutine = {module = "org.mongodb:mongodb-driver-kotlin-coroutine", version.ref = "kotlin-mongodb-version"}
 ktor-server-call-logging = { module = "io.ktor:ktor-server-call-logging", version.ref = "ktor-version" }
 ktor-server-host-common = { module = "io.ktor:ktor-server-host-common", version.ref = "ktor-version" }
 ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktor-version" }
@@ -20,7 +20,8 @@ logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "lo
 ktor-server-config-yaml = { module = "io.ktor:ktor-server-config-yaml", version.ref = "ktor-version" }
 ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor-version" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin-version" }
-
+kotlin-document-store = { module = "com.github.lamba92:kotlin-document-store-leveldb", version.ref = "kotlin-document-store-version"}
+classgraph = {module = "io.github.classgraph:classgraph", version.ref = "classgraph-version"}
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }

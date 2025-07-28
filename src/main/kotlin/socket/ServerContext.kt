@@ -1,6 +1,6 @@
 package dev.deadzone.socket
 
-import dev.deadzone.core.BigDB
+import dev.deadzone.core.data.BigDB
 
 data class ServerContext(
     val db: BigDB,

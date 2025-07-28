@@ -2,7 +2,7 @@ package dev.deadzone.api.handler
 
 import dev.deadzone.api.message.client.CreateJoinRoomArgs
 import dev.deadzone.api.message.client.CreateJoinRoomOutput
-import dev.deadzone.core.BigDB
+import dev.deadzone.core.data.BigDB
 import dev.deadzone.module.PIOFraming
 import dev.deadzone.module.logApiMessage
 import dev.deadzone.module.logApiOutput
