@@ -40,7 +40,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
         send: suspend (ByteArray) -> Unit
     ) {
         val body = message.getMap("s")
-        val data = body?.get("data") as? Map<String, Any?>
+        val data = body?.get("data") as? Map<*, *>
         val type = data?.get("_type") as? String
         val saveId = body?.get("id") as? String
 
