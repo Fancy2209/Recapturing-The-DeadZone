@@ -43,7 +43,7 @@ data class DynamicQuest(
             buffer.put(0) // failed
 
             // End Time
-            buffer.putDouble(System.currentTimeMillis().toDouble())
+            buffer.putDouble(getTimeMillis().toDouble())
 
             // ----- Goals -----
             buffer.putShort(1) // 1 goal

@@ -6,7 +6,7 @@ TLS:DZ private server.
 
 Requirements:
 
-- Java 21, Gradle 8.5
+- Java 24, Gradle 8.14
 
 The server can be run from:
 
