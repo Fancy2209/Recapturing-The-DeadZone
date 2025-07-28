@@ -5,8 +5,13 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.boolean
 import kotlinx.serialization.json.booleanOrNull
+import kotlinx.serialization.json.double
 import kotlinx.serialization.json.doubleOrNull
+import kotlinx.serialization.json.int
+import kotlinx.serialization.json.intOrNull
+import kotlinx.serialization.json.long
 import kotlinx.serialization.json.longOrNull
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
@@ -306,7 +311,16 @@ fun parseJsonToMap(json: String): Map<String, Any?> {
 }
 
 fun parseJsonElement(el: JsonElement): Any? = when (el) {
-    is JsonPrimitive -> el.booleanOrNull ?: el.longOrNull ?: el.doubleOrNull ?: el.content
+    is JsonPrimitive -> {
+        when {
+            el.isString -> el.content
+            el.booleanOrNull != null -> el.boolean
+            el.intOrNull != null -> el.int
+            el.longOrNull != null -> el.long
+            el.doubleOrNull != null -> el.double
+            else -> el.content
+        }
+    }
     is JsonObject -> el.mapValues { parseJsonElement(it.value) }
     is JsonArray -> el.map { parseJsonElement(it) }
     else -> null
