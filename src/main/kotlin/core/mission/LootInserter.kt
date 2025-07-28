@@ -12,6 +12,7 @@ import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
 import javax.xml.parsers.DocumentBuilder
 import org.xml.sax.InputSource
+import kotlin.random.Random
 
 fun insertLoots(xmlInput: String): String {
     val docBuilder: DocumentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
@@ -34,16 +35,16 @@ fun insertLoots(xmlInput: String): String {
             val itmsElement = doc.createElement("itms")
 
             val items = listOf(
-                Triple("weapon", "bladesaw", 1),
-                Triple("clothing", "hat-cowboy-usa", 1),
-                Triple("medical", "pain-killers", (2..4).random()),
-                Triple("resource", "fuel-bottle", (1..10).random())
+                Triple("bladesaw-${Random.nextInt()}", "bladesaw", 1),
+                Triple("hat-cowboy-usa-${Random.nextInt()}", "hat-cowboy-usa", 1),
+                Triple("pain-kilers-${Random.nextInt()}", "pain-killers", (2..4).random()),
+                Triple("fuel-bottle-${Random.nextInt()}", "fuel-bottle", (1..10).random())
             )
 
-            for ((type, id, q) in items) {
+            for ((id, type, q) in items) {
                 val itm = doc.createElement("itm")
-                itm.setAttribute("type", id)
                 itm.setAttribute("id", id)
+                itm.setAttribute("type", type)
                 itm.setAttribute("q", q.toString())
                 itmsElement.appendChild(itm)
             }

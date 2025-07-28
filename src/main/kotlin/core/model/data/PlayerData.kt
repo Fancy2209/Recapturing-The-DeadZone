@@ -105,17 +105,18 @@ data class PlayerData(
                     wood = 99999,
                     metal = 99999,
                     cloth = 99999,
-                    water = 99999,
-                    food = 99999,
+                    food = 200,
+                    water = 200,
                     ammunition = 99999
                 ),
                 survivors = SurvivorCollection.threeSurvivors(),
                 playerAttributes = Attributes.dummy(),
                 buildings = BuildingCollection.goodBase(),
                 rally = mapOf(
-                    "B19" to listOf(HardcodedData.FIGHTER_SRV_ID),
-                    "B20" to listOf(HardcodedData.RECON_SRV_ID),
-                    "B21" to listOf(HardcodedData.PLAYER_SRV_ID),
+                    // depends on BuildingCollection!
+                    "B23" to listOf(HardcodedData.FIGHTER_SRV_ID),
+                    "B45" to listOf(HardcodedData.RECON_SRV_ID),
+                    "B52" to listOf(HardcodedData.PLAYER_SRV_ID),
                 ),
                 tasks = TaskCollection().list,
                 missions = listOf(MissionData.dummy(HardcodedData.PLAYER_SRV_ID)),
