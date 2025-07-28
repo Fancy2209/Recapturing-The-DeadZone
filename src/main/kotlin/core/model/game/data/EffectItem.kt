@@ -5,6 +5,5 @@ import dev.deadzone.core.model.game.data.Item
 
 @Serializable
 data class EffectItem(
-    val item: Item,  // inherited
     val effect: ByteArray,  // see effect.as for bytearray specification
 )

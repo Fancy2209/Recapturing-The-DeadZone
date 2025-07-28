@@ -1,7 +1,11 @@
 package dev.deadzone.socket.handler
 
 import dev.deadzone.core.mission.insertLoots
+import dev.deadzone.core.model.game.data.CrateItem
+import dev.deadzone.core.model.game.data.EffectItem
 import dev.deadzone.core.model.game.data.GameResources
+import dev.deadzone.core.model.game.data.Item
+import dev.deadzone.core.model.game.data.SchematicItem
 import dev.deadzone.core.model.game.data.ZombieData
 import dev.deadzone.core.model.game.data.toFlatList
 import dev.deadzone.core.utils.PIOSerializer
@@ -11,7 +15,7 @@ import dev.deadzone.socket.Connection
 import dev.deadzone.socket.ServerContext
 import dev.deadzone.socket.handler.saveresponse.compound.BuildingMoveResponse
 import dev.deadzone.socket.handler.saveresponse.crate.CrateUnlockResponse
-import dev.deadzone.socket.handler.saveresponse.crate.gachaExample
+import dev.deadzone.socket.handler.saveresponse.crate.gachaPoolExample
 import dev.deadzone.socket.handler.saveresponse.mission.GetZombieResponse
 import dev.deadzone.socket.handler.saveresponse.mission.MissionEndResponse
 import dev.deadzone.socket.handler.saveresponse.mission.MissionStartResponse
@@ -19,6 +23,7 @@ import dev.deadzone.socket.handler.saveresponse.mission.resolveAndLoadScene
 import dev.deadzone.socket.utils.SocketMessage
 import dev.deadzone.socket.utils.SocketMessageHandler
 import io.ktor.util.date.*
+import java.util.UUID
 
 /**
  * Handle `save` message by:
@@ -56,7 +61,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 val responseJson = Dependency.json.encodeToString(
                     CrateUnlockResponse(
                         success = true,
-                        item = gachaExample(),
+                        item = gachaPoolExample.random(),
                         keyId = data["keyId"] as String?,
                         crateId = (data["crateId"] ?: "") as String?,
                     )
@@ -180,6 +185,82 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
 
             "clear_notes" -> {
                 Logger.socketPrint("Received clear_notes")
+            }
+
+            "give" -> {
+                val type = data["type"] as? String ?: return
+
+                Logger.socketPrint("Received give command with type=$type | data=$data")
+
+                when (type) {
+                    "schematic" -> {
+                        // not tested
+                        val schem = data["schem"] as? String ?: return
+                        val item = SchematicItem(type = type, schem = schem, new = true)
+                        val response = Dependency.json.encodeToString(item)
+                        send(PIOSerializer.serialize(buildMsg(saveId, response)))
+                    }
+
+                    "crate" -> {
+                        // not tested
+                        val series = data["series"] as? Int ?: return
+                        val repeat = (data["repeat"] as? Int) ?: 1
+                        repeat(repeat) {
+                            val item = CrateItem(type = type, series = series, new = true)
+                            val response = Dependency.json.encodeToString(item)
+                            send(PIOSerializer.serialize(buildMsg(saveId, response)))
+                        }
+                    }
+
+                    "effect" -> {
+                        // unimplemented
+                    }
+
+                    else -> {
+                        // not tested with mod
+                        val level = data["level"] as? Int ?: return
+                        val qty = data["qty"] as? Int ?: 1
+                        val mod1 = data["mod1"] as? String?
+                        val mod2 = data["mod2"] as? String?
+                        val item = Item(
+                            id = UUID.randomUUID().toString(),
+                            type = type,
+                            level = level,
+                            qty = qty.toUInt(),
+                            mod1 = mod1,
+                            mod2 = mod2,
+                            new = true,
+                        )
+                        val response = Dependency.json.encodeToString(item)
+                        send(PIOSerializer.serialize(buildMsg(saveId, response)))
+                    }
+                }
+            }
+
+
+            "giveRare" -> {
+                val item = Item(
+                    id = UUID.randomUUID().toString(),
+                    type = (data["type"] as String?) ?: return,
+                    level = (data["level"] as Int?) ?: return,
+                    quality = 50,
+                    new = true,
+                )
+                val response = Dependency.json.encodeToString(item)
+                println(response)
+                send(PIOSerializer.serialize(buildMsg(saveId, response)))
+            }
+
+            "giveUnique" -> {
+                val item = Item(
+                    id = UUID.randomUUID().toString(),
+                    type = (data["type"] as String?) ?: return,
+                    level = (data["level"] as Int?) ?: return,
+                    quality = 51,
+                    new = true,
+                )
+                val response = Dependency.json.encodeToString(item)
+                send(PIOSerializer.serialize(buildMsg(saveId, response)))
             }
 
             "bld_move" -> {
