@@ -1,7 +1,6 @@
-package dev.deadzone.socket.handler.save.mission
+package dev.deadzone.socket.handler.saveresponse.mission
 
 import dev.deadzone.socket.handler.save.BaseResponse
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import java.io.InputStreamReader
 import java.util.zip.GZIPInputStream
@@ -49,7 +48,6 @@ val areaTypeToScenes = mapOf(
     // Convenience Store (areaType: tutorialStore)
     // Department Store (areaType: deptStore)
     // Forest (areaType: forest)
-    // Hardware Store (areaType: hardwareStore)
     // Suburban Street (areaType: substreet)
     // Street (areaType: street)
 

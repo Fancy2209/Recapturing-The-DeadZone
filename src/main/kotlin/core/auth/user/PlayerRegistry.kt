@@ -1,4 +1,4 @@
-package dev.deadzone.core.data.user
+package core.auth.user
 
 interface PlayerRegistry {
     val playersInfo: List<PlayerInfo>

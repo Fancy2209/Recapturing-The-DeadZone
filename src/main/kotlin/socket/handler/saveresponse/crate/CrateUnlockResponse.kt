@@ -1,4 +1,4 @@
-package dev.deadzone.socket.handler.save.crate
+package dev.deadzone.socket.handler.saveresponse.crate
 
 import dev.deadzone.core.model.game.data.Item
 import kotlinx.serialization.Serializable

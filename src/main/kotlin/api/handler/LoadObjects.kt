@@ -4,7 +4,7 @@ import dev.deadzone.api.message.db.BigDBObject
 import dev.deadzone.api.message.db.LoadObjectsArgs
 import dev.deadzone.api.message.db.LoadObjectsOutput
 import dev.deadzone.core.data.BigDB
-import dev.deadzone.module.PIOFraming
+import dev.deadzone.module.pioFraming
 import dev.deadzone.module.logApiMessage
 import dev.deadzone.module.logApiOutput
 import io.ktor.server.request.*
@@ -55,5 +55,5 @@ suspend fun RoutingContext.loadObjects(db: BigDB) {
 
     logApiOutput(loadObjectsOutput, true)
 
-    call.respondBytes(loadObjectsOutput.PIOFraming())
+    call.respondBytes(loadObjectsOutput.pioFraming())
 }

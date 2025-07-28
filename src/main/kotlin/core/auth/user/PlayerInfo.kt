@@ -1,4 +1,4 @@
-package dev.deadzone.core.data.user
+package core.auth.user
 
 /**
  * Server-level representation of player credentials (not to be confused with game-level representation PlayerData)

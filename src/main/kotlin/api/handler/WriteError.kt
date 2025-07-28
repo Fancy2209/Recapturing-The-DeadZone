@@ -4,7 +4,7 @@ import dev.deadzone.api.message.utils.WriteErrorArgs
 import dev.deadzone.api.message.utils.WriteErrorError
 import dev.deadzone.core.data.BigDB
 import dev.deadzone.module.Logger
-import dev.deadzone.module.PIOFraming
+import dev.deadzone.module.pioFraming
 import dev.deadzone.module.logApiMessage
 import dev.deadzone.module.logApiOutput
 import io.ktor.server.request.*
@@ -43,5 +43,5 @@ suspend fun RoutingContext.writeError(db: BigDB) {
 
     logApiOutput(writeErrorError)
 
-    call.respondBytes(writeErrorError.PIOFraming())
+    call.respondBytes(writeErrorError.pioFraming())
 }

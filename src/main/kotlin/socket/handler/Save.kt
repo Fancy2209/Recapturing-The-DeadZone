@@ -2,7 +2,6 @@ package dev.deadzone.socket.handler
 
 import dev.deadzone.core.mission.insertLoots
 import dev.deadzone.core.model.game.data.GameResources
-import dev.deadzone.core.model.game.data.Item
 import dev.deadzone.core.model.game.data.ZombieData
 import dev.deadzone.core.model.game.data.toFlatList
 import dev.deadzone.core.utils.PIOSerializer
@@ -10,13 +9,13 @@ import dev.deadzone.module.Dependency
 import dev.deadzone.module.Logger
 import dev.deadzone.socket.Connection
 import dev.deadzone.socket.ServerContext
-import dev.deadzone.socket.handler.save.compound.SaveBuildingResponse
-import dev.deadzone.socket.handler.save.crate.CrateUnlockResponse
-import dev.deadzone.socket.handler.save.crate.gachaExample
-import dev.deadzone.socket.handler.save.mission.GetZombieResponse
-import dev.deadzone.socket.handler.save.mission.MissionEndResponse
-import dev.deadzone.socket.handler.save.mission.MissionStartResponse
-import dev.deadzone.socket.handler.save.mission.resolveAndLoadScene
+import dev.deadzone.socket.handler.saveresponse.compound.BuildingMoveResponse
+import dev.deadzone.socket.handler.saveresponse.crate.CrateUnlockResponse
+import dev.deadzone.socket.handler.saveresponse.crate.gachaExample
+import dev.deadzone.socket.handler.saveresponse.mission.GetZombieResponse
+import dev.deadzone.socket.handler.saveresponse.mission.MissionEndResponse
+import dev.deadzone.socket.handler.saveresponse.mission.MissionStartResponse
+import dev.deadzone.socket.handler.saveresponse.mission.resolveAndLoadScene
 import dev.deadzone.socket.utils.SocketMessage
 import dev.deadzone.socket.utils.SocketMessageHandler
 import io.ktor.util.date.*
@@ -63,22 +62,15 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                     )
                 )
 
-                println(responseJson)
-                val msg = listOf(
-                    "r",
-                    saveId ?: "m",
-                    getTimeMillis(),
-                    responseJson
-                )
-                send(PIOSerializer.serialize(msg))
+                send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
             }
 
             "mis_start" -> {
                 // IMPORTANT NOTE: the scene that involves human model is not working now (e.g., raid island human)
-                // the same error is for survivor class if you fill SurvivorAppereance non-null value
-                // The error was 'cylic object' thing.
+                // the same error is for survivor class if you fill SurvivorAppearance non-null value
+                // The error was 'cyclic object' thing.
                 val areaType = data["areaType"] as String
-                Logger.socketPrint(areaType)
+                Logger.socketPrint("Going to scene with areaType=$areaType")
 
                 val sceneXML = resolveAndLoadScene(areaType)
                 val sceneXMLWithLoot = insertLoots(sceneXML)
@@ -95,97 +87,76 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                     ZombieData.fatWalkerStrongAttack(109),
                     ZombieData.police20ZWeakAttack(110),
                     ZombieData.riotWalker37MediumAttack(111)
+                ).flatMap { it.toFlatList() }
+
+                val responseJson = Dependency.json.encodeToString(
+                    MissionStartResponse(
+                        id = saveId ?: "",
+                        time = 300,
+                        assignmentType = "None", // 'None' because not a raid or arena. see AssignmentType
+                        areaClass = "substreet", // supposedly depend on the area
+                        automated = false, // this depends on request data
+                        sceneXML = sceneXMLWithLoot,
+                        z = zombies,
+                        allianceAttackerEnlisting = false,
+                        allianceAttackerLockout = false,
+                        allianceAttackerAllianceId = null,
+                        allianceAttackerAllianceTag = null,
+                        allianceMatch = false,
+                        allianceRound = 0,
+                        allianceRoundActive = false,
+                        allianceError = false,
+                        allianceAttackerWinPoints = 0
+                    )
                 )
 
-                val flatZombieList: List<String> = zombies.flatMap { it.toFlatList() }
-
-                val missionStartObjectResponse = MissionStartResponse(
-                    id = saveId ?: "",
-                    time = 200,
-                    assignmentType = "None", // for simplicity. see AssignmentType
-                    areaClass = "substreet",
-                    automated = false,
-                    sceneXML = sceneXMLWithLoot,
-                    z = flatZombieList,
-                    allianceAttackerEnlisting = false,
-                    allianceAttackerLockout = false,
-                    allianceAttackerAllianceId = null,
-                    allianceAttackerAllianceTag = null,
-                    allianceMatch = false,
-                    allianceRound = 0,
-                    allianceRoundActive = false,
-                    allianceError = false,
-                    allianceAttackerWinPoints = 0
-                )
-
-                val responseJson = Dependency.json.encodeToString(missionStartObjectResponse)
-
-                val msg = listOf(
-                    "r",
-                    saveId ?: "m",
-                    getTimeMillis(),
-                    responseJson
-                )
-                send(PIOSerializer.serialize(msg))
+                send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
             }
 
             // mis_startFlag and mis_interacted do not expect a response
             "mis_startFlag" -> {
-                Logger.socketPrint("===Mission start flag received===")
+                Logger.socketPrint("<----- Mission start flag received ----->")
             }
 
             "mis_interacted" -> {
-                Logger.socketPrint("===First interaction received===")
+                Logger.socketPrint("<----- First interaction received ----->")
             }
 
             "mis_end" -> {
-                val response = MissionEndResponse()
-                val responseJson = Dependency.json.encodeToString(response)
-                val resourceResponse = GameResources(
-                    cash = 102000,
-                    wood = (10000..100000).random(),
-                    metal = (10000..100000).random(),
-                    cloth = (10000..100000).random(),
-                    water = (10000..100000).random(),
-                    food = (10000..100000).random(),
-                    ammunition = (10000..100000).random()
+                val responseJson = Dependency.json.encodeToString(MissionEndResponse())
+                val resourceResponseJson = Dependency.json.encodeToString(
+                    GameResources(
+                        cash = 102000,
+                        wood = (10000..100000).random(),
+                        metal = (10000..100000).random(),
+                        cloth = (10000..100000).random(),
+                        water = (10000..100000).random(),
+                        food = (10000..100000).random(),
+                        ammunition = (10000..100000).random()
+                    )
                 )
-                val resourceResponseJson = Dependency.json.encodeToString(resourceResponse)
 
-                val msg = listOf(
-                    "r",
-                    saveId ?: "m",
-                    getTimeMillis(),
-                    responseJson,
-                    resourceResponseJson
-                )
-                send(PIOSerializer.serialize(msg))
+                send(PIOSerializer.serialize(buildMsg(saveId, responseJson, resourceResponseJson)))
             }
 
             "mis_zombies" -> {
-                val response = GetZombieResponse(
-                    max = false,
-                    z = listOf(
-                        ZombieData.fatWalkerStrongAttack(1001),
-                        ZombieData.fatWalkerStrongAttack(1002),
-                        ZombieData.fatWalkerStrongAttack(1003),
-                        ZombieData.fatWalkerStrongAttack(1004),
-                        ZombieData.fatWalkerStrongAttack(1005),
-                        ZombieData.fatWalkerStrongAttack(1006),
-                        ZombieData.fatWalkerStrongAttack(1007),
-                        ZombieData.fatWalkerStrongAttack(1008),
-                        ZombieData.fatWalkerStrongAttack(1009),
-                    ).flatMap { it.toFlatList() }
-                )
-                val responseJson = Dependency.json.encodeToString(response)
+                val responseJson = Dependency.json.encodeToString(
+                    GetZombieResponse(
+                        max = false,
+                        z = listOf(
+                            ZombieData.fatWalkerStrongAttack(1001),
+                            ZombieData.fatWalkerStrongAttack(1002),
+                            ZombieData.fatWalkerStrongAttack(1003),
+                            ZombieData.fatWalkerStrongAttack(1004),
+                            ZombieData.fatWalkerStrongAttack(1005),
+                            ZombieData.fatWalkerStrongAttack(1006),
+                            ZombieData.fatWalkerStrongAttack(1007),
+                            ZombieData.fatWalkerStrongAttack(1008),
+                            ZombieData.fatWalkerStrongAttack(1009),
+                        ).flatMap { it.toFlatList() }
+                    ))
 
-                val msg = listOf(
-                    "r",
-                    saveId ?: "m",
-                    getTimeMillis(),
-                    responseJson
-                )
-                send(PIOSerializer.serialize(msg))
+                send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
             }
 
             "stat_data" -> {
@@ -201,33 +172,31 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 val x = (data["tx"] as? Number)?.toInt() ?: 0
                 val y = (data["ty"] as? Number)?.toInt() ?: 0
                 val r = (data["rotation"] as? Number)?.toInt() ?: 0
-                val buildingId = data["id"] // use this to save in DB
+                val buildingId = data["id"] // use this to refer the building
+
                 Logger.socketPrint("Building move for $saveId and $buildingId to $x,$y|r:$r")
 
-                val response = SaveBuildingResponse(
-                    success = true, x = x, y = y, r = r
+                val responseJson = Dependency.json.encodeToString(
+                    BuildingMoveResponse(
+                        success = true, x = x, y = y, r = r
+                    )
                 )
-                val responseJson = Dependency.json.encodeToString(response)
 
-                val msg = listOf(
-                    "r",
-                    saveId ?: "m",
-                    getTimeMillis(),
-                    responseJson
-                )
-                send(PIOSerializer.serialize(msg))
+                send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
             }
 
             else -> {
-                val msg = listOf(
-                    "r",
-                    saveId ?: "m",
-                    getTimeMillis(),
-                    "{}"
-                )
-                send(PIOSerializer.serialize(msg))
                 Logger.unimplementedSocket("Handled 's' message but unhandled data type: $type from data=$data")
             }
+        }
+    }
+
+    fun buildMsg(saveId: String?, vararg payloads: Any): List<Any> {
+        return buildList {
+            add("r")
+            add(saveId ?: "m")
+            add(getTimeMillis())
+            addAll(payloads)
         }
     }
 }

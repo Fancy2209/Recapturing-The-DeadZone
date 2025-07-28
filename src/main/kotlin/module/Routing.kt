@@ -41,6 +41,6 @@ fun Application.configureRouting(db: BigDB) {
  * @receiver The original unframed [ByteArray] representing a protocol buffer message.
  * @return A new [ByteArray] with `0x00` and `0x01` prepended.
  */
-fun ByteArray.PIOFraming(): ByteArray {
+fun ByteArray.pioFraming(): ByteArray {
     return byteArrayOf(0, 1) + this
 }

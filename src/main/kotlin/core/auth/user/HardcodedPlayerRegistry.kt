@@ -1,4 +1,4 @@
-package dev.deadzone.core.data.user
+package core.auth.user
 
 import dev.deadzone.core.data.HardcodedData
 

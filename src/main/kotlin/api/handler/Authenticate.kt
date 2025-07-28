@@ -3,7 +3,7 @@ package dev.deadzone.api.handler
 import dev.deadzone.api.message.auth.AuthenticateArgs
 import dev.deadzone.api.message.auth.AuthenticateOutput
 import dev.deadzone.core.data.BigDB
-import dev.deadzone.module.PIOFraming
+import dev.deadzone.module.pioFraming
 import dev.deadzone.module.logApiMessage
 import dev.deadzone.module.logApiOutput
 import io.ktor.server.request.*
@@ -36,5 +36,5 @@ suspend fun RoutingContext.authenticate(db: BigDB) {
 
     logApiOutput(authenticateOutput)
 
-    call.respondBytes(authenticateOutput.PIOFraming())
+    call.respondBytes(authenticateOutput.pioFraming())
 }
