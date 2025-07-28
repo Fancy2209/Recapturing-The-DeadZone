@@ -20,6 +20,10 @@ data class ZombieData(
         fun riotWalker37MediumAttack(id: Int): ZombieData {
             return ZombieData(id = id, type = "riot-walker-37", weapon = "zMediumStrike")
         }
+
+        fun dogTank(id: Int): ZombieData {
+            return ZombieData(id = id, type = "dog-tank", weapon = "zDogBite")
+        }
     }
 }
 

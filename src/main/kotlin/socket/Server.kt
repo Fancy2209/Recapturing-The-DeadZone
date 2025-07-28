@@ -8,6 +8,7 @@ import dev.deadzone.socket.utils.SocketMessageDispatcher
 import dev.deadzone.socket.handler.JoinHandler
 import dev.deadzone.socket.handler.QuestProgressHandler
 import dev.deadzone.socket.handler.SaveHandler
+import dev.deadzone.socket.handler.ZombieAttackHandler
 import dev.deadzone.socket.tasks.TimeUpdate
 import dev.deadzone.socket.utils.ServerPushTaskDispatcher
 import io.ktor.network.selector.*
@@ -46,6 +47,7 @@ class Server(
             socketDispatcher.register(QuestProgressHandler(this))
             socketDispatcher.register(InitCompleteHandler(this))
             socketDispatcher.register(SaveHandler(this))
+            socketDispatcher.register(ZombieAttackHandler(this))
             taskDispatcher.register(TimeUpdate(this))
         }
     }

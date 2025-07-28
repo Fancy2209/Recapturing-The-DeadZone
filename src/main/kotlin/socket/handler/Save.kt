@@ -69,30 +69,36 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 // IMPORTANT NOTE: the scene that involves human model is not working now (e.g., raid island human)
                 // the same error is for survivor class if you fill SurvivorAppearance non-null value
                 // The error was 'cyclic object' thing.
-                val areaType = data["areaType"] as String
+                val isCompoundZombieAttack = data["compound"]?.equals(true)
+                val areaType = if (isCompoundZombieAttack == true) "compound" else data["areaType"] as String
                 Logger.socketPrint("Going to scene with areaType=$areaType")
 
                 val sceneXML = resolveAndLoadScene(areaType)
                 val sceneXMLWithLoot = insertLoots(sceneXML)
 
                 val zombies = listOf(
+                    ZombieData.dogTank(101),
+                    ZombieData.dogTank(111),
+                    ZombieData.dogTank(112),
                     ZombieData.fatWalkerStrongAttack(101),
                     ZombieData.fatWalkerStrongAttack(102),
                     ZombieData.fatWalkerStrongAttack(103),
                     ZombieData.fatWalkerStrongAttack(104),
                     ZombieData.fatWalkerStrongAttack(105),
-                    ZombieData.fatWalkerStrongAttack(106),
-                    ZombieData.fatWalkerStrongAttack(107),
-                    ZombieData.fatWalkerStrongAttack(108),
-                    ZombieData.fatWalkerStrongAttack(109),
-                    ZombieData.police20ZWeakAttack(110),
-                    ZombieData.riotWalker37MediumAttack(111)
+                    ZombieData.police20ZWeakAttack(113),
+                    ZombieData.police20ZWeakAttack(114),
+                    ZombieData.police20ZWeakAttack(115),
+                    ZombieData.riotWalker37MediumAttack(116),
+                    ZombieData.riotWalker37MediumAttack(117),
+                    ZombieData.riotWalker37MediumAttack(118),
                 ).flatMap { it.toFlatList() }
+
+                val timeSeconds = if (isCompoundZombieAttack == true) 30 else 240
 
                 val responseJson = Dependency.json.encodeToString(
                     MissionStartResponse(
                         id = saveId ?: "",
-                        time = 300,
+                        time = timeSeconds,
                         assignmentType = "None", // 'None' because not a raid or arena. see AssignmentType
                         areaClass = "substreet", // supposedly depend on the area
                         automated = false, // this depends on request data
@@ -140,21 +146,29 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
             }
 
             "mis_zombies" -> {
+                val zombies = listOf(
+                    ZombieData.dogTank(101),
+                    ZombieData.dogTank(111),
+                    ZombieData.dogTank(112),
+                    ZombieData.fatWalkerStrongAttack(101),
+                    ZombieData.fatWalkerStrongAttack(102),
+                    ZombieData.fatWalkerStrongAttack(103),
+                    ZombieData.fatWalkerStrongAttack(104),
+                    ZombieData.fatWalkerStrongAttack(105),
+                    ZombieData.police20ZWeakAttack(113),
+                    ZombieData.police20ZWeakAttack(114),
+                    ZombieData.police20ZWeakAttack(115),
+                    ZombieData.riotWalker37MediumAttack(116),
+                    ZombieData.riotWalker37MediumAttack(117),
+                    ZombieData.riotWalker37MediumAttack(118),
+                ).flatMap { it.toFlatList() }
+
                 val responseJson = Dependency.json.encodeToString(
                     GetZombieResponse(
                         max = false,
-                        z = listOf(
-                            ZombieData.fatWalkerStrongAttack(1001),
-                            ZombieData.fatWalkerStrongAttack(1002),
-                            ZombieData.fatWalkerStrongAttack(1003),
-                            ZombieData.fatWalkerStrongAttack(1004),
-                            ZombieData.fatWalkerStrongAttack(1005),
-                            ZombieData.fatWalkerStrongAttack(1006),
-                            ZombieData.fatWalkerStrongAttack(1007),
-                            ZombieData.fatWalkerStrongAttack(1008),
-                            ZombieData.fatWalkerStrongAttack(1009),
-                        ).flatMap { it.toFlatList() }
-                    ))
+                        z = zombies
+                    )
+                )
 
                 send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
             }

@@ -6,4 +6,6 @@ object HardcodedData {
     const val IS_ADMIN = true
     const val TOKEN = "mock-auth-token-123456"
     const val PLAYER_SRV_ID = "srv-player"
+    const val FIGHTER_SRV_ID = "srv-fighter-m"
+    const val RECON_SRV_ID = "srv-recon-f"
 }

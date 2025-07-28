@@ -51,6 +51,9 @@ val areaTypeToScenes = mapOf(
     // Suburban Street (areaType: substreet)
     // Street (areaType: street)
 
+    "compound" to listOf(
+        "compound"
+    ),
     "bridge" to listOf(
         "exterior-bridge-1",
         "exterior-bridge-2",

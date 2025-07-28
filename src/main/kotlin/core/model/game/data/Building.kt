@@ -5,9 +5,9 @@ import dev.deadzone.core.model.game.data.TimerData
 
 @Serializable
 data class Building(
-    val id: String,
+    val id: String, // building's unique identifier, not to be confused with type
     val name: String? = null,
-    val type: String = id,  // junk for JunkBuilding
+    val type: String,  // the type of building, which is the id in buildings.xml
     val level: Int,
     val rotation: Int,
     val tx: Int,
@@ -21,7 +21,7 @@ data class Building(
         fun dummy(id: String = "", type: String = "", tx: Int = 10, ty: Int = 10): Building {
             return Building(
                 id = id,
-                type = id, // must be same with id. type lookup to XML is done in client-side
+                type = type,
                 level = 1,
                 rotation = 0,
                 tx = tx,
@@ -35,7 +35,7 @@ data class Building(
 
         fun bed(tx: Int = 50, ty: Int = 50): Building {
             return dummy(
-                id = "bed",
+                id = "bed-example",
                 type = "bed",
                 tx = tx,
                 ty = ty

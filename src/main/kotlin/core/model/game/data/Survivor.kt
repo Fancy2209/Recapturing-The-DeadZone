@@ -55,7 +55,7 @@ data class Survivor(
 
         fun reconF(): Survivor {
             return Survivor(
-                id = "srv-recon-f",
+                id = HardcodedData.RECON_SRV_ID,
                 title = "NoisyRecon",
                 firstName = "Noisy",
                 lastName = "Recon",
@@ -79,7 +79,7 @@ data class Survivor(
 
         fun fighterM(): Survivor {
             return Survivor(
-                id = "srv-fighter-m",
+                id = HardcodedData.FIGHTER_SRV_ID,
                 title = "AngryFighter",
                 firstName = "Angry",
                 lastName = "Fighter",
