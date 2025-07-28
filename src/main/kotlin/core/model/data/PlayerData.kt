@@ -111,7 +111,7 @@ data class PlayerData(
                 ),
                 survivors = SurvivorCollection.threeSurvivors(),
                 playerAttributes = Attributes.dummy(),
-                buildings = BuildingCollection.simpleBase(),
+                buildings = BuildingCollection.goodBase(),
                 rally = mapOf(
                     "B19" to listOf(HardcodedData.FIGHTER_SRV_ID),
                     "B20" to listOf(HardcodedData.RECON_SRV_ID),
