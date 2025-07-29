@@ -17,9 +17,7 @@ fun Route.caseInsensitiveStaticResources(baseUrl: String, resourceRoot: String =
     get("$baseUrl/{...}") {
         val rawPath = call.request.path().replace(Regex("/+"), "/")
 
-        val lookupKey = if (rawPath.equals("/game/core.swf", ignoreCase = true)) {
-            return@get call.respond(HttpStatusCode.NotFound)
-        } else if (rawPath.startsWith("/game/data")) {
+        val lookupKey = if (rawPath.startsWith("/game/data")) {
             "static" + rawPath.lowercase()
         } else {
             "static$rawPath"
@@ -39,20 +37,6 @@ fun Route.caseInsensitiveStaticResources(baseUrl: String, resourceRoot: String =
                 )
                 return@get call.respondBytes(resource.readBytes(), contentType)
             }
-        }
-
-        call.respond(HttpStatusCode.NotFound)
-    }
-
-    // Special case for serving / (root) as index.html (case-sensitive)
-    get(baseUrl) {
-        // Logger.print("🔶 Serving index.html")
-        val indexPath = "$resourceRoot/index.html"
-        val stream =
-            resourceMap[indexPath]?.let { this::class.java.classLoader.getResourceAsStream(it) }
-
-        if (stream != null) {
-            return@get call.respondBytes(stream.readBytes(), ContentType.Text.Html)
         }
 
         call.respond(HttpStatusCode.NotFound)

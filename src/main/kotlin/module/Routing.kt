@@ -11,8 +11,18 @@ import java.io.File
 
 fun Application.configureRouting(db: BigDB) {
     routing {
-        staticFiles("/game/core.swf", File("core-swf/core.swf"))
-        caseInsensitiveStaticResources("/", "static")
+        get("/") {
+            val indexFile = File("static/index.html")
+            if (indexFile.exists()) {
+                call.respondFile(indexFile)
+            } else {
+                call.respond(HttpStatusCode.NotFound)
+            }
+        }
+
+        staticFiles("/game", File("static/game/"))
+        staticFiles("/assets", File("static/assets"))
+        caseInsensitiveStaticResources("/game/data", "static")
 
         post("/api/{path}") {
             val path = call.parameters["path"] ?: return@post call.respond(HttpStatusCode.BadRequest)
