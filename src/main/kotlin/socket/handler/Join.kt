@@ -5,7 +5,6 @@ import dev.deadzone.core.utils.PIOSerializer
 import dev.deadzone.module.Logger
 import dev.deadzone.socket.Connection
 import dev.deadzone.socket.ServerContext
-import dev.deadzone.socket.printString
 import dev.deadzone.socket.utils.SocketMessage
 import dev.deadzone.socket.utils.SocketMessageHandler
 import io.ktor.util.date.*
@@ -13,11 +12,6 @@ import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.util.zip.GZIPOutputStream
-
-/**
- *
- *
- */
 
 /**
  * Handle `join` message by:

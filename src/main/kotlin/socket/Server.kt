@@ -2,6 +2,7 @@ package dev.deadzone.socket
 
 import dev.deadzone.core.data.BigDB
 import dev.deadzone.core.utils.PIODeserializer
+import dev.deadzone.module.Logger
 import dev.deadzone.socket.handler.InitCompleteHandler
 import dev.deadzone.socket.utils.SocketMessage
 import dev.deadzone.socket.utils.SocketMessageDispatcher
@@ -57,7 +58,7 @@ class Server(
             try {
                 val selectorManager = SelectorManager(Dispatchers.IO)
                 val serverSocket = aSocket(selectorManager).tcp().bind(host, port)
-                print("Socket server started at $host:$port")
+                Logger.socketPrint("Socket server started at $host:$port")
 
                 while (true) {
                     val socket = serverSocket.accept()
@@ -67,11 +68,11 @@ class Server(
                         output = socket.openWriteChannel(autoFlush = true)
                     )
                     clients.add(connection)
-                    print("New client: ${connection.socket.remoteAddress}")
+                    Logger.socketPrint("New client: ${connection.socket.remoteAddress}")
                     handleClient(connection)
                 }
             } catch (e: Exception) {
-                print("ERROR starting server $e")
+                Logger.socketPrint("ERROR starting server $e")
                 stop()
             }
         }
@@ -94,16 +95,16 @@ class Server(
                     if (bytesRead <= 0) break
 
                     val data = buffer.copyOfRange(0, bytesRead)
-                    print("Received raw: ${data.printString()}")
+                    Logger.socketPrint("Received raw: ${data.decodeToString()}")
 
                     if (data.startsWithBytes(POLICY_FILE_REQUEST.toByteArray())) {
                         connection.sendRaw(POLICY_FILE_RESPONSE.toByteArray())
-                        print("Sent policy response")
+                        Logger.socketPrint("Policy file request received and sent")
                         break
                     }
 
                     val data2 = if (data.startsWithBytes(byteArrayOf(0x00))) {
-                        print("Received 0x00 --- ignoring")
+                        Logger.socketPrint("Received 0x00 — ignoring")
                         data.drop(1).toByteArray()
                     } else data
 
@@ -117,12 +118,12 @@ class Server(
                         }
                     }
 
-                    print("============END=============")
+                    Logger.socketPrint("<------------ END ------------>")
                 }
             } catch (e: Exception) {
-                print("Error in socket for ${connection.socket.remoteAddress}: $e")
+                Logger.socketPrint("Error in socket for ${connection.socket.remoteAddress}: $e")
             } finally {
-                print("Client ${connection.socket.remoteAddress} disconnected")
+                Logger.socketPrint("Client ${connection.socket.remoteAddress} disconnected")
                 taskDispatcher.stopAllPushTasks()
                 pushJob.cancelAndJoin()
                 clients.remove(connection)
@@ -132,32 +133,12 @@ class Server(
     }
 
     fun stop() {
-        print("Stopping ${clients.size} connections...")
+        Logger.socketPrint("Stopping ${clients.size} connections...")
         clients.forEach {
             it.socket.close()
         }
-        print("Server closed.")
+        Logger.socketPrint("Server closed.")
     }
-}
-
-private const val MAX_PRINT_STRING_LENGTH = 300
-
-fun ByteArray.printString(printFull: Boolean = false): String {
-    val builder = StringBuilder()
-    var count = 0
-    for (byte in this) {
-        if (count >= MAX_PRINT_STRING_LENGTH && !printFull) {
-            builder.append("... [truncated]")
-            break
-        }
-        val b = byte.toInt() and 0xFF
-        builder.append(
-            if (b in 0x20..0x7E) b.toChar()
-            else "\\x%02x".format(b)
-        )
-        count++
-    }
-    return builder.toString()
 }
 
 fun ByteArray.startsWithBytes(prefix: ByteArray): Boolean {
@@ -166,14 +147,4 @@ fun ByteArray.startsWithBytes(prefix: ByteArray): Boolean {
         if (this[i] != prefix[i]) return false
     }
     return true
-}
-
-fun print(msg: Any, printFull: Boolean = false) {
-    val str = msg.toString()
-    val limited = if (str.length > MAX_PRINT_STRING_LENGTH && !printFull)
-        str.take(MAX_PRINT_STRING_LENGTH) + "... [truncated]"
-    else
-        str
-
-    println("[SOCKET]: $limited")
 }

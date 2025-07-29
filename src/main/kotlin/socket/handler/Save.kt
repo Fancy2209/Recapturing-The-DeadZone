@@ -49,8 +49,6 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
         val type = data?.get("_type") as? String
         val saveId = body?.get("id") as? String
 
-        Logger.socketPrint("Save message got: type:$type | id:$saveId")
-
         // Note: the game typically send and expects JSON data for save message
         // encode JSON response to string before using PIO serialization
 
@@ -247,7 +245,6 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                     new = true,
                 )
                 val response = Dependency.json.encodeToString(item)
-                println(response)
                 send(PIOSerializer.serialize(buildMsg(saveId, response)))
             }
 
@@ -281,6 +278,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
             }
 
             else -> {
+                Logger.socketPrint("Handled 's' message but unhandled data type: $type from data=$data")
                 Logger.unimplementedSocket("Handled 's' message but unhandled data type: $type from data=$data")
             }
         }

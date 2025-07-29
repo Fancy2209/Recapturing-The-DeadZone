@@ -1,5 +1,6 @@
 package dev.deadzone.core.utils
 
+import dev.deadzone.module.Logger
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -37,7 +38,7 @@ internal enum class Pattern(val value: Int) {
 
     companion object {
         fun fromByte(byte: Int): Pattern {
-            return values().sortedByDescending { it.value }.firstOrNull {
+            return entries.toTypedArray().sortedByDescending { it.value }.firstOrNull {
                 byte and it.value == it.value
             } ?: DOES_NOT_EXIST
         }
@@ -251,7 +252,7 @@ object PIODeserializer {
                                     else -> null
                                 }
                             } catch (e: Exception) {
-                                println("Error deserializing pattern $pattern: ${e.message}")
+                                Logger.print("Error deserializing pattern $pattern: ${e.message}")
                                 null
                             }
 
@@ -264,8 +265,8 @@ object PIODeserializer {
             }
 
             return message
-        } catch (e: Exception) {
-            println("Deserialization failed: ${e.message}, fallback to JSON")
+        } catch (_: Exception) {
+            Logger.print("Deserializer receives JSON-like message")
         }
 
         val offset = data.indexOfFirst { it == '{'.code.toByte() }
@@ -287,11 +288,11 @@ object PIODeserializer {
                     }
                     final
                 } else {
-                    println("Cannot determine message type from partial data")
+                    Logger.print("Cannot determine message type from partial data")
                     emptyList()
                 }
             } catch (e: Exception) {
-                println("JSON fallback deserialization failed: ${e.message}")
+                Logger.print("JSON fallback deserialization failed: ${e.message}")
                 emptyList()
             }
         } else {
@@ -305,7 +306,7 @@ fun parseJsonToMap(json: String): Map<String, Any?> {
     return try {
         val parsed = Json.decodeFromString<JsonObject>(json)
         parsed.mapValues { (_, v) -> parseJsonElement(v) }
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         emptyMap()
     }
 }
@@ -323,9 +324,4 @@ fun parseJsonElement(el: JsonElement): Any? = when (el) {
     }
     is JsonObject -> el.mapValues { parseJsonElement(it.value) }
     is JsonArray -> el.map { parseJsonElement(it) }
-    else -> null
-}
-
-fun flattenToPairs(map: Map<String, Any?>): Array<Any?> {
-    return map.flatMap { listOf(it.key, it.value) }.toTypedArray()
 }

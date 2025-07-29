@@ -5,40 +5,19 @@ import io.ktor.server.application.install
 import io.ktor.server.plugins.calllogging.CallLogging
 import io.ktor.server.routing.RoutingContext
 import java.io.File
-import kotlin.text.decodeToString
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 fun Application.configureLogging() {
     install(CallLogging)
 }
 
-val RoutingContext.log get() = call.application.environment.log
-
-private const val MAX_LOG_LENGTH = 300
-
-fun RoutingContext.logApiMessage(message: Any, printFull: Boolean = false) {
-    val msgString = message.toString()
-    val truncated = if (msgString.length > MAX_LOG_LENGTH && !printFull) {
-        msgString.take(MAX_LOG_LENGTH) + "... [truncated]"
-    } else {
-        msgString
-    }
-    call.application.environment.log.info("Received [API ${call.parameters["path"]}]: $truncated")
+fun RoutingContext.logAPIInput(txt: Any?) {
+    call.application.environment.log.info("Received [API ${call.parameters["path"]}]: $txt")
 }
 
-fun RoutingContext.logApiOutput(message: ByteArray, printFull: Boolean = false) {
-    val msgString = try {
-        message.decodeToString()
-    } catch (e: Exception) {
-        "[binary output not decodable]"
-    }
-
-    val truncated = if (msgString.length > MAX_LOG_LENGTH && !printFull) {
-        msgString.take(MAX_LOG_LENGTH) + "... [truncated]"
-    } else {
-        msgString
-    }
-
-    call.application.environment.log.info("Sent [API ${call.parameters["path"]}]: $truncated")
+fun RoutingContext.logAPIOutput(txt: ByteArray?) {
+    call.application.environment.log.info("Sent [API ${call.parameters["path"]}]: ${txt?.decodeToString()}")
 }
 
 object Logger {
@@ -48,16 +27,27 @@ object Logger {
     private val unimplementedApiLog = File(logDir, "unimplemented_api.log")
     private val unimplementedSocketLog = File(logDir, "unimplemented_socket.log")
 
-    fun logTo(file: File, message: Any) {
+    fun logTo(file: File, message: Any?) {
         file.appendText("$message\n")
     }
 
-    fun writeError(message: Any) = logTo(errorLog, message)
-    fun writeMissingAssets(message: Any) = logTo(missingAssetsLog, message)
-    fun unimplementedApi(message: Any) = logTo(unimplementedApiLog, message)
-    fun unimplementedSocket(message: Any) = logTo(unimplementedSocketLog, message)
+    fun writeError(message: Any?) = logTo(errorLog, message)
+    fun writeMissingAssets(message: Any?) = logTo(missingAssetsLog, message)
+    fun unimplementedApi(message: Any?) = logTo(unimplementedApiLog, message)
+    fun unimplementedSocket(message: Any?) = logTo(unimplementedSocketLog, message)
 
-    fun socketPrint(txt: Any) {
-        println("[SOCKET]: $txt")
+    fun socketPrint(txt: Any?) {
+        println("[SOCKET/${getTime()}]: $txt")
+    }
+
+    fun print(txt: Any?) {
+        println("[LOGGER/${getTime()}]: $txt")
+    }
+
+    private fun getTime(): String? {
+        val currentTime = LocalTime.now()
+        val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+        val formattedTime = currentTime.format(formatter)
+        return formattedTime
     }
 }

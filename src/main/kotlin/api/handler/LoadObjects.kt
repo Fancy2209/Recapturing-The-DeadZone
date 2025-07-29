@@ -4,9 +4,9 @@ import dev.deadzone.api.message.db.BigDBObject
 import dev.deadzone.api.message.db.LoadObjectsArgs
 import dev.deadzone.api.message.db.LoadObjectsOutput
 import dev.deadzone.core.data.BigDB
+import dev.deadzone.module.Logger
+import dev.deadzone.module.logAPIInput
 import dev.deadzone.module.pioFraming
-import dev.deadzone.module.logApiMessage
-import dev.deadzone.module.logApiOutput
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -29,7 +29,7 @@ suspend fun RoutingContext.loadObjects(db: BigDB) {
         call.receiveChannel().toByteArray()
     )
 
-    logApiMessage(loadObjectsArgs)
+    logAPIInput(loadObjectsArgs)
 
     val validUsers = setOf("user123", "userABC")
     val objs = mutableListOf<BigDBObject>()
@@ -43,7 +43,7 @@ suspend fun RoutingContext.loadObjects(db: BigDB) {
             "NeighborHistory" -> LoadObjectsOutput.neighborHistory()
             "Inventory" -> LoadObjectsOutput.inventory()
             else -> {
-                println("UNIMPLEMENTED table: ${objId.table}")
+                Logger.print("UNIMPLEMENTED table for ${objId.table}")
                 null
             }
         }
@@ -53,7 +53,7 @@ suspend fun RoutingContext.loadObjects(db: BigDB) {
 
     val loadObjectsOutput = ProtoBuf.encodeToByteArray(LoadObjectsOutput(objects = objs))
 
-    logApiOutput(loadObjectsOutput, true)
+    // logAPIOutput(loadObjectsOutput)
 
     call.respondBytes(loadObjectsOutput.pioFraming())
 }

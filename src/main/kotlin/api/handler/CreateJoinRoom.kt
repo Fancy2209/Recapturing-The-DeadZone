@@ -3,9 +3,9 @@ package dev.deadzone.api.handler
 import dev.deadzone.api.message.client.CreateJoinRoomArgs
 import dev.deadzone.api.message.client.CreateJoinRoomOutput
 import dev.deadzone.core.data.BigDB
+import dev.deadzone.module.logAPIInput
+import dev.deadzone.module.logAPIOutput
 import dev.deadzone.module.pioFraming
-import dev.deadzone.module.logApiMessage
-import dev.deadzone.module.logApiOutput
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -28,13 +28,13 @@ suspend fun RoutingContext.createJoinRoom(db: BigDB) {
         call.receiveChannel().toByteArray()
     )
 
-    logApiMessage(createJoinRoomArgs)
+    logAPIInput(createJoinRoomArgs)
 
     val createJoinRoomOutput = ProtoBuf.encodeToByteArray<CreateJoinRoomOutput>(
         CreateJoinRoomOutput.dummy()
     )
 
-    logApiOutput(createJoinRoomOutput)
+    logAPIOutput(createJoinRoomOutput)
 
     call.respondBytes(createJoinRoomOutput.pioFraming())
 }
