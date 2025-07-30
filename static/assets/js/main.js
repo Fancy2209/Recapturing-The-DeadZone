@@ -11,7 +11,7 @@ $(document).ready(function () {
     showGameScreen();
   }
 
-  $("#pio_login").submit(function (event) {
+  $("#pio-login").submit(function (event) {
     event.preventDefault();
     var username = $("#username").val();
     var password = $("#password").val();
@@ -22,8 +22,8 @@ $(document).ready(function () {
 
 function showGameScreen() {
   var a = swfobject.getFlashPlayerVersion();
-  $("#noflash_reqVersion").html(flashVersion);
-  $("#noflash_currentVersion").html(a.major + "." + a.minor + "." + a.release);
+  $("#noflash-reqVersion").html(flashVersion);
+  $("#noflash-currentVersion").html(a.major + "." + a.minor + "." + a.release);
   if (screen.availWidth <= 1250) {
     $("#nav").css("left", "220px");
   }
@@ -65,7 +65,7 @@ function startGame(username, password) {
 
   const attributes = { id: "game", name: "game" };
 
-  $("#game_wrapper").height("0px");
+  $("#game-wrapper").height("0px");
   embedSWF("/game/preloader.swf", flashVars, params, attributes);
 }
 
@@ -104,14 +104,14 @@ function startMigration(username, password) {
 
   const attributes = { id: "game", name: "game" };
 
-  $("#game_wrapper").height("0px");
+  $("#game-wrapper").height("0px");
   embedSWF("/migration/preloader.swf", flashVars, params, attributes);
 }
 
 function embedSWF(swfURL, flashVars, params, attributes) {
   swfobject.embedSWF(
     swfURL,
-    "game_container",
+    "game-container",
     "100%",
     "100%",
     flashVersion,
@@ -146,20 +146,20 @@ function showMaintenanceScreen() {
 function showNoFlash() {
   $("#loading").remove();
   $("#noflash").css("display", "block");
-  $("#game_wrapper").height("100%");
-  $("#userID").html("");
+  $("#game-wrapper").height("100%");
+  $("#user-id").html("");
 }
 
 function showError(b, a) {
   $("#loading").remove();
-  $("#generic_error").css("display", "block");
-  $("#generic_error").html("<p><h2>" + b + "</h2></p><p>" + a + "</p>");
-  $("#userID").html("");
+  $("#generic-error").css("display", "block");
+  $("#generic-error").html("<p><h2>" + b + "</h2></p><p>" + a + "</p>");
+  $("#user-id").html("");
 }
 
 function killGame() {
   $("#game").remove();
-  $("#game_container").remove();
+  $("#game-container").remove();
   $("#loading").remove();
   $("#content").prepend(
     "<div id='messagebox'><div class='header'>Are you there?</div><div class='msg'>You've left your compound unattended for some time. Are you still playing?</div><div class='btn' onclick='refresh()'>BACK TO THE DEAD ZONE</div></div>"
@@ -168,7 +168,7 @@ function killGame() {
 
 function onPreloaderReady() {
   $("#loading").remove();
-  $("#game_wrapper").height("100%");
+  $("#game-wrapper").height("100%");
 }
 
 function onFlashHide(c) {
@@ -214,7 +214,7 @@ function addMessage(h, f, g, b) {
   f = parseUTCStrings(f);
   var d = $('<div class="header_message">' + f + "</div>");
   e.append(d);
-  $("#warning_container").append(e);
+  $("#warning-container").append(e);
   e.height("0px").animate({ height: "30px" }, 250);
   messages.push(e);
 }
@@ -324,7 +324,7 @@ var requestGetMoreInterval;
 var waitingForGetMore = false;
 
 function openGetMoreDialogue() {
-  updateNavClass("get_more");
+  updateNavClass("get-more");
   if (mt || waitingForGetMore) {
     return;
   }
@@ -356,7 +356,7 @@ function openGetMoreDialogue() {
 }
 
 function updateNavClass(a) {
-  $("#nav_ul")[0].className = a;
+  $("#nav-ul")[0].className = a;
 }
 
 function setMouseWheelState(a) {
@@ -414,8 +414,10 @@ function getParameterByName(b) {
   }
 }
 
-// MissionData.as before mission start
-function setBeforeUnloadMessage(params) {
-    console.log("[setBeforeUnloadMessage] received:", params)
-    // implement leave mission warning before unloading
+function openDebugLog() {
+  window.open(
+    "http://127.0.0.1:8080/debuglog.html",
+    "DZReviveDebugLog",
+    "width=600,height=400,resizable=yes,menubar=yes,toolbar=yes,status=yes"
+  );
 }
