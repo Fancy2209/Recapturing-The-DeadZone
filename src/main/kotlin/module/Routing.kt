@@ -7,7 +7,11 @@ import io.ktor.server.application.*
 import io.ktor.server.http.content.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.websocket.DefaultWebSocketServerSession
+import io.ktor.server.websocket.webSocket
+import kotlinx.coroutines.channels.consumeEach
 import java.io.File
+import java.util.Collections
 
 fun Application.configureRouting(db: BigDB) {
     routing {
@@ -20,6 +24,10 @@ fun Application.configureRouting(db: BigDB) {
             }
         }
 
+        staticFiles("/game", File("static/game/"))
+        staticFiles("/assets", File("static/assets"))
+        caseInsensitiveStaticResources("/game/data", "static")
+
         get("/debuglog") {
             val file = File("static/debuglog.html")
             if (file.exists()) {
@@ -30,9 +38,16 @@ fun Application.configureRouting(db: BigDB) {
             }
         }
 
-        staticFiles("/game", File("static/game/"))
-        staticFiles("/assets", File("static/assets"))
-        caseInsensitiveStaticResources("/game/data", "static")
+        webSocket("/debuglog") {
+            Logger.connectedDebugClients.add(this)
+            try {
+
+            } catch (e: Exception) {
+                Logger.error { "Error in websocket for client $this: $e" }
+            } finally {
+                Logger.connectedDebugClients.remove(this)
+            }
+        }
 
         post("/api/{path}") {
             val path = call.parameters["path"] ?: return@post call.respond(HttpStatusCode.BadRequest)

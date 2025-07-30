@@ -1,18 +1,25 @@
 package dev.deadzone.module
 
-import dev.deadzone.module.Logger.debug
-import dev.deadzone.module.Logger.error
 import dev.deadzone.module.Logger.info
-import dev.deadzone.module.Logger.warn
 import io.ktor.server.application.*
 import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.routing.*
+import io.ktor.server.websocket.DefaultWebSocketServerSession
+import io.ktor.websocket.Frame
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.io.File
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.Collections
+import java.util.concurrent.CopyOnWriteArraySet
 
 const val MAX_LOG_LENGTH = 500
+const val MAX_LOG_BUFFER = 100
 
 fun Application.configureLogging() {
     install(CallLogging)
@@ -87,6 +94,9 @@ fun RoutingContext.logOutput(txt: ByteArray?, logFull: Boolean = false) {
  */
 object Logger {
     var level: LogLevel = LogLevel.DEBUG
+    val connectedDebugClients = CopyOnWriteArraySet<DefaultWebSocketServerSession>()
+
+    private val logBuffer = ArrayDeque<LogMessage>()
 
     private val logDir = File("logs").apply { mkdirs() }
     private val clientWriteError = File(logDir, "client_write_error.log")
@@ -135,7 +145,22 @@ object Logger {
                 }
 
                 is LogTarget.CLIENT -> {
-                    // TO-DO send to websocket
+                    val logMsg = LogMessage(level, msgString)
+                    logBuffer.add(logMsg)
+                    if (logBuffer.size > MAX_LOG_BUFFER) {
+                        logBuffer.removeFirst()
+                    }
+
+                    val frame = Frame.Text(Json.encodeToString(logMsg))
+                    CoroutineScope(Dispatchers.IO).launch {
+                        for (session in connectedDebugClients) {
+                            try {
+                                session.send(frame)
+                            } catch (e: Exception) {
+                                println("[LOGGER|WARN] Failed to send to client: $e")
+                            }
+                        }
+                    }
                 }
             }
         }

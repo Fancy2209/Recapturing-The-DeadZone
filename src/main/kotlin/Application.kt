@@ -13,5 +13,6 @@ fun Application.module() {
     configureRouting(db = Dependency.database)
     configureSerialization()
     configureLogging()
+    configureWebsocket()
     configureSocket(db = Dependency.database)
 }
