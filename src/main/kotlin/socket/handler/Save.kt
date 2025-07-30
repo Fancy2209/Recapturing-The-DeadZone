@@ -1,15 +1,11 @@
 package dev.deadzone.socket.handler
 
 import dev.deadzone.core.mission.insertLoots
-import dev.deadzone.core.model.game.data.CrateItem
-import dev.deadzone.core.model.game.data.EffectItem
-import dev.deadzone.core.model.game.data.GameResources
-import dev.deadzone.core.model.game.data.Item
-import dev.deadzone.core.model.game.data.SchematicItem
-import dev.deadzone.core.model.game.data.ZombieData
-import dev.deadzone.core.model.game.data.toFlatList
+import dev.deadzone.core.model.game.data.*
 import dev.deadzone.core.utils.PIOSerializer
 import dev.deadzone.module.Dependency
+import dev.deadzone.module.LogConfigSocketError
+import dev.deadzone.module.LogConfigSocketToClient
 import dev.deadzone.module.Logger
 import dev.deadzone.socket.Connection
 import dev.deadzone.socket.ServerContext
@@ -23,7 +19,7 @@ import dev.deadzone.socket.handler.saveresponse.mission.resolveAndLoadScene
 import dev.deadzone.socket.utils.SocketMessage
 import dev.deadzone.socket.utils.SocketMessageHandler
 import io.ktor.util.date.*
-import java.util.UUID
+import java.util.*
 
 /**
  * Handle `save` message by:
@@ -74,7 +70,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 // The error was 'cyclic object' thing.
                 val isCompoundZombieAttack = data["compound"]?.equals(true)
                 val areaType = if (isCompoundZombieAttack == true) "compound" else data["areaType"] as String
-                Logger.socketPrint("Going to scene with areaType=$areaType")
+                Logger.debug(LogConfigSocketToClient) { "Going to scene with areaType=$areaType" }
 
                 val sceneXML = resolveAndLoadScene(areaType)
                 val sceneXMLWithLoot = insertLoots(sceneXML)
@@ -124,11 +120,11 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
 
             // mis_startFlag and mis_interacted do not expect a response
             "mis_startFlag" -> {
-                Logger.socketPrint("<----- Mission start flag received ----->")
+                Logger.info { "<----- Mission start flag received ----->" }
             }
 
             "mis_interacted" -> {
-                Logger.socketPrint("<----- First interaction received ----->")
+                Logger.info { "<----- First interaction received ----->" }
             }
 
             "mis_end" -> {
@@ -178,17 +174,17 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
 
             "stat_data" -> {
                 val stats = data["stats"]
-                Logger.socketPrint("Received stat_data with stats: $stats")
+                Logger.info { "Received stat_data with stats: $stats" }
             }
 
             "clear_notes" -> {
-                Logger.socketPrint("Received clear_notes")
+                Logger.info { "Received clear_notes" }
             }
 
             "give" -> {
                 val type = data["type"] as? String ?: return
 
-                Logger.socketPrint("Received give command with type=$type | data=$data")
+                Logger.info { "Received give command with type=$type | data=$data" }
 
                 when (type) {
                     "schematic" -> {
@@ -266,7 +262,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 val r = (data["rotation"] as? Number)?.toInt() ?: 0
                 val buildingId = data["id"] // use this to refer the building
 
-                Logger.socketPrint("Building move for $saveId and $buildingId to $x,$y|r:$r")
+                Logger.debug { "Building move for $saveId and $buildingId to $x,$y|r:$r" }
 
                 val responseJson = Dependency.json.encodeToString(
                     BuildingMoveResponse(
@@ -278,8 +274,9 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
             }
 
             else -> {
-                Logger.socketPrint("Handled 's' message but unhandled data type: $type from data=$data")
-                Logger.unimplementedSocket("Handled 's' message but unhandled data type: $type from data=$data")
+                Logger.error(LogConfigSocketError) {
+                    "Handled 's' message but unhandled data type: $type from data=$data"
+                }
             }
         }
     }

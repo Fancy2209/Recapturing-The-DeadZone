@@ -27,7 +27,7 @@ class JoinHandler(private val context: ServerContext) : SocketMessageHandler {
 
     override suspend fun handle(connection: Connection, message: SocketMessage, send: suspend (ByteArray) -> Unit) {
         val joinKey = message.getString("join")
-        Logger.socketPrint("Handling join with key: $joinKey")
+        Logger.info { "Handling join with key: $joinKey" }
 
         val userId = message.getString("serviceUserId")
         connection.playerId = userId

@@ -3,8 +3,8 @@ package dev.deadzone.api.handler
 import dev.deadzone.api.message.auth.AuthenticateArgs
 import dev.deadzone.api.message.auth.AuthenticateOutput
 import dev.deadzone.core.data.BigDB
-import dev.deadzone.module.logAPIInput
-import dev.deadzone.module.logAPIOutput
+import dev.deadzone.module.logInput
+import dev.deadzone.module.logOutput
 import dev.deadzone.module.pioFraming
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -28,13 +28,13 @@ suspend fun RoutingContext.authenticate(db: BigDB) {
         call.receiveChannel().toByteArray()
     )
 
-    logAPIInput(authenticateArgs)
+    logInput(authenticateArgs)
 
     val authenticateOutput = ProtoBuf.encodeToByteArray<AuthenticateOutput>(
         AuthenticateOutput.dummy()
     )
 
-    logAPIOutput(authenticateOutput)
+    logOutput(authenticateOutput)
 
     call.respondBytes(authenticateOutput.pioFraming())
 }

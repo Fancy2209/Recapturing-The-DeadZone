@@ -58,7 +58,7 @@ class Server(
             try {
                 val selectorManager = SelectorManager(Dispatchers.IO)
                 val serverSocket = aSocket(selectorManager).tcp().bind(host, port)
-                Logger.socketPrint("Socket server started at $host:$port")
+                Logger.info { "Socket server started at $host:$port" }
 
                 while (true) {
                     val socket = serverSocket.accept()
@@ -68,11 +68,11 @@ class Server(
                         output = socket.openWriteChannel(autoFlush = true)
                     )
                     clients.add(connection)
-                    Logger.socketPrint("New client: ${connection.socket.remoteAddress}")
+                    Logger.info { "New client: ${connection.socket.remoteAddress}" }
                     handleClient(connection)
                 }
             } catch (e: Exception) {
-                Logger.socketPrint("ERROR starting server $e")
+                Logger.error { "ERROR starting server $e" }
                 stop()
             }
         }
@@ -95,16 +95,16 @@ class Server(
                     if (bytesRead <= 0) break
 
                     val data = buffer.copyOfRange(0, bytesRead)
-                    Logger.socketPrint("Received raw: ${data.decodeToString()}")
+                    Logger.debug { "Received raw: ${data.decodeToString()}" }
 
                     if (data.startsWithBytes(POLICY_FILE_REQUEST.toByteArray())) {
                         connection.sendRaw(POLICY_FILE_RESPONSE.toByteArray())
-                        Logger.socketPrint("Policy file request received and sent")
+                        Logger.info { "Policy file request received and sent" }
                         break
                     }
 
                     val data2 = if (data.startsWithBytes(byteArrayOf(0x00))) {
-                        Logger.socketPrint("Received 0x00 — ignoring")
+                        Logger.info { "Received 0x00 — ignoring" }
                         data.drop(1).toByteArray()
                     } else data
 
@@ -118,12 +118,12 @@ class Server(
                         }
                     }
 
-                    Logger.socketPrint("<------------ END ------------>")
+                    Logger.info("<------------ SOCKET MESSAGE END ------------>")
                 }
             } catch (e: Exception) {
-                Logger.socketPrint("Error in socket for ${connection.socket.remoteAddress}: $e")
+                Logger.error { "Error in socket for ${connection.socket.remoteAddress}: $e" }
             } finally {
-                Logger.socketPrint("Client ${connection.socket.remoteAddress} disconnected")
+                Logger.info { "Client ${connection.socket.remoteAddress} disconnected" }
                 taskDispatcher.stopAllPushTasks()
                 pushJob.cancelAndJoin()
                 clients.remove(connection)
@@ -133,11 +133,11 @@ class Server(
     }
 
     fun stop() {
-        Logger.socketPrint("Stopping ${clients.size} connections...")
+        Logger.info { "Stopping ${clients.size} connections..." }
         clients.forEach {
             it.socket.close()
         }
-        Logger.socketPrint("Server closed.")
+        Logger.info { "Server closed." }
     }
 }
 

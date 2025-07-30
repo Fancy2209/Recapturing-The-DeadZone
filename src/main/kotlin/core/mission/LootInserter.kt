@@ -1,5 +1,6 @@
 package dev.deadzone.core.mission
 
+import dev.deadzone.module.LogSource
 import dev.deadzone.module.Logger
 import org.w3c.dom.Document
 import org.w3c.dom.Element
@@ -30,7 +31,7 @@ fun insertLoots(xmlInput: String): String {
             .any { it is Element && it.tagName == "itms" }
 
         if (!hasItms) {
-            Logger.socketPrint("Inserting itms for e with srch=${srchNode.textContent}")
+            Logger.debug(LogSource.SOCKET) { "Inserting itms for e with srch=${srchNode.textContent}" }
 
             val itmsElement = doc.createElement("itms")
 

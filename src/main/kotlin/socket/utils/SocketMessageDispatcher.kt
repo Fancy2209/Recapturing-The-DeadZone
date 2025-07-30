@@ -14,9 +14,9 @@ class SocketMessageDispatcher() {
     }
 
     fun findHandlerFor(msg: SocketMessage): SocketMessageHandler {
-        Logger.socketPrint("Finding handler for type: ${msg.type} | message: $msg")
+        Logger.info { "Finding handler for type: ${msg.type} | message: $msg" }
         return (handlers.find { it.match(msg) } ?: DefaultHandler()).also {
-            Logger.socketPrint("Dispatching to $it")
+            Logger.info {"Dispatching to $it" }
         }
     }
 }

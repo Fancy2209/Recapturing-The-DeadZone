@@ -1,5 +1,7 @@
 package dev.deadzone.socket.utils
 
+import dev.deadzone.module.LogConfigSocketError
+import dev.deadzone.module.LogSource
 import dev.deadzone.module.Logger
 import dev.deadzone.socket.Connection
 import kotlinx.coroutines.CompletableDeferred
@@ -45,15 +47,16 @@ class ServerPushTaskDispatcher {
                 val signal = CompletableDeferred<Unit>()
                 taskSignals[task.key] = signal
                 signal.await()
-                Logger.socketPrint("Push task ${task.key} is ready to run.")
+
+                Logger.info(LogSource.SOCKET) { "Push task ${task.key} is ready to run." }
 
                 try {
                     task.run(connection)
-                    Logger.socketPrint("Push task ${task.key} ran successfully.")
+                    Logger.info(LogSource.SOCKET) { "Push task ${task.key} ran successfully." }
                 } catch (_: CancellationException) {
-                    Logger.socketPrint("Push task '${task.key}' was cancelled.")
+                    Logger.info(LogSource.SOCKET) { "Push task '${task.key}' was cancelled." }
                 } catch (e: Exception) {
-                    Logger.socketPrint("Error running push task '${task.key}': ${e}")
+                    Logger.error(LogConfigSocketError) { "Error running push task '${task.key}': $e" }
                 } finally {
                     runningTasks.remove(task.key)
                     notifyCompletion(task.key)

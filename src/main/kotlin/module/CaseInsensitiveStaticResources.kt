@@ -11,7 +11,7 @@ fun Route.caseInsensitiveStaticResources(baseUrl: String, resourceRoot: String =
     val resourceMap = scanClasspathResources(resourceRoot)
 
     for (key in resourceMap.keys) {
-        // Logger.print("$key -> ${resourceMap[key]}")
+//        Logger.debug(LogConfigAPI) { "$key -> ${resourceMap[key]}" }
     }
 
     get("$baseUrl/{...}") {
@@ -25,9 +25,9 @@ fun Route.caseInsensitiveStaticResources(baseUrl: String, resourceRoot: String =
 
         val actualResourcePath = resourceMap[lookupKey]
 
-        // Logger.print("🔶 Serving $rawPath")
-        // Logger.print("lookupKey: $lookupKey")
-        // Logger.print("actual: $actualResourcePath")
+//        Logger.debug(LogConfigAPI) { "🔶 Serving $rawPath" }
+//        Logger.debug(LogConfigAPI) { "lookupKey: $lookupKey" }
+//        Logger.debug(LogConfigAPI) { "actual: $actualResourcePath" }
 
         if (actualResourcePath != null) {
             val resource = Application::class.java.getResourceAsStream("/$actualResourcePath")

@@ -1,19 +1,9 @@
 package dev.deadzone.core.utils
 
+import dev.deadzone.module.LogConfigSocketError
+import dev.deadzone.module.LogSource
 import dev.deadzone.module.Logger
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.boolean
-import kotlinx.serialization.json.booleanOrNull
-import kotlinx.serialization.json.double
-import kotlinx.serialization.json.doubleOrNull
-import kotlinx.serialization.json.int
-import kotlinx.serialization.json.intOrNull
-import kotlinx.serialization.json.long
-import kotlinx.serialization.json.longOrNull
+import kotlinx.serialization.json.*
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -235,16 +225,20 @@ object PIODeserializer {
                                     Pattern.STRING_PATTERN -> bytes.toString(Charsets.UTF_8)
 
                                     Pattern.UNSIGNED_INT_PATTERN,
-                                    Pattern.INT_PATTERN -> ByteBuffer.wrap(padded(bytes, 4)).order(ByteOrder.BIG_ENDIAN).int
+                                    Pattern.INT_PATTERN -> ByteBuffer.wrap(padded(bytes, 4))
+                                        .order(ByteOrder.BIG_ENDIAN).int
 
                                     Pattern.UNSIGNED_LONG_PATTERN,
                                     Pattern.UNSIGNED_LONG_SHORT_PATTERN,
                                     Pattern.LONG_PATTERN,
-                                    Pattern.LONG_SHORT_PATTERN -> ByteBuffer.wrap(padded(bytes, 8)).order(ByteOrder.BIG_ENDIAN).long
+                                    Pattern.LONG_SHORT_PATTERN -> ByteBuffer.wrap(padded(bytes, 8))
+                                        .order(ByteOrder.BIG_ENDIAN).long
 
-                                    Pattern.DOUBLE_PATTERN -> ByteBuffer.wrap(padded(bytes, 8)).order(ByteOrder.BIG_ENDIAN).double
+                                    Pattern.DOUBLE_PATTERN -> ByteBuffer.wrap(padded(bytes, 8))
+                                        .order(ByteOrder.BIG_ENDIAN).double
 
-                                    Pattern.FLOAT_PATTERN -> ByteBuffer.wrap(padded(bytes, 4)).order(ByteOrder.BIG_ENDIAN).float
+                                    Pattern.FLOAT_PATTERN -> ByteBuffer.wrap(padded(bytes, 4))
+                                        .order(ByteOrder.BIG_ENDIAN).float
 
                                     Pattern.BYTE_ARRAY_SHORT_PATTERN,
                                     Pattern.BYTE_ARRAY_PATTERN -> bytes
@@ -252,7 +246,7 @@ object PIODeserializer {
                                     else -> null
                                 }
                             } catch (e: Exception) {
-                                Logger.print("Error deserializing pattern $pattern: ${e.message}")
+                                Logger.error(LogConfigSocketError) { "Error deserializing pattern $pattern: ${e.message}" }
                                 null
                             }
 
@@ -266,7 +260,7 @@ object PIODeserializer {
 
             return message
         } catch (_: Exception) {
-            Logger.print("Deserializer receives JSON-like message")
+            Logger.info(LogSource.SOCKET) { "Deserializer receives JSON-like message" }
         }
 
         val offset = data.indexOfFirst { it == '{'.code.toByte() }
@@ -288,11 +282,11 @@ object PIODeserializer {
                     }
                     final
                 } else {
-                    Logger.print("Cannot determine message type from partial data")
+                    Logger.error(LogConfigSocketError) { "Cannot determine message type from partial data" }
                     emptyList()
                 }
             } catch (e: Exception) {
-                Logger.print("JSON fallback deserialization failed: ${e.message}")
+                Logger.error(LogConfigSocketError) { "JSON fallback deserialization failed: ${e.message}" }
                 emptyList()
             }
         } else {
@@ -322,6 +316,7 @@ fun parseJsonElement(el: JsonElement): Any? = when (el) {
             else -> el.content
         }
     }
+
     is JsonObject -> el.mapValues { parseJsonElement(it.value) }
     is JsonArray -> el.map { parseJsonElement(it) }
 }

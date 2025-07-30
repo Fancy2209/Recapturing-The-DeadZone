@@ -34,7 +34,7 @@ fun Application.configureRouting(db: BigDB) {
                 "50" -> writeError(db)
                 "85" -> loadObjects(db)
                 else -> {
-                    Logger.unimplementedApi("Unimplemented API route: ${path}")
+                    Logger.error(LogConfigAPIError) { "Unimplemented API route: $path" }
                     call.respond(HttpStatusCode.NotFound, "Unimplemented API: $path")
                 }
             }
