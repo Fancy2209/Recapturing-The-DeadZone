@@ -80,16 +80,16 @@ a:hover {
   margin: 20px 0 0 20px;
 }
 
-.header_message {
+.header-message {
   padding: 8px 8px 10px 8px;
 }
 
-.header_message a {
+.header-message a {
   color: #d8d2cc;
   text-decoration: underline;
 }
 
-.header_message_bar {
+.header-message-bar {
   background: #4e1709;
   color: #d8d2cc;
   font-size: 0.7em;
@@ -98,7 +98,7 @@ a:hover {
   border-top: 1px solid #631e0b;
 }
 
-.header_message_bar .close {
+.header-message-bar .close {
   background: url(../images/cross.gif) no-repeat center top;
   width: 15px;
   height: 12px;
@@ -107,7 +107,7 @@ a:hover {
   cursor: pointer;
 }
 
-.header_message_bar .loader {
+.header-message-bar .loader {
   background: url(../images/mini-loader.gif) no-repeat center top;
   width: 16px;
   height: 16px;
@@ -481,4 +481,25 @@ li#feedback a:focus {
 
 #footer a:hover {
   text-decoration: underline;
+}
+
+.debug-log-btn-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.debug-log-btn {
+  background-color: #363333;
+  padding: 8px;
+  border: none;
+  color: #7a7068;
+  font-weight: bold;
+  font-size: 12px;
+  border-bottom-left-radius: 8px;
+  cursor: pointer;
+}
+
+.debug-log-btn:hover {
+  color: #949392ff;
 }

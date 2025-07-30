@@ -16,7 +16,7 @@ $(document).ready(function () {
     var username = $("#username").val();
     var password = $("#password").val();
     console.log("Login attempt with username: " + username);
-    startGame("pio_access_token");
+    startGame("pio-access-token");
   });
 });
 
@@ -199,7 +199,7 @@ function refresh() {
 }
 
 function addMessage(h, f, g, b) {
-  var e = $('<div class="header_message_bar"></div>');
+  var e = $('<div class="header-message-bar"></div>');
   e.data("id", h);
   if (g) {
     var c = $('<div class="close"></div>').click(function () {
@@ -212,7 +212,7 @@ function addMessage(h, f, g, b) {
     e.append(a);
   }
   f = parseUTCStrings(f);
-  var d = $('<div class="header_message">' + f + "</div>");
+  var d = $('<div class="header-message">' + f + "</div>");
   e.append(d);
   $("#warning-container").append(e);
   e.height("0px").animate({ height: "30px" }, 250);
@@ -416,8 +416,8 @@ function getParameterByName(b) {
 
 function openDebugLog() {
   window.open(
-    "http://127.0.0.1:8080/debuglog.html",
-    "DZReviveDebugLog",
-    "width=600,height=400,resizable=yes,menubar=yes,toolbar=yes,status=yes"
+    "http://127.0.0.1:8080/debuglog",
+    "DZRevive Debug Log",
+    "width=800,height=400,resizable=yes"
   );
 }

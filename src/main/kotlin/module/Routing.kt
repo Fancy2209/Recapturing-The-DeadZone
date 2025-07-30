@@ -20,6 +20,16 @@ fun Application.configureRouting(db: BigDB) {
             }
         }
 
+        get("/debuglog") {
+            val file = File("static/debuglog.html")
+            if (file.exists()) {
+                call.respondFile(file)
+                Logger.info { "Client opened debuglog.html" }
+            } else {
+                call.respond(HttpStatusCode.NotFound, "debuglog.html not found")
+            }
+        }
+
         staticFiles("/game", File("static/game/"))
         staticFiles("/assets", File("static/assets"))
         caseInsensitiveStaticResources("/game/data", "static")
