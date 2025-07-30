@@ -2,8 +2,8 @@ package dev.deadzone.api.handler
 
 import dev.deadzone.api.message.auth.SocialRefreshOutput
 import dev.deadzone.core.data.BigDB
-import dev.deadzone.module.logAPIInput
-import dev.deadzone.module.logAPIOutput
+import dev.deadzone.module.logInput
+import dev.deadzone.module.logOutput
 import dev.deadzone.module.pioFraming
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -24,13 +24,13 @@ import kotlinx.serialization.protobuf.ProtoBuf
 suspend fun RoutingContext.socialRefresh(db: BigDB) {
     val socialRefreshArgs = call.receiveChannel().toByteArray() // Actually no input is given
 
-    logAPIInput(socialRefreshArgs.decodeToString())
+    logInput(socialRefreshArgs.decodeToString())
 
     val socialRefreshOutput = ProtoBuf.encodeToByteArray<SocialRefreshOutput>(
         SocialRefreshOutput.dummy()
     )
 
-    logAPIOutput(socialRefreshOutput)
+    logOutput(socialRefreshOutput)
 
     call.respondBytes(socialRefreshOutput.pioFraming())
 }

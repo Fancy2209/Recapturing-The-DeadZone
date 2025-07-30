@@ -3,10 +3,7 @@ package dev.deadzone.api.handler
 import dev.deadzone.api.message.utils.WriteErrorArgs
 import dev.deadzone.api.message.utils.WriteErrorError
 import dev.deadzone.core.data.BigDB
-import dev.deadzone.module.Logger
-import dev.deadzone.module.logAPIInput
-import dev.deadzone.module.logAPIOutput
-import dev.deadzone.module.pioFraming
+import dev.deadzone.module.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -29,19 +26,21 @@ suspend fun RoutingContext.writeError(db: BigDB) {
         call.receiveChannel().toByteArray()
     )
 
-    logAPIInput("\n" + writeErrorArgs)
-    Logger.writeError(writeErrorArgs)
+    logInput("\n" + writeErrorArgs)
+
+    Logger.error(LogConfigWriteError) { writeErrorArgs.toString() }
+
     if (writeErrorArgs.details.contains("Load Never Completed", ignoreCase = true) ||
         writeErrorArgs.details.contains("Resource not found", ignoreCase = true)
     ) {
-        Logger.writeMissingAssets(writeErrorArgs.details)
+        Logger.error(LogConfigAssetsError) { writeErrorArgs.details.toString() }
     }
 
     val writeErrorError = ProtoBuf.encodeToByteArray<WriteErrorError>(
         WriteErrorError.dummy()
     )
 
-    logAPIOutput(writeErrorError)
+    logOutput(writeErrorError)
 
     call.respondBytes(writeErrorError.pioFraming())
 }
