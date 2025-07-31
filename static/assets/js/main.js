@@ -38,13 +38,13 @@ function startGame(username, password) {
     password: password,
     affiliate: getParameterByName("a"),
     useSSL: 0,
-//    core: "core.swf",
+    //    core: "core.swf",
     gameId: "laststand-deadzone",
     connectionId: "public",
     clientAPI: "javascript",
     playerInsightSegments: [],
     playCodes: [],
-//    local: 0,
+    //    local: 0,
     clientInfo: {
       platform: navigator.platform,
       userAgent: navigator.userAgent,
@@ -412,12 +412,4 @@ function getParameterByName(b) {
   } else {
     return decodeURIComponent(c[1].replace(/\+/g, " "));
   }
-}
-
-function openDebugLog() {
-  window.open(
-    "http://127.0.0.1:8080/debuglog",
-    "DZRevive Debug Log",
-    "width=800,height=400,resizable=yes"
-  );
 }

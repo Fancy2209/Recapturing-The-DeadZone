@@ -2,16 +2,17 @@ package dev.deadzone.module
 
 import dev.deadzone.api.handler.*
 import dev.deadzone.core.data.BigDB
+import dev.deadzone.module.Logger.connectedDebugClients
+import dev.deadzone.module.Logger.sessionLogBuffers
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.server.websocket.DefaultWebSocketServerSession
-import io.ktor.server.websocket.webSocket
-import kotlinx.coroutines.channels.consumeEach
+import io.ktor.server.websocket.*
+import io.ktor.websocket.*
+import kotlinx.serialization.json.Json
 import java.io.File
-import java.util.Collections
 
 fun Application.configureRouting(db: BigDB) {
     routing {
@@ -32,20 +33,45 @@ fun Application.configureRouting(db: BigDB) {
             val file = File("static/debuglog.html")
             if (file.exists()) {
                 call.respondFile(file)
-                Logger.info { "Client opened debuglog.html" }
             } else {
                 call.respond(HttpStatusCode.NotFound, "debuglog.html not found")
             }
         }
 
         webSocket("/debuglog") {
-            Logger.connectedDebugClients.add(this)
-            try {
+            val clientId = call.parameters["clientId"]
+            if (clientId == null) {
+                close(CloseReason(CloseReason.Codes.CANNOT_ACCEPT, "Missing clientId"))
+                return@webSocket
+            }
 
+            connectedDebugClients[clientId] = this
+            val buffer = sessionLogBuffers.getOrPut(clientId) { ArrayDeque() }
+
+            for (msg in buffer) {
+                try {
+                    this.send(Frame.Text(Json.encodeToString(msg)))
+                } catch (e: Exception) {
+                    Logger.warn { "Failed to send buffered log to client $this: $e" }
+                }
+            }
+
+            try {
+                for (frame in incoming) {
+                    if (frame is Frame.Text) {
+                        val msg = frame.readText()
+                        when (msg) {
+                            "close" -> break
+                            "clear" -> buffer.clear()
+                        }
+                    }
+                }
             } catch (e: Exception) {
                 Logger.error { "Error in websocket for client $this: $e" }
             } finally {
-                Logger.connectedDebugClients.remove(this)
+                connectedDebugClients.remove(clientId)
+                sessionLogBuffers.remove(clientId)
+                Logger.info { "Client $this disconnected from websocket debug." }
             }
         }
 

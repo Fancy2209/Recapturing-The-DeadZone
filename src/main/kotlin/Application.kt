@@ -10,9 +10,9 @@ fun main(args: Array<String>) {
 fun Application.module() {
     configureDatabase()
     configureHTTP()
-    configureRouting(db = Dependency.database)
-    configureSerialization()
     configureLogging()
+    configureSerialization()
     configureWebsocket()
+    configureRouting(db = Dependency.database)
     configureSocket(db = Dependency.database)
 }

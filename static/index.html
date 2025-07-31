@@ -50,7 +50,7 @@
                     data-ruffle-polyfilled=""></iframe>
             </div>
             <div class="debug-log-btn-container">
-                <button class="debug-log-btn" onclick="openDebugLog()">Open debug log</button>
+                <button class="debug-log-btn">Open debug log</button>
             </div>
         </div>
         <div id="warning-container"></div>
@@ -101,8 +101,73 @@
         </div>
         <div id="user-id">Connecting...</div>
         <div id="con-artist-logo"><a href="conartist" title="Con Artist Games" target="_blank"><img
-                    src="assets/images/con-artist-logo.gif" alt="Con Artist Games"></a></div>
+                    src="assets/images/conartistlogo.gif" alt="Con Artist Games"></a></div>
     </div>
+    <script>
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                const r = (Math.random() * 16) | 0;
+                const v = c === 'x' ? r : (r & 0x3) | 0x8;
+                return v.toString(16);
+            });
+        }
+
+        let debugWindow = null;
+        const clientId = localStorage.getItem("debugClientId") || generateUUID()
+        localStorage.setItem("debugClientId", clientId);
+
+        const socket = new WebSocket(`ws://127.0.0.1:8080/debugsocket?clientId=${clientId}`);
+
+        window.addEventListener("DOMContentLoaded", () => {
+            const btn = document.querySelector(".debug-log-btn");
+
+            if (!btn) {
+                console.error("Debug log button not found.");
+                return;
+            }
+
+            btn.addEventListener("click", () => {
+                if (!debugWindow || debugWindow.closed) {
+                    debugWindow = window.open(
+                        `http://127.0.0.1:8080/debuglog?clientId=${clientId}`,
+                        "DZRevive Debug Log",
+                        "width=800,height=400,resizable=yes"
+                    );
+                } else {
+                    debugWindow.postMessage("close", "*");
+                    debugWindow.close();
+                    debugWindow = null;
+                }
+            });
+
+            window.addEventListener("beforeunload", () => {
+                try {
+                    if (debugWindow && !debugWindow.closed) {
+                        debugWindow.postMessage("close");
+                        debugWindow.close();
+                        debugWindow = null;
+                    }
+                } catch (e) {
+                    console.warn("Failed to cleanly close debug window:", e);
+                }
+            });
+        });
+
+        window.debugLogHistory = JSON.parse(localStorage.getItem("debugLogHistory") || "[]");
+
+        function addToDebugLogHistory(log) {
+            window.debugLogHistory.push(log);
+            if (window.debugLogHistory.length > 1000) {
+                window.debugLogHistory.shift();
+            }
+            localStorage.setItem("debugLogHistory", JSON.stringify(window.debugLogHistory));
+        }
+
+        function clearLogHistory() {
+            window.debugLogHistory = []
+            localStorage.setItem("debugLogHistory", JSON.stringify([]));
+        }
+    </script>
 </body>
 
 </html>

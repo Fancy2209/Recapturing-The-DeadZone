@@ -5,9 +5,11 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.DefaultWebSocketServerSession
+import io.ktor.util.date.getTimeMillis
 import io.ktor.websocket.Frame
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
@@ -16,10 +18,9 @@ import java.io.File
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Collections
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArraySet
-
-const val MAX_LOG_LENGTH = 500
-const val MAX_LOG_BUFFER = 100
+import kotlin.time.Duration.Companion.seconds
 
 fun Application.configureLogging() {
     install(CallLogging)
@@ -94,9 +95,8 @@ fun RoutingContext.logOutput(txt: ByteArray?, logFull: Boolean = false) {
  */
 object Logger {
     var level: LogLevel = LogLevel.DEBUG
-    val connectedDebugClients = CopyOnWriteArraySet<DefaultWebSocketServerSession>()
-
-    private val logBuffer = ArrayDeque<LogMessage>()
+    val connectedDebugClients = ConcurrentHashMap<String, DefaultWebSocketServerSession>()
+    val sessionLogBuffers = ConcurrentHashMap<String, ArrayDeque<LogMessage>>()
 
     private val logDir = File("logs").apply { mkdirs() }
     private val clientWriteError = File(logDir, "client_write_error.log")
@@ -110,6 +110,9 @@ object Logger {
         LogFile.API_SERVER_ERROR to apiServerError,
         LogFile.SOCKET_SERVER_ERROR to socketServerError,
     )
+
+    private val MAX_BUFFER_SIZE = 100
+    private val MAX_LOG_LENGTH = 500
 
     private fun log(
         src: LogSource = LogSource.SOCKET,
@@ -140,24 +143,26 @@ object Logger {
                     if (targetFile != null) {
                         targetFile.appendText("$logMessage\n")
                     } else {
-                        println("[LOGGER|ERROR] Unknown log file target: ${target.file}")
+                        println("Unknown log file target: ${target.file}")
                     }
                 }
 
                 is LogTarget.CLIENT -> {
                     val logMsg = LogMessage(level, msgString)
-                    logBuffer.add(logMsg)
-                    if (logBuffer.size > MAX_LOG_BUFFER) {
-                        logBuffer.removeFirst()
-                    }
 
-                    val frame = Frame.Text(Json.encodeToString(logMsg))
                     CoroutineScope(Dispatchers.IO).launch {
-                        for (session in connectedDebugClients) {
+                        for ((clientId, session) in connectedDebugClients) {
+                            val buffer = sessionLogBuffers.getOrPut(clientId) { ArrayDeque() }
+
+                            buffer.addLast(logMsg)
+                            if (buffer.size > MAX_BUFFER_SIZE) buffer.removeFirst()
+
                             try {
-                                session.send(frame)
+                                session.send(Frame.Text(Json.encodeToString(logMsg)))
                             } catch (e: Exception) {
-                                println("[LOGGER|WARN] Failed to send to client: $e")
+                                println("Failed to send log to client $session: $e")
+                                connectedDebugClients.remove(clientId)
+                                sessionLogBuffers.remove(clientId)
                             }
                         }
                     }

@@ -53,14 +53,11 @@
 
         .base-btn.active {
             outline: 2px solid #e9e9e9ff;
-            box-shadow: 0 0 3px 2px rgba(255, 255, 255, 0.2);
         }
 
-        /* Optional: cursor change for active/inactive */
         .base-btn:not(.active) {
             opacity: 0.6;
         }
-
 
         .debug-error-btn {
             border: 1px solid rgba(124, 117, 117, 1);
@@ -69,7 +66,6 @@
         }
 
         .debug-error-btn:hover {
-            color: #e9e9e9ff;
             background-color: #ff6b6b;
         }
 
@@ -79,10 +75,18 @@
             background-color: #bb9a59ff;
         }
 
+        .debug-warn-btn:hover {
+            background-color: #caad72ff;
+        }
+
         .debug-info-btn {
             border: 1px solid rgba(124, 117, 117, 1);
             color: #e9e9e9ff;
             background-color: #4d8a97ff;
+        }
+
+        .debug-info-btn:hover {
+            background-color: #6c9ca7ff;
         }
 
         .debug-debug-btn {
@@ -91,17 +95,34 @@
             background-color: #a54e9eff;
         }
 
+        .debug-debug-btn:hover {
+            background-color: rgba(172, 103, 166, 1);
+        }
+
         .export-btn {
             color: #cacacaff;
             background-color: #655e4a;
         }
 
         .export-btn:hover {
-            color: #cacacaff;
+            background-color: #756f5fff;
         }
 
         .export-btn:active {
-            background-color: #726d60;
+            background-color: #655e4a;
+        }
+
+        .clear-log-btn {
+            color: #cacacaff;
+            background-color: #655e4a;
+        }
+
+        .clear-log-btn:hover {
+            background-color: #756f5fff;
+        }
+
+        .clear-log-btn:active {
+            background-color: #655e4a;
         }
     </style>
 </head>
@@ -115,7 +136,10 @@
             <button class="base-btn debug-info-btn">INFO</button>
             <button class="base-btn debug-debug-btn">DEBUG</button>
         </div>
-        <button class="base-btn export-btn">Export</button>
+        <div>
+            <button class="base-btn clear-log-btn">Clear Log</button>
+            <button class="base-btn export-btn">Export All</button>
+        </div>
     </header>
 
     <div class="log">
@@ -124,8 +148,9 @@
 
     <script>
         const logDiv = document.querySelector(".log");
-        const socket = new WebSocket("ws://127.0.0.1:8080/debuglog");
-
+        const logHistory = window.opener?.debugLogHistory || [];
+        let logLineNumber = 1;
+        const clientId = localStorage.getItem("debugClientId");
         const activeLevels = new Set(["ERROR", "WARN", "INFO", "DEBUG"]);
 
         const filterButtons = {
@@ -156,49 +181,88 @@
             });
         }
 
-        socket.onopen = () => {
-            logDiv.textContent = "Connected to debug log...\n";
+        window.socket.onopen = () => {
+            appendChild("Connected to debug log...");
+            logHistory.forEach(appendLog);
         };
 
-        socket.onmessage = (event) => {
+        window.socket.onmessage = (event) => {
             try {
-                const data = JSON.parse(event.data);
-                const line = document.createElement("p");
-                line.textContent = `[${data.level}] ${data.msg}`;
-                line.setAttribute("data-level", data.level);
+                const logMsg = JSON.parse(event.data);
+                window.opener?.addToDebugLogHistory?.(logMsg);
 
-                switch (data.level) {
-                    case "ERROR":
-                        line.style.color = "#ff6b6b";
-                        break;
-                    case "WARN":
-                        line.style.color = "#ffc857";
-                        break;
-                    case "INFO":
-                        line.style.color = "#8be9fd";
-                        break;
-                    case "DEBUG":
-                        line.style.color = "#50fa7b";
-                        break;
-                    default:
-                        line.style.color = "#cfcdcc";
-                }
-
-                logDiv.appendChild(line);
+                appendLog(logMsg)
                 filterLogs();
-                logDiv.scrollTop = logDiv.scrollHeight;
             } catch (e) {
                 console.error("Invalid log format", e);
             }
         };
 
-        socket.onerror = () => {
-            logDiv.textContent += "[WebSocket Error]\n";
+        function appendLog(msg) {
+            const p = document.createElement("p");
+            p.textContent = `${logLineNumber.toString().padStart(4, " ")}) [${msg.level}] ${msg.msg}`;
+            p.style.color = getColorForLevel(msg.level);
+            p.setAttribute("data-level", msg.level);
+            logDiv.appendChild(p);
+            logDiv.scrollTop = logDiv.scrollHeight;
+            logLineNumber++;
+        }
+
+        function getColorForLevel(level) {
+            switch (level) {
+                case "ERROR": return "#ff6b6b";
+                case "WARN": return "#ffc857";
+                case "INFO": return "#8be9fd";
+                case "DEBUG": return "#50fa7b";
+                default: return "#cfcdcc";
+            }
+        }
+
+        function appendTextLine(text, useLineNumber) {
+            const p = document.createElement("p");
+            if (useLineNumber) {
+                p.textContent = `${logLineNumber.toString().padStart(4, " ")}) ${text}`;
+                logLineNumber++;
+            } else {
+                p.textContent = text;
+            }
+            logDiv.appendChild(p);
+        }
+
+        window.socket.onerror = () => {
+            appendTextLine("[Websocket error]", false);
         };
 
-        socket.onclose = () => {
-            logDiv.textContent += "[Connection closed]\n";
+        window.socket.onclose = () => {
+            appendTextLine("[Connection closed]", false)
         };
+
+        window.addEventListener("message", (event) => {
+            if (event.data === "close") {
+                if (window.socket.readyState === WebSocket.OPEN) {
+                    window.socket.send("close");
+                    window.socket.close();
+                }
+                window.close();
+            }
+        });
+
+        window.addEventListener("beforeunload", () => {
+            if (window.socket.readyState === WebSocket.OPEN) {
+                window.socket.send("close");
+                window.socket.close();
+            }
+        });
+
+        document.querySelector(".clear-log-btn").addEventListener("click", () => {
+            window.clearLogHistory();
+            logDiv.innerHTML = "";
+            if (window.socket.readyState === WebSocket.OPEN) {
+                window.socket.send("clear");
+            }
+            logLineNumber = 1;
+            appendTextLine("Logs cleared.", false)
+        });
     </script>
 </body>
 
