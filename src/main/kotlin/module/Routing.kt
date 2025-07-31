@@ -2,8 +2,6 @@ package dev.deadzone.module
 
 import dev.deadzone.api.handler.*
 import dev.deadzone.core.data.BigDB
-import dev.deadzone.module.Logger.connectedDebugClients
-import dev.deadzone.module.Logger.sessionLogBuffers
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
@@ -11,7 +9,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
-import kotlinx.serialization.json.Json
 import java.io.File
 
 fun Application.configureRouting(db: BigDB) {
@@ -45,16 +42,7 @@ fun Application.configureRouting(db: BigDB) {
                 return@webSocket
             }
 
-            connectedDebugClients[clientId] = this
-            val buffer = sessionLogBuffers.getOrPut(clientId) { ArrayDeque() }
-
-            for (msg in buffer) {
-                try {
-                    this.send(Frame.Text(Json.encodeToString(msg)))
-                } catch (e: Exception) {
-                    Logger.warn { "Failed to send buffered log to client $this: $e" }
-                }
-            }
+            Dependency.wsManager.addClient(clientId, this)
 
             try {
                 for (frame in incoming) {
@@ -62,15 +50,13 @@ fun Application.configureRouting(db: BigDB) {
                         val msg = frame.readText()
                         when (msg) {
                             "close" -> break
-                            "clear" -> buffer.clear()
                         }
                     }
                 }
             } catch (e: Exception) {
                 Logger.error { "Error in websocket for client $this: $e" }
             } finally {
-                connectedDebugClients.remove(clientId)
-                sessionLogBuffers.remove(clientId)
+                Dependency.wsManager.removeClient(clientId)
                 Logger.info { "Client $this disconnected from websocket debug." }
             }
         }

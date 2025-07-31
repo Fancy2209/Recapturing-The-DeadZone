@@ -4,23 +4,15 @@ import dev.deadzone.module.Logger.info
 import io.ktor.server.application.*
 import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.routing.*
-import io.ktor.server.websocket.DefaultWebSocketServerSession
-import io.ktor.util.date.getTimeMillis
-import io.ktor.websocket.Frame
+import io.ktor.websocket.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import java.util.Collections
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.CopyOnWriteArraySet
-import kotlin.time.Duration.Companion.seconds
 
 fun Application.configureLogging() {
     install(CallLogging)
@@ -95,8 +87,6 @@ fun RoutingContext.logOutput(txt: ByteArray?, logFull: Boolean = false) {
  */
 object Logger {
     var level: LogLevel = LogLevel.DEBUG
-    val connectedDebugClients = ConcurrentHashMap<String, DefaultWebSocketServerSession>()
-    val sessionLogBuffers = ConcurrentHashMap<String, ArrayDeque<LogMessage>>()
 
     private val logDir = File("logs").apply { mkdirs() }
     private val clientWriteError = File(logDir, "client_write_error.log")
@@ -111,8 +101,7 @@ object Logger {
         LogFile.SOCKET_SERVER_ERROR to socketServerError,
     )
 
-    private val MAX_BUFFER_SIZE = 100
-    private val MAX_LOG_LENGTH = 500
+    private const val MAX_LOG_LENGTH = 500
 
     private fun log(
         src: LogSource = LogSource.SOCKET,
@@ -151,18 +140,12 @@ object Logger {
                     val logMsg = LogMessage(level, logMessage)
 
                     CoroutineScope(Dispatchers.IO).launch {
-                        for ((clientId, session) in connectedDebugClients) {
-                            val buffer = sessionLogBuffers.getOrPut(clientId) { ArrayDeque() }
-
-                            buffer.addLast(logMsg)
-                            if (buffer.size > MAX_BUFFER_SIZE) buffer.removeFirst()
-
+                        for ((clientId, session) in Dependency.wsManager.getAllClients()) {
                             try {
                                 session.send(Frame.Text(Json.encodeToString(logMsg)))
                             } catch (e: Exception) {
                                 println("Failed to send log to client $session: $e")
-                                connectedDebugClients.remove(clientId)
-                                sessionLogBuffers.remove(clientId)
+                                Dependency.wsManager.removeClient(clientId)
                             }
                         }
                     }
