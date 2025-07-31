@@ -116,7 +116,20 @@
         const clientId = localStorage.getItem("debugClientId") || generateUUID()
         localStorage.setItem("debugClientId", clientId);
 
-        const socket = new WebSocket(`ws://127.0.0.1:8080/debugsocket?clientId=${clientId}`);
+        window.websocket = new WebSocket(`ws://127.0.0.1:8080/debuglog?clientId=${clientId}`);
+
+        window.websocket.onmessage = (event) => {
+            try {
+                const logMsg = JSON.parse(event.data);
+                addToDebugLogHistory(logMsg);
+
+                if (debugWindow && !debugWindow.closed) {
+                    debugWindow.postMessage({ type: "log", payload: logMsg }, "*");
+                }
+            } catch (e) {
+                console.error("Invalid log format", e);
+            }
+        };
 
         window.addEventListener("DOMContentLoaded", () => {
             const btn = document.querySelector(".debug-log-btn");
@@ -129,14 +142,12 @@
             btn.addEventListener("click", () => {
                 if (!debugWindow || debugWindow.closed) {
                     debugWindow = window.open(
-                        `http://127.0.0.1:8080/debuglog?clientId=${clientId}`,
+                        `http://127.0.0.1:8080/debuglog`,
                         "DZRevive Debug Log",
                         "width=800,height=400,resizable=yes"
                     );
                 } else {
-                    debugWindow.postMessage("close", "*");
-                    debugWindow.close();
-                    debugWindow = null;
+                    debugWindow.focus();
                 }
             });
 
@@ -151,6 +162,8 @@
                     console.warn("Failed to cleanly close debug window:", e);
                 }
             });
+
+
         });
 
         window.debugLogHistory = JSON.parse(localStorage.getItem("debugLogHistory") || "[]");
