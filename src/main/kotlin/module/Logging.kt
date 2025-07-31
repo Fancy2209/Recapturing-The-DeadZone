@@ -148,7 +148,7 @@ object Logger {
                 }
 
                 is LogTarget.CLIENT -> {
-                    val logMsg = LogMessage(level, msgString)
+                    val logMsg = LogMessage(level, logMessage)
 
                     CoroutineScope(Dispatchers.IO).launch {
                         for ((clientId, session) in connectedDebugClients) {

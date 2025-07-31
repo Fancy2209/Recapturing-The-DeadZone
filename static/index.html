@@ -116,7 +116,7 @@
         const clientId = localStorage.getItem("debugClientId") || generateUUID()
         localStorage.setItem("debugClientId", clientId);
 
-        window.logHistory = JSON.parse(localStorage.getItem("debugLogHistory") || "[]");
+        let logHistory = JSON.parse(localStorage.getItem("debugLogHistory") || "[]");
 
         window.websocket = new WebSocket(`ws://127.0.0.1:8080/debuglog?clientId=${clientId}`);
 
@@ -124,9 +124,9 @@
             try {
                 const logMsg = JSON.parse(event.data);
 
-                window.logHistory.push(logMsg);
-                if (window.logHistory.length > 1000) window.logHistory.shift();
-                localStorage.setItem("debugLogHistory", JSON.stringify(window.logHistory));
+                logHistory.push(logMsg);
+                if (logHistory.length > 1000) logHistory.shift();
+                localStorage.setItem("debugLogHistory", JSON.stringify(logHistory));
 
                 if (debugWindow && !debugWindow.closed) {
                     debugWindow.postMessage({ type: "log", payload: logMsg }, window.location.origin);
@@ -153,8 +153,8 @@
                     );
 
                     setTimeout(() => {
-                        if (window.logHistory.length > 0) {
-                            debugWindow?.postMessage({ type: "logh", payload: window.logHistory }, window.location.origin);
+                        if (logHistory.length > 0) {
+                            debugWindow?.postMessage({ type: "logh", payload: logHistory }, window.location.origin);
                         }
                     }, 1000);
                 } else {
@@ -178,8 +178,8 @@
         });
 
         function clearLogHistory() {
-            window.logHistory = JSON.parse("[]")
-            localStorage.setItem("debugLogHistory", JSON.stringify("[]"));
+            logHistory = [];
+            localStorage.setItem("debugLogHistory", JSON.stringify([]));
         }
     </script>
 </body>

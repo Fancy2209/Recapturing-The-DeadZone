@@ -29,7 +29,7 @@
             display: flex;
             justify-content: space-between;
             padding: 4px;
-            border-bottom: 1px solid rgba(95, 90, 90, 1);
+            border-bottom: 1px solid #5f5a5a;
             position: sticky;
             background-color: #3a3a36;
             top: 0;
@@ -43,7 +43,6 @@
             align-items: center;
         }
 
-
         .base-btn {
             border: none;
             padding: 4px;
@@ -52,7 +51,7 @@
         }
 
         .base-btn.active {
-            outline: 2px solid #e9e9e9ff;
+            outline: 2px solid #e9e9e9;
         }
 
         .base-btn:not(.active) {
@@ -60,9 +59,9 @@
         }
 
         .debug-error-btn {
-            border: 1px solid rgba(124, 117, 117, 1);
-            color: #e9e9e9ff;
-            background-color: #c56767ff;
+            border: 1px solid #7c7575;
+            color: #e9e9e9;
+            background-color: #c56767;
         }
 
         .debug-error-btn:hover {
@@ -70,58 +69,58 @@
         }
 
         .debug-warn-btn {
-            border: 1px solid rgba(124, 117, 117, 1);
-            color: #e9e9e9ff;
-            background-color: #bb9a59ff;
+            border: 1px solid #7c7575;
+            color: #e9e9e9;
+            background-color: #bb9a59;
         }
 
         .debug-warn-btn:hover {
-            background-color: #caad72ff;
+            background-color: #caad72;
         }
 
         .debug-info-btn {
-            border: 1px solid rgba(124, 117, 117, 1);
-            color: #e9e9e9ff;
-            background-color: #4d8a97ff;
+            border: 1px solid #7c7575;
+            color: #e9e9e9;
+            background-color: #4d8a97;
         }
 
         .debug-info-btn:hover {
-            background-color: #6c9ca7ff;
+            background-color: #6c9ca7;
         }
 
         .debug-debug-btn {
-            border: 1px solid rgba(124, 117, 117, 1);
-            color: #e9e9e9ff;
-            background-color: #a54e9eff;
+            border: 1px solid #7c7575;
+            color: #e9e9e9;
+            background-color: #a54e9e;
         }
 
         .debug-debug-btn:hover {
-            background-color: rgba(172, 103, 166, 1);
-        }
-
-        .export-btn {
-            color: #cacacaff;
-            background-color: #655e4a;
-        }
-
-        .export-btn:hover {
-            background-color: #756f5fff;
-        }
-
-        .export-btn:active {
-            background-color: #655e4a;
+            background-color: #ac67a6;
         }
 
         .clear-log-btn {
-            color: #cacacaff;
+            color: #cacaca;
             background-color: #655e4a;
         }
 
         .clear-log-btn:hover {
-            background-color: #756f5fff;
+            background-color: #756f5f;
         }
 
         .clear-log-btn:active {
+            background-color: #655e4a;
+        }
+
+        .export-log-btn {
+            color: #cacaca;
+            background-color: #655e4a;
+        }
+
+        .export-log-btn:hover {
+            background-color: #756f5f;
+        }
+
+        .export-log-btn:active {
             background-color: #655e4a;
         }
     </style>
@@ -130,7 +129,7 @@
 <body>
     <header class="header">
         <div class="header-left-side">
-            <p class="title">Live Debug Log</p>
+            <p class="title">Live Debug Log Session</p>
             <button class="base-btn debug-error-btn">ERROR</button>
             <button class="base-btn debug-warn-btn">WARN</button>
             <button class="base-btn debug-info-btn">INFO</button>
@@ -138,7 +137,7 @@
         </div>
         <div>
             <button class="base-btn clear-log-btn">Clear Log</button>
-            <button class="base-btn export-btn">Export All</button>
+            <button class="base-btn export-log-btn">Export All</button>
         </div>
     </header>
 
@@ -152,7 +151,7 @@
 
         function appendLog(msg) {
             const p = document.createElement("p");
-            p.textContent = `${logLineNumber.toString().padStart(4, " ")}) [${msg.level}] ${msg.msg}`;
+            p.textContent = `${logLineNumber.toString().padStart(4, " ")}) ${msg.msg}`;
             p.style.color = getColorForLevel(msg.level);
             p.setAttribute("data-level", msg.level);
             logDiv.appendChild(p);
@@ -163,9 +162,9 @@
         function getColorForLevel(level) {
             switch (level) {
                 case "ERROR": return "#ff6b6b";
-                case "WARN": return "#ffc857";
-                case "INFO": return "#8be9fd";
-                case "DEBUG": return "#50fa7b";
+                case "WARN": return "#caad72";
+                case "INFO": return "#6c9ca7";
+                case "DEBUG": return "#ac67a6";
                 default: return "#cfcdcc";
             }
         }
@@ -230,6 +229,32 @@
             logDiv.innerHTML = "";
             logLineNumber = 1;
             appendTextLine("Logs cleared.", false)
+        });
+
+        document.querySelector(".export-log-btn").addEventListener("click", () => {
+            const logHistory = JSON.parse(localStorage.getItem("debugLogHistory") || "[]");
+
+            if (!logHistory.length) {
+                alert("No log history to export.");
+                return;
+            }
+
+            const lines = logHistory.map((log, idx) => {
+                return `${(idx + 1).toString().padStart(4, " ")}) ${log.msg}`;
+            });
+
+            const blob = new Blob([lines.join("\n")], { type: "text/plain" });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `DZ_debug_log_${new Date().toISOString().replace(/[:.]/g, "-")}.log`;
+            a.click();
+
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         });
 
         socket.onerror = () => appendTextLine("[Websocket error]", false)
