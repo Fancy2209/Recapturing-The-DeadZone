@@ -156,21 +156,24 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
             }
 
             "mis_zombies" -> {
+                // usually requested during middle of mission
+                // there could be 'rush' flag somewhere, which means we need to send runner zombies
+
                 val zombies = listOf(
-                    ZombieData.dogTank(101),
-                    ZombieData.dogTank(111),
-                    ZombieData.dogTank(112),
+                    ZombieData.strongRunner(101),
+                    ZombieData.strongRunner(101),
+                    ZombieData.strongRunner(101),
+                    ZombieData.strongRunner(101),
+                    ZombieData.strongRunner(101),
+                    ZombieData.strongRunner(101),
+                    ZombieData.strongRunner(101),
+                    ZombieData.strongRunner(101),
+                    ZombieData.strongRunner(101),
                     ZombieData.fatWalkerStrongAttack(101),
                     ZombieData.fatWalkerStrongAttack(102),
                     ZombieData.fatWalkerStrongAttack(103),
                     ZombieData.fatWalkerStrongAttack(104),
                     ZombieData.fatWalkerStrongAttack(105),
-                    ZombieData.police20ZWeakAttack(113),
-                    ZombieData.police20ZWeakAttack(114),
-                    ZombieData.police20ZWeakAttack(115),
-                    ZombieData.riotWalker37MediumAttack(116),
-                    ZombieData.riotWalker37MediumAttack(117),
-                    ZombieData.riotWalker37MediumAttack(118),
                 ).flatMap { it.toFlatList() }
 
                 val responseJson = Dependency.json.encodeToString(
