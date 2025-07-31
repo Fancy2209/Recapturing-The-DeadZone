@@ -98,30 +98,22 @@
             background-color: #ac67a6;
         }
 
-        .clear-log-btn {
-            color: #cacaca;
-            background-color: #655e4a;
-        }
-
-        .clear-log-btn:hover {
-            background-color: #756f5f;
-        }
-
-        .clear-log-btn:active {
-            background-color: #655e4a;
-        }
-
+        .clear-log-btn,
         .export-log-btn {
-            color: #cacaca;
-            background-color: #655e4a;
+            color: #ffffff;
+            background-color: #4a4e69;
+            outline: 2px solid #e9e9e9;
+            transition: background-color 0.2s ease;
         }
 
+        .clear-log-btn:hover,
         .export-log-btn:hover {
-            background-color: #756f5f;
+            background-color: #5e627f;
         }
 
+        .clear-log-btn:active,
         .export-log-btn:active {
-            background-color: #655e4a;
+            background-color: #3b3f59;
         }
     </style>
 </head>
@@ -239,16 +231,14 @@
                 return;
             }
 
-            const lines = logHistory.map((log, idx) => {
-                return `${(idx + 1).toString().padStart(4, " ")}) ${log.msg}`;
-            });
-
-            const blob = new Blob([lines.join("\n")], { type: "text/plain" });
+            const blob = new Blob([logHistory.join("\n")], { type: "text/plain" });
             const url = URL.createObjectURL(blob);
 
             const a = document.createElement("a");
             a.href = url;
-            a.download = `DZ_debug_log_${new Date().toISOString().replace(/[:.]/g, "-")}.log`;
+            const now = new Date();
+            const timestamp = now.toISOString().slice(0, 19).replace("T", " ").replace(/:/g, "-");
+            a.download = `DZDebugLog ${timestamp}.log`;
             a.click();
 
             document.body.appendChild(a);
