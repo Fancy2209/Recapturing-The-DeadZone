@@ -1,18 +1,18 @@
 package dev.deadzone.module
 
-import dev.deadzone.module.Logger.debug
-import dev.deadzone.module.Logger.error
 import dev.deadzone.module.Logger.info
-import dev.deadzone.module.Logger.warn
 import io.ktor.server.application.*
 import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.routing.*
+import io.ktor.websocket.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import java.io.File
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-
-const val MAX_LOG_LENGTH = 500
 
 fun Application.configureLogging() {
     install(CallLogging)
@@ -101,6 +101,8 @@ object Logger {
         LogFile.SOCKET_SERVER_ERROR to socketServerError,
     )
 
+    private const val MAX_LOG_LENGTH = 500
+
     private fun log(
         src: LogSource = LogSource.SOCKET,
         targets: Set<LogTarget> = setOf(LogTarget.PRINT),
@@ -130,12 +132,23 @@ object Logger {
                     if (targetFile != null) {
                         targetFile.appendText("$logMessage\n")
                     } else {
-                        println("[LOGGER|ERROR] Unknown log file target: ${target.file}")
+                        println("Unknown log file target: ${target.file}")
                     }
                 }
 
                 is LogTarget.CLIENT -> {
-                    // TO-DO send to websocket
+                    val logMsg = LogMessage(level, logMessage)
+
+                    CoroutineScope(Dispatchers.IO).launch {
+                        for ((clientId, session) in Dependency.wsManager.getAllClients()) {
+                            try {
+                                session.send(Frame.Text(Json.encodeToString(logMsg)))
+                            } catch (e: Exception) {
+                                println("Failed to send log to client $session: $e")
+                                Dependency.wsManager.removeClient(clientId)
+                            }
+                        }
+                    }
                 }
             }
         }

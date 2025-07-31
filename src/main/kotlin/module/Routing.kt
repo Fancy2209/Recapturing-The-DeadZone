@@ -7,6 +7,8 @@ import io.ktor.server.application.*
 import io.ktor.server.http.content.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.websocket.*
+import io.ktor.websocket.*
 import java.io.File
 
 fun Application.configureRouting(db: BigDB) {
@@ -23,6 +25,41 @@ fun Application.configureRouting(db: BigDB) {
         staticFiles("/game", File("static/game/"))
         staticFiles("/assets", File("static/assets"))
         caseInsensitiveStaticResources("/game/data", "static")
+
+        get("/debuglog") {
+            val file = File("static/debuglog.html")
+            if (file.exists()) {
+                call.respondFile(file)
+            } else {
+                call.respond(HttpStatusCode.NotFound, "debuglog.html not found")
+            }
+        }
+
+        webSocket("/debuglog") {
+            val clientId = call.parameters["clientId"]
+            if (clientId == null) {
+                close(CloseReason(CloseReason.Codes.CANNOT_ACCEPT, "Missing clientId"))
+                return@webSocket
+            }
+
+            Dependency.wsManager.addClient(clientId, this)
+
+            try {
+                for (frame in incoming) {
+                    if (frame is Frame.Text) {
+                        val msg = frame.readText()
+                        when (msg) {
+                            "close" -> break
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Logger.error { "Error in websocket for client $this: $e" }
+            } finally {
+                Dependency.wsManager.removeClient(clientId)
+                Logger.info { "Client $this disconnected from websocket debug." }
+            }
+        }
 
         post("/api/{path}") {
             val path = call.parameters["path"] ?: return@post call.respond(HttpStatusCode.BadRequest)

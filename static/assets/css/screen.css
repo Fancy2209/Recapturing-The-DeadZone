@@ -71,25 +71,25 @@ a:hover {
   background: url(../images/maintenance-zombie.jpg) no-repeat top center;
 }
 
-#generic_error {
+#generic-error {
   display: none;
   background: url(../images/maintenance-zombie.jpg) no-repeat top center;
 }
 
-#downloadFlash {
+#download-flash {
   margin: 20px 0 0 20px;
 }
 
-.header_message {
+.header-message {
   padding: 8px 8px 10px 8px;
 }
 
-.header_message a {
+.header-message a {
   color: #d8d2cc;
   text-decoration: underline;
 }
 
-.header_message_bar {
+.header-message-bar {
   background: #4e1709;
   color: #d8d2cc;
   font-size: 0.7em;
@@ -98,7 +98,7 @@ a:hover {
   border-top: 1px solid #631e0b;
 }
 
-.header_message_bar .close {
+.header-message-bar .close {
   background: url(../images/cross.gif) no-repeat center top;
   width: 15px;
   height: 12px;
@@ -107,7 +107,7 @@ a:hover {
   cursor: pointer;
 }
 
-.header_message_bar .loader {
+.header-message-bar .loader {
   background: url(../images/mini-loader.gif) no-repeat center top;
   width: 16px;
   height: 16px;
@@ -179,13 +179,13 @@ a:hover {
   font-size: 10px;
 }
 
-#conArtistLogo {
+#con-artist-logo {
   float: right;
   margin-top: -25px;
   margin-right: 10px;
 }
 
-#userID {
+#user-id {
   margin-top: -10px;
   margin-left: 10px;
   float: left;
@@ -199,7 +199,7 @@ a:hover {
   left: 14px;
 }
 
-#fb_likes {
+#fb-likes {
   position: absolute;
   bottom: 4px;
   right: 2px;
@@ -243,7 +243,7 @@ h1 {
   text-align: center;
 }
 
-li#get_more a {
+li#get-more a {
   width: 118px;
   left: 0px;
 }
@@ -253,7 +253,7 @@ li#code a {
   left: 118px;
 }
 
-li#fan_page a {
+li#fan-page a {
   width: 90px;
   left: 205px;
 }
@@ -268,13 +268,13 @@ li#feedback a {
   left: 385px;
 }
 
-li#get_more a:link,
-li#get_more a:visited {
+li#get-more a:link,
+li#get-more a:visited {
   background-position: -0px 0px;
 }
 
-li#get_more a:hover,
-li#get_more a:focus {
+li#get-more a:hover,
+li#get-more a:focus {
   background-position: -0px -49px;
 }
 
@@ -288,13 +288,13 @@ li#code a:focus {
   background-position: -118px -49px;
 }
 
-li#fan_page a:link,
-li#fan_page a:visited {
+li#fan-page a:link,
+li#fan-page a:visited {
   background-position: -205px 0px;
 }
 
-li#fan_page a:hover,
-li#fan_page a:focus {
+li#fan-page a:hover,
+li#fan-page a:focus {
   background-position: -205px -49px;
 }
 
@@ -318,18 +318,18 @@ li#feedback a:focus {
   background-position: -385px -49px;
 }
 
-.get_more li#get_more a:link,
-.get_more li#get_more a:visited {
+.get-more li#get-more a:link,
+.get-more li#get-more a:visited {
   background-position: -0px -98px;
 }
 
-.get_more li#code a:link,
-.get_more li#help a:visited {
+.get-more li#code a:link,
+.get-more li#help a:visited {
   background-position: -118px -98px;
 }
 
-.get_more li#code a:hover,
-.get_more li#help a:focus {
+.get-more li#code a:hover,
+.get-more li#help a:focus {
   background-position: -118px -147px;
 }
 
@@ -338,48 +338,48 @@ li#feedback a:focus {
   background-position: -118px -196px;
 }
 
-.code li#get_more a:link,
-.code li#fan_page a:visited {
+.code li#get-more a:link,
+.code li#fan-page a:visited {
   background-position: -0px -196px;
 }
 
-.code li#get_more a:hover,
-.code li#fan_page a:focus {
+.code li#get-more a:hover,
+.code li#fan-page a:focus {
   background-position: -0px -245px;
 }
 
-.code li#fan_page a:link,
-.get_more li#help a:visited {
+.code li#fan-page a:link,
+.get-more li#help a:visited {
   background-position: -205px -196px;
 }
 
-.code li#fan_page a:hover,
-.get_more li#help a:focus {
+.code li#fan-page a:hover,
+.get-more li#help a:focus {
   background-position: -205px -245px;
 }
 
-.fan_page li#fan_page a:link,
-.fan_page li#fan_page a:visited {
+.fan-page li#fan-page a:link,
+.fan-page li#fan-page a:visited {
   background-position: -205px -294px;
 }
 
-.fan_page li#code a:link,
-.fan_page li#code a:visited {
+.fan-page li#code a:link,
+.fan-page li#code a:visited {
   background-position: -118px -294px;
 }
 
-.fan_page li#code a:hover,
-.fan_page li#code a:focus {
+.fan-page li#code a:hover,
+.fan-page li#code a:focus {
   background-position: -118px -343px;
 }
 
-.fan_page li#help a:link,
-.fan_page li#get_more a:visited {
+.fan-page li#help a:link,
+.fan-page li#get-more a:visited {
   background-position: -295px -294px;
 }
 
-.fan_page li#help a:hover,
-.fan_page li#get_more a:focus {
+.fan-page li#help a:hover,
+.fan-page li#get-more a:focus {
   background-position: -295px -343px;
 }
 
@@ -388,13 +388,13 @@ li#feedback a:focus {
   background-position: -295px -392px;
 }
 
-.help li#fan_page a:link,
-.help li#get_more a:visited {
+.help li#fan-page a:link,
+.help li#get-more a:visited {
   background-position: -205px -392px;
 }
 
-.help li#fan_page a:hover,
-.help li#get_more a:focus {
+.help li#fan-page a:hover,
+.help li#get-more a:focus {
   background-position: -205px -441px;
 }
 
@@ -423,7 +423,7 @@ li#feedback a:focus {
   background-position: -295px -539px;
 }
 
-#login_form {
+#login-form {
   width: 300px;
   margin: 40px auto;
   padding: 20px;
@@ -432,20 +432,20 @@ li#feedback a:focus {
   font-family: Arial, sans-serif;
 }
 
-#login_form form {
+#login-form form {
   display: flex;
   flex-direction: column;
 }
 
-#login_form label {
+#login-form label {
   display: block;
   margin-bottom: 5px;
   font-size: 14px;
   color: rgb(212, 212, 212);
 }
 
-#login_form input[type="text"],
-#login_form input[type="password"] {
+#login-form input[type="text"],
+#login-form input[type="password"] {
   padding: 6px 8px;
   margin-bottom: 15px;
   border: 1px solid #757678;
@@ -454,7 +454,7 @@ li#feedback a:focus {
   width: 100%;
 }
 
-#login_form button[type="submit"] {
+#login-form button[type="submit"] {
   background-color: #86270d;
   color: #fff;
   border: 1px solid #757678;
@@ -463,7 +463,7 @@ li#feedback a:focus {
   cursor: pointer;
 }
 
-#login_form button[type="submit"]:hover {
+#login-form button[type="submit"]:hover {
   background-color: #b22;
 }
 
@@ -481,4 +481,25 @@ li#feedback a:focus {
 
 #footer a:hover {
   text-decoration: underline;
+}
+
+.debug-log-btn-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.debug-log-btn {
+  background-color: #363333;
+  padding: 8px;
+  border: none;
+  color: #7a7068;
+  font-weight: bold;
+  font-size: 12px;
+  border-bottom-left-radius: 8px;
+  cursor: pointer;
+}
+
+.debug-log-btn:hover {
+  color: #949392ff;
 }

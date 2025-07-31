@@ -6,4 +6,5 @@ import kotlinx.serialization.json.Json
 object Dependency {
     lateinit var database: BigDB
     lateinit var json: Json
+    lateinit var wsManager: WebsocketManager
 }

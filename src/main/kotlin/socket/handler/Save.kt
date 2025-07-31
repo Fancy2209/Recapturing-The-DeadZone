@@ -49,17 +49,28 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
         // encode JSON response to string before using PIO serialization
 
         when (type) {
-            "get_offers" -> {}
-            "chat_getContactsBlocks" -> {}
+            "get_offers" -> {
+                Logger.warn(LogConfigSocketToClient) { "Received 'get_offers' message [not implemented]" }
+            }
+
+            "chat_getContactsBlocks" -> {
+                Logger.warn(LogConfigSocketToClient) { "Received 'chat_getContactsBlocks' message [not implemented]" }
+            }
+
             "crate_unlock" -> {
+                val keyId = data["keyId"] as String?
+                val crateId = (data["crateId"] ?: "") as String?
+
                 val responseJson = Dependency.json.encodeToString(
                     CrateUnlockResponse(
                         success = true,
                         item = gachaPoolExample.random(),
-                        keyId = data["keyId"] as String?,
-                        crateId = (data["crateId"] ?: "") as String?,
+                        keyId = keyId,
+                        crateId = crateId,
                     )
                 )
+
+                Logger.info(LogConfigSocketToClient) { "Opening crateId=$crateId with keyId=$keyId" }
 
                 send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
             }
@@ -70,7 +81,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 // The error was 'cyclic object' thing.
                 val isCompoundZombieAttack = data["compound"]?.equals(true)
                 val areaType = if (isCompoundZombieAttack == true) "compound" else data["areaType"] as String
-                Logger.debug(LogConfigSocketToClient) { "Going to scene with areaType=$areaType" }
+                Logger.info(LogConfigSocketToClient) { "Going to scene with areaType=$areaType" }
 
                 val sceneXML = resolveAndLoadScene(areaType)
                 val sceneXMLWithLoot = insertLoots(sceneXML)
@@ -145,21 +156,24 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
             }
 
             "mis_zombies" -> {
+                // usually requested during middle of mission
+                // there could be 'rush' flag somewhere, which means we need to send runner zombies
+
                 val zombies = listOf(
-                    ZombieData.dogTank(101),
-                    ZombieData.dogTank(111),
-                    ZombieData.dogTank(112),
+                    ZombieData.strongRunner(101),
+                    ZombieData.strongRunner(101),
+                    ZombieData.strongRunner(101),
+                    ZombieData.strongRunner(101),
+                    ZombieData.strongRunner(101),
+                    ZombieData.strongRunner(101),
+                    ZombieData.strongRunner(101),
+                    ZombieData.strongRunner(101),
+                    ZombieData.strongRunner(101),
                     ZombieData.fatWalkerStrongAttack(101),
                     ZombieData.fatWalkerStrongAttack(102),
                     ZombieData.fatWalkerStrongAttack(103),
                     ZombieData.fatWalkerStrongAttack(104),
                     ZombieData.fatWalkerStrongAttack(105),
-                    ZombieData.police20ZWeakAttack(113),
-                    ZombieData.police20ZWeakAttack(114),
-                    ZombieData.police20ZWeakAttack(115),
-                    ZombieData.riotWalker37MediumAttack(116),
-                    ZombieData.riotWalker37MediumAttack(117),
-                    ZombieData.riotWalker37MediumAttack(118),
                 ).flatMap { it.toFlatList() }
 
                 val responseJson = Dependency.json.encodeToString(
@@ -169,22 +183,24 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                     )
                 )
 
+                Logger.info(LogConfigSocketToClient) { "'mis_zombies' message (spawn zombie) request received" }
+
                 send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
             }
 
             "stat_data" -> {
                 val stats = data["stats"]
-                Logger.info { "Received stat_data with stats: $stats" }
+                Logger.warn(LogConfigSocketToClient) { "Received 'stat_data' message [not implemented] with stats: $stats" }
             }
 
             "clear_notes" -> {
-                Logger.info { "Received clear_notes" }
+                Logger.warn(LogConfigSocketToClient) { "Received 'clear_notes' message [not implemented]" }
             }
 
             "give" -> {
                 val type = data["type"] as? String ?: return
 
-                Logger.info { "Received give command with type=$type | data=$data" }
+                Logger.info(LogConfigSocketToClient) { "Received 'give' command with type=$type | data=$data" }
 
                 when (type) {
                     "schematic" -> {
@@ -207,7 +223,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                     }
 
                     "effect" -> {
-                        // unimplemented
+                        Logger.warn(LogConfigSocketToClient) { "Received 'give' command of type effect [not implemented]" }
                     }
 
                     else -> {
@@ -233,25 +249,37 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
 
 
             "giveRare" -> {
+                val type = (data["type"] as String?) ?: return
+                val level = (data["level"] as Int?) ?: return
+
                 val item = Item(
                     id = UUID.randomUUID().toString(),
-                    type = (data["type"] as String?) ?: return,
-                    level = (data["level"] as Int?) ?: return,
+                    type = type,
+                    level = level,
                     quality = 50,
                     new = true,
                 )
+
+                Logger.info(LogConfigSocketToClient) { "Received 'giveRare' command with type=$type | level=$level" }
+
                 val response = Dependency.json.encodeToString(item)
                 send(PIOSerializer.serialize(buildMsg(saveId, response)))
             }
 
             "giveUnique" -> {
+                val type = (data["type"] as String?) ?: return
+                val level = (data["level"] as Int?) ?: return
+
                 val item = Item(
                     id = UUID.randomUUID().toString(),
-                    type = (data["type"] as String?) ?: return,
-                    level = (data["level"] as Int?) ?: return,
+                    type = type,
+                    level = level,
                     quality = 51,
                     new = true,
                 )
+
+                Logger.info(LogConfigSocketToClient) { "Received 'giveUnique' command with type=$type | level=$level" }
+
                 val response = Dependency.json.encodeToString(item)
                 send(PIOSerializer.serialize(buildMsg(saveId, response)))
             }
@@ -262,7 +290,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 val r = (data["rotation"] as? Number)?.toInt() ?: 0
                 val buildingId = data["id"] // use this to refer the building
 
-                Logger.debug { "Building move for $saveId and $buildingId to $x,$y|r:$r" }
+                Logger.debug(LogConfigSocketToClient) { "'bld_move' message for $saveId and $buildingId to tx=$x, ty=$y, rotation=$r" }
 
                 val responseJson = Dependency.json.encodeToString(
                     BuildingMoveResponse(
@@ -274,9 +302,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
             }
 
             else -> {
-                Logger.error(LogConfigSocketError) {
-                    "Handled 's' message but unhandled data type: $type from data=$data"
-                }
+                Logger.warn(LogConfigSocketError) { "Handled 's' network message but unhandled or unimplemented for save type: $type with data=$data" }
             }
         }
     }
