@@ -146,62 +146,9 @@
 
     <script>
         const logDiv = document.querySelector(".log");
-        const logHistory = window.opener?.debugLogHistory || [];
         let logLineNumber = 1;
-        const clientId = localStorage.getItem("debugClientId");
         const activeLevels = new Set(["ERROR", "WARN", "INFO", "DEBUG"]);
-        
         const socket = window.opener?.websocket;
-
-        if (socket.readyState === WebSocket.OPEN) {
-            appendTextLine("Websocket connected.", false);
-        } else {
-            appendTextLine("Connecting...", false);
-        }
-
-        const filterButtons = {
-            ERROR: document.querySelector(".debug-error-btn"),
-            WARN: document.querySelector(".debug-warn-btn"),
-            INFO: document.querySelector(".debug-info-btn"),
-            DEBUG: document.querySelector(".debug-debug-btn")
-        };
-
-        Object.entries(filterButtons).forEach(([level, btn]) => {
-            btn.classList.add("active");
-            btn.addEventListener("click", () => {
-                btn.classList.toggle("active");
-                if (activeLevels.has(level)) {
-                    activeLevels.delete(level);
-                } else {
-                    activeLevels.add(level);
-                }
-                filterLogs();
-            });
-        });
-
-        document.querySelector(".clear-log-btn").addEventListener("click", () => {
-            window.opener?.clearLogHistory();
-            window.opener?.postMessage({ type: "clear" }, "*");
-            logDiv.innerHTML = "";
-            logLineNumber = 1;
-            appendTextLine("Logs cleared.", false)
-        });
-
-        function filterLogs() {
-            const allLogs = logDiv.querySelectorAll("p[data-level]");
-            allLogs.forEach(p => {
-                const level = p.getAttribute("data-level");
-                p.style.display = activeLevels.has(level) ? "block" : "none";
-            });
-        }
-
-        window.addEventListener("message", (event) => {
-            const { type, payload } = event.data;
-            if (type === "log") {
-                appendLog(payload);
-                filterLogs();
-            }
-        });
 
         function appendLog(msg) {
             const p = document.createElement("p");
@@ -225,29 +172,68 @@
 
         function appendTextLine(text, useLineNumber) {
             const p = document.createElement("p");
-            if (useLineNumber) {
-                p.textContent = `${logLineNumber.toString().padStart(4, " ")}) ${text}`;
-                logLineNumber++;
-            } else {
-                p.textContent = text;
-            }
+            p.textContent = useLineNumber
+                ? `${logLineNumber.toString().padStart(4, " ")}) ${text}`
+                : text;
+            if (useLineNumber) logLineNumber++;
             logDiv.appendChild(p);
         }
 
-        socket.onerror = () => {
-            appendTextLine("[Websocket error]", false);
-        };
+        function filterLogs() {
+            const allLogs = logDiv.querySelectorAll("p[data-level]");
+            allLogs.forEach(p => {
+                const level = p.getAttribute("data-level");
+                p.style.display = activeLevels.has(level) ? "block" : "none";
+            });
+        }
 
-        socket.onclose = () => {
-            appendTextLine("[Connection closed]", false)
-        };
+        window.addEventListener("message", (event) => {
+            if (event.origin != window.location.origin) return
 
-        window.addEventListener("beforeunload", () => {
-            if (socket.readyState === WebSocket.OPEN) {
-                socket.send("close");
-                socket.close();
+            const { type, payload } = event.data;
+            if (type === "log") {
+                appendLog(payload);
+                filterLogs();
+            } else if (type == "logh") {
+                payload.forEach(msg => appendLog(msg))
+                appendTextLine("<----- Previous logs ----->")
+                filterLogs();
             }
         });
+
+        if (socket.readyState === WebSocket.OPEN) {
+            appendTextLine("Websocket connected.", false);
+        } else {
+            appendTextLine("Connecting...", false);
+        }
+
+        const filterButtons = {
+            ERROR: document.querySelector(".debug-error-btn"),
+            WARN: document.querySelector(".debug-warn-btn"),
+            INFO: document.querySelector(".debug-info-btn"),
+            DEBUG: document.querySelector(".debug-debug-btn")
+        };
+
+        Object.entries(filterButtons).forEach(([level, btn]) => {
+            btn.classList.add("active");
+            btn.addEventListener("click", () => {
+                btn.classList.toggle("active");
+                activeLevels.has(level)
+                    ? activeLevels.delete(level)
+                    : activeLevels.add(level)
+                filterLogs();
+            });
+        });
+
+        document.querySelector(".clear-log-btn").addEventListener("click", () => {
+            window.opener?.clearLogHistory()
+            logDiv.innerHTML = "";
+            logLineNumber = 1;
+            appendTextLine("Logs cleared.", false)
+        });
+
+        socket.onerror = () => appendTextLine("[Websocket error]", false)
+        socket.onclose = () => appendTextLine("[Connection closed]", false)
     </script>
 </body>
 

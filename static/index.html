@@ -116,15 +116,20 @@
         const clientId = localStorage.getItem("debugClientId") || generateUUID()
         localStorage.setItem("debugClientId", clientId);
 
+        window.logHistory = JSON.parse(localStorage.getItem("debugLogHistory") || "[]");
+
         window.websocket = new WebSocket(`ws://127.0.0.1:8080/debuglog?clientId=${clientId}`);
 
         window.websocket.onmessage = (event) => {
             try {
                 const logMsg = JSON.parse(event.data);
-                addToDebugLogHistory(logMsg);
+
+                window.logHistory.push(logMsg);
+                if (window.logHistory.length > 1000) window.logHistory.shift();
+                localStorage.setItem("debugLogHistory", JSON.stringify(window.logHistory));
 
                 if (debugWindow && !debugWindow.closed) {
-                    debugWindow.postMessage({ type: "log", payload: logMsg }, "*");
+                    debugWindow.postMessage({ type: "log", payload: logMsg }, window.location.origin);
                 }
             } catch (e) {
                 console.error("Invalid log format", e);
@@ -146,6 +151,12 @@
                         "DZRevive Debug Log",
                         "width=800,height=400,resizable=yes"
                     );
+
+                    setTimeout(() => {
+                        if (window.logHistory.length > 0) {
+                            debugWindow?.postMessage({ type: "logh", payload: window.logHistory }, window.location.origin);
+                        }
+                    }, 1000);
                 } else {
                     debugWindow.focus();
                 }
@@ -158,27 +169,17 @@
                         debugWindow.close();
                         debugWindow = null;
                     }
+                    localStorage.removeItem("debugLogHistory");
+                    localStorage.removeItem("debugClientId");
                 } catch (e) {
                     console.warn("Failed to cleanly close debug window:", e);
                 }
             });
-
-
         });
 
-        window.debugLogHistory = JSON.parse(localStorage.getItem("debugLogHistory") || "[]");
-
-        function addToDebugLogHistory(log) {
-            window.debugLogHistory.push(log);
-            if (window.debugLogHistory.length > 1000) {
-                window.debugLogHistory.shift();
-            }
-            localStorage.setItem("debugLogHistory", JSON.stringify(window.debugLogHistory));
-        }
-
         function clearLogHistory() {
-            window.debugLogHistory = []
-            localStorage.setItem("debugLogHistory", JSON.stringify([]));
+            window.logHistory = JSON.parse("[]")
+            localStorage.setItem("debugLogHistory", JSON.stringify("[]"));
         }
     </script>
 </body>
