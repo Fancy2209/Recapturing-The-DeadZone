@@ -125,7 +125,7 @@ object Logger {
         }
 
         val timestamp = dateFormatter.format(getTimeMillis())
-        val logMessage = "[LOGGER | $srcName | $timestamp] [${level.name}]: $msgString"
+        val logMessage = "[$srcName | $timestamp] [${level.name}]: $msgString"
 
         targets.forEach { target ->
             when (target) {
