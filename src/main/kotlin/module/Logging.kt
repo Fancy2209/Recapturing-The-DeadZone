@@ -4,6 +4,7 @@ import dev.deadzone.module.Logger.info
 import io.ktor.server.application.*
 import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.routing.*
+import io.ktor.util.date.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -11,6 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.File
+import java.text.SimpleDateFormat
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -89,10 +91,10 @@ object Logger {
     var level: LogLevel = LogLevel.DEBUG
 
     private val logDir = File("logs").apply { mkdirs() }
-    private val clientWriteError = File(logDir, "client_write_error.log")
-    private val assetsError = File(logDir, "assets_error.log")
-    private val apiServerError = File(logDir, "api_server_error.log")
-    private val socketServerError = File(logDir, "socket_server_error.log")
+    private val clientWriteError = File(logDir, "client_write_error-1.log")
+    private val assetsError = File(logDir, "assets_error-1.log")
+    private val apiServerError = File(logDir, "api_server_error-1.log")
+    private val socketServerError = File(logDir, "socket_server_error-1.log")
 
     private val logFileMap = mapOf(
         LogFile.CLIENT_WRITE_ERROR to clientWriteError,
@@ -102,6 +104,9 @@ object Logger {
     )
 
     private const val MAX_LOG_LENGTH = 500
+    private const val MAX_LOG_FILE_SIZE = 1024 * 5 // 5 mb
+    private const val MAX_LOG_ROTATES = 5
+    private val dateFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
     private fun log(
         src: LogSource = LogSource.SOCKET,
@@ -119,7 +124,8 @@ object Logger {
             msgString = msgString.take(MAX_LOG_LENGTH) + "... [truncated]"
         }
 
-        val logMessage = "[LOGGER | $srcName | ${getTimestamp()}] [${level.name}]: $msgString"
+        val timestamp = dateFormatter.format(getTimeMillis())
+        val logMessage = "[LOGGER | $srcName | $timestamp] [${level.name}]: $msgString"
 
         targets.forEach { target ->
             when (target) {
@@ -130,6 +136,9 @@ object Logger {
                 is LogTarget.FILE -> {
                     val targetFile = logFileMap[target.file]
                     if (targetFile != null) {
+                        if (targetFile.exists() && targetFile.length() > MAX_LOG_FILE_SIZE) {
+                            rotateLogFile(targetFile)
+                        }
                         targetFile.appendText("$logMessage\n")
                     } else {
                         println("Unknown log file target: ${target.file}")
@@ -217,13 +226,22 @@ object Logger {
         if (level == LogLevel.NOTHING) return
         log(src, targets, LogLevel.ERROR, msg, logFull)
     }
-}
 
-fun getTimestamp(): String {
-    val currentTime = LocalTime.now()
-    val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
-    val formattedTime = currentTime.format(formatter)
-    return formattedTime.toString()
+    fun rotateLogFile(file: File): File {
+        val nameRegex = Regex("""(.+)-(\d+)\.log""")
+        val match = nameRegex.matchEntire(file.name)
+            ?: return file
+
+        val (baseName, currentIndexStr) = match.destructured
+        val currentIndex = currentIndexStr.toInt()
+        val nextIndex = (currentIndex % MAX_LOG_ROTATES) + 1
+        val newFileName = "$baseName-$nextIndex.log"
+        val newFile = File(file.parentFile, newFileName)
+
+        if (newFile.exists()) newFile.delete()
+
+        return newFile
+    }
 }
 
 enum class LogLevel() {
