@@ -17,7 +17,7 @@ class DefaultHandler() : SocketMessageHandler {
         message: SocketMessage,
         send: suspend (ByteArray) -> Unit
     ) {
-        Logger.error(LogConfigSocketError) { "Handler not registered or implemented for message: $message" }
+        Logger.warn(LogConfigSocketError) { "Handler not registered or implemented for message: $message" }
         send(PIOSerializer.serialize(listOf("\u0000\u0000\u0000\u0000")))
     }
 }

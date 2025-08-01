@@ -110,6 +110,7 @@ class Server(
 
                     val deserialized = PIODeserializer.deserialize(data2)
                     val msg = SocketMessage.fromRaw(deserialized)
+                    if (msg.isEmpty()) continue
 
                     socketDispatcher.findHandlerFor(msg).let { handler ->
                         handler.handle(connection, msg) { response ->

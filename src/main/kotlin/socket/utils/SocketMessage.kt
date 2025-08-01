@@ -24,6 +24,10 @@ class SocketMessage(private val raw: List<Any>) {
         }
     }
 
+    fun isEmpty(): Boolean {
+        return map.keys.isEmpty()
+    }
+
     /**
      * Get a value (`any` type) from particular key.
      * Use [getString], [getInt], etc for typed result
