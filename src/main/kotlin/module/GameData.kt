@@ -37,6 +37,8 @@ class GameData {
             val inputStream = classLoader.getResourceAsStream(path)
                 ?: throw IllegalStateException("File not found in resources: $path")
 
+            if (path != "static/game/data/xml/items.xml.gz") continue // only parse items for now
+
             val xmlStream = GZIPInputStream(inputStream)
             val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlStream)
 
