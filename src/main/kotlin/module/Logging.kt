@@ -166,6 +166,7 @@ object Logger {
         logFull: Boolean = false,
         msg: () -> String
     ) {
+        if (level == LogLevel.NOTHING) return
         log(src, targets, LogLevel.DEBUG, msg, logFull)
     }
 
@@ -181,6 +182,7 @@ object Logger {
         logFull: Boolean = false,
         msg: () -> String
     ) {
+        if (level == LogLevel.NOTHING) return
         log(src, targets, LogLevel.INFO, msg, logFull)
     }
 
@@ -196,6 +198,7 @@ object Logger {
         logFull: Boolean = false,
         msg: () -> String
     ) {
+        if (level == LogLevel.NOTHING) return
         log(src, targets, LogLevel.WARN, msg, logFull)
     }
 
@@ -211,6 +214,7 @@ object Logger {
         logFull: Boolean = false,
         msg: () -> String
     ) {
+        if (level == LogLevel.NOTHING) return
         log(src, targets, LogLevel.ERROR, msg, logFull)
     }
 }
@@ -223,7 +227,7 @@ fun getTimestamp(): String {
 }
 
 enum class LogLevel() {
-    DEBUG, INFO, WARN, ERROR
+    NOTHING, DEBUG, INFO, WARN, ERROR
 }
 
 sealed class LogTarget {
