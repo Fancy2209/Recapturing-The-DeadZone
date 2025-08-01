@@ -8,6 +8,7 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
+    Dependency.gameData = GameData()
     configureDatabase()
     configureHTTP()
     configureLogging()

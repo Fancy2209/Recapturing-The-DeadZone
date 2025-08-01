@@ -7,4 +7,5 @@ object Dependency {
     lateinit var database: BigDB
     lateinit var json: Json
     lateinit var wsManager: WebsocketManager
+    lateinit var gameData: GameData
 }
