@@ -53,9 +53,14 @@ class TestLootManager {
                     manager.insertLoots()
 
                     writer.write("========> Scene: $filename (areaLevel:${PARAMETER1.areaLevel}) (iteration:$i)\n")
-                    manager.insertedLoots.forEach { loot ->
-                        writer.write(" - ${loot.itemIdInXML} (x${loot.quantity})\n")
+                    val lootsAggregate: Map<String, Int> = manager.insertedLoots
+                        .groupingBy { it.itemIdInXML }
+                        .fold(0) { acc, loot -> acc + loot.quantity }
+
+                    for ((itemId, totalQty) in lootsAggregate.entries.sortedByDescending { it.value }) {
+                        writer.write(" - $itemId (total x$totalQty)\n")
                     }
+
                     writer.write("==============================================\n")
                 }
             }
