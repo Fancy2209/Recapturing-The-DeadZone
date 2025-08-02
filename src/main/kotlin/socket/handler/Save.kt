@@ -1,6 +1,7 @@
 package dev.deadzone.socket.handler
 
 import dev.deadzone.core.mission.LootManager
+import dev.deadzone.core.model.factory.ItemFactory
 import dev.deadzone.core.model.game.data.*
 import dev.deadzone.core.utils.PIOSerializer
 import dev.deadzone.module.Dependency
@@ -64,7 +65,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 val responseJson = Dependency.json.encodeToString(
                     CrateUnlockResponse(
                         success = true,
-                        item = gachaPoolExample.random(),
+                        item = ItemFactory.getRandomItem(),
                         keyId = keyId,
                         crateId = crateId,
                     )

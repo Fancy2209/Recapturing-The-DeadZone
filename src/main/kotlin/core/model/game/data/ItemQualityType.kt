@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @JvmInline
 value class ItemQualityType(val value: Int) {
     companion object {
-        fun fromString(s: String): Int {
+        fun fromString(s: String): Int? {
             return when (s) {
                 "none" -> -2147483648
                 "grey" -> -1
@@ -18,11 +18,11 @@ value class ItemQualityType(val value: Int) {
                 "unique" -> 51
                 "infamous" -> 52
                 "premium" -> 100
-                else -> -2147483648
+                else -> null
             }
         }
 
-        fun fromInt(i: Int): String {
+        fun fromInt(i: Int): String? {
             return when (i) {
                 -2147483648 -> "none"
                 -1 -> "grey"
@@ -34,7 +34,7 @@ value class ItemQualityType(val value: Int) {
                 51 -> "unique"
                 52 -> "infamous"
                 100 -> "premium"
-                else -> "none"
+                else -> null
             }
         }
     }

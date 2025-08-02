@@ -6,21 +6,27 @@ import dev.deadzone.core.model.game.data.ItemQualityType
 import dev.deadzone.core.model.game.data.ItemQualityType_Constants
 import dev.deadzone.module.Dependency
 import org.w3c.dom.Element
+import java.util.UUID
 
 object ItemFactory {
     private val gameData get() = Dependency.gameData
 
-    fun createItemFromId(id: String): Item {
-        val res =
-            gameData.itemsById[id] ?: throw IllegalArgumentException("Failed creating Item from id=$id (id not found)")
-        return createItemFromResource(res)
+    fun getRandomItem(): Item {
+        return createItemFromResource(res = gameData.itemsById.values.random())
     }
 
-    fun createItemFromResource(res: ItemResource): Item {
+    fun createItemFromId(itemId: String = UUID.randomUUID().toString(), idInXML: String): Item {
+        val res =
+            gameData.itemsById[idInXML]
+                ?: throw IllegalArgumentException("Failed creating Item id=$itemId from xml id=$idInXML (xml id not found)")
+        return createItemFromResource(itemId, res)
+    }
+
+    fun createItemFromResource(itemId: String = UUID.randomUUID().toString(), res: ItemResource): Item {
         val baseItem = Item(
-            id = res.id,
-            type = res.type,
-            quality = ItemQualityType.fromString(res.element.getAttribute("quality").ifBlank { "none" })
+            id = itemId,
+            type = res.id,
+            quality = ItemQualityType.fromString(res.element.getAttribute("quality"))
         )
 
         when (res.type) {
