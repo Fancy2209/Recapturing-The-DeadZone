@@ -87,7 +87,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
 
                 val sceneXML = resolveAndLoadScene(areaType)
                 val lootParameter = LootParameter(
-                    areaLevel = 10,
+                    areaLevel = (data["areaLevel"] as Int),
                     playerLevel = 30,
                     itemWeightOverrides = mapOf(
                         "fuel" to 50.0

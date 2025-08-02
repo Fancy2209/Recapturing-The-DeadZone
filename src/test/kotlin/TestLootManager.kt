@@ -15,7 +15,7 @@ object TestDependency {
 
 class TestLootManager {
     private val PARAMETER1 = LootParameter(
-        areaLevel = 10,
+        areaLevel = 30, // set this manually
         playerLevel = 30,
         itemWeightOverrides = mapOf(
             "fuel" to 50.0
