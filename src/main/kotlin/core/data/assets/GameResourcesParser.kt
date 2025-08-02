@@ -1,5 +1,6 @@
 package dev.deadzone.core.data.assets
 
+import dev.deadzone.module.GameData
 import org.w3c.dom.Document
 
 /**
@@ -12,5 +13,5 @@ import org.w3c.dom.Document
  * and creates the corresponding [dev.deadzone.core.model.game.data.Item] object.
  */
 interface GameResourcesParser {
-    fun parse(doc: Document)
+    fun parse(doc: Document, gameData: GameData)
 }

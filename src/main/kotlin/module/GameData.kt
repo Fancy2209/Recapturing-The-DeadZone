@@ -2,11 +2,14 @@ package dev.deadzone.module
 
 import dev.deadzone.core.data.assets.*
 import dev.deadzone.core.model.game.data.Item
+import java.io.File
 import java.util.zip.GZIPInputStream
 import javax.xml.parsers.DocumentBuilderFactory
 
 class GameData {
-    val items: List<Item> = listOf()
+    val itemsById = mutableMapOf<String, ItemResource>()
+    val itemsByType = mutableMapOf<String, MutableList<ItemResource>>()
+    val itemsByLootable = mutableMapOf<String, MutableList<ItemResource>>()
 
     init {
         val resourcesToLoad = mapOf(
@@ -42,8 +45,7 @@ class GameData {
             val xmlStream = GZIPInputStream(inputStream)
             val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlStream)
 
-            parser.parse(document)
+            parser.parse(document, this)
         }
-
     }
 }

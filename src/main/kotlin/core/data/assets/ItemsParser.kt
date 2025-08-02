@@ -1,40 +1,39 @@
 package dev.deadzone.core.data.assets
 
-import dev.deadzone.module.Logger
+import dev.deadzone.module.GameData
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 
+data class ItemResource(
+    val id: String, // id in xml
+    val type: String,
+    val element: Element
+) {
+    override fun toString(): String {
+        return "ItemResource(id=$id, type=$type)"
+    }
+}
+
 class ItemsParser() : GameResourcesParser {
-    override fun parse(doc: Document) {
+    override fun parse(doc: Document, gameData: GameData) {
         val items = doc.getElementsByTagName("item")
 
         for (i in 0 until items.length) {
-            val item = items.item(i) as? Element ?: continue
-            val itemType = item.getAttribute("type").takeIf { it != "" } ?: continue
+            val itemNode = items.item(i) as? Element ?: continue
+            val itemId = itemNode.getAttribute("id").takeIf { it != "" } ?: continue
+            val itemType = itemNode.getAttribute("type").takeIf { it != "" } ?: continue
+            val itemLocs = itemNode.getAttribute("locs").takeIf { it != "" }
 
-            Logger.debug { "Found item of type=$itemType" }
+            val res = ItemResource(itemId, itemType, itemNode)
 
-            val subparser = when (itemType) {
-                "weapon" -> WeaponItemParser()
-                else -> GenericItemParser()
+            gameData.itemsById.putIfAbsent(itemId, res)
+            gameData.itemsByType.computeIfAbsent(itemId) { mutableListOf() }.add(res)
+            if (itemLocs?.isNotEmpty() == true) {
+                val locList = itemLocs.split(',').map { it.trim() }
+                for (loc in locList) {
+                    gameData.itemsByLootable.computeIfAbsent(loc) { mutableListOf() }.add(res)
+                }
             }
-            subparser.parse(item)
         }
-    }
-}
-
-interface ItemSubparser {
-    fun parse(el: Element)
-}
-
-class GenericItemParser(): ItemSubparser {
-    override fun parse(el: Element) {
-
-    }
-}
-
-class WeaponItemParser(): ItemSubparser {
-    override fun parse(el: Element) {
-
     }
 }
