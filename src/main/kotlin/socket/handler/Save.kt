@@ -1,6 +1,6 @@
 package dev.deadzone.socket.handler
 
-import dev.deadzone.core.mission.insertLoots
+import dev.deadzone.core.mission.LootManager
 import dev.deadzone.core.model.game.data.*
 import dev.deadzone.core.utils.PIOSerializer
 import dev.deadzone.module.Dependency
@@ -84,7 +84,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 Logger.info(LogConfigSocketToClient) { "Going to scene with areaType=$areaType" }
 
                 val sceneXML = resolveAndLoadScene(areaType)
-                val sceneXMLWithLoot = insertLoots(sceneXML)
+                val sceneXMLWithLoot = LootManager().insertLoots(sceneXML)
 
                 val zombies = listOf(
                     ZombieData.dogTank(101),
