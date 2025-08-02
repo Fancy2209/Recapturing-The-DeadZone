@@ -52,7 +52,7 @@ class TestLootManager {
                     )
                     manager.insertLoots()
 
-                    writer.write("========> Scene: $filename (iteration:$i\n")
+                    writer.write("========> Scene: $filename (areaLevel:${PARAMETER1.areaLevel}) (iteration:$i)\n")
                     manager.insertedLoots.forEach { loot ->
                         writer.write(" - ${loot.itemIdInXML} (x${loot.quantity})\n")
                     }
