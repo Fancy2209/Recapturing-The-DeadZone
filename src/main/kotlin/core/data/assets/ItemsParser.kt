@@ -5,12 +5,12 @@ import org.w3c.dom.Document
 import org.w3c.dom.Element
 
 data class ItemResource(
-    val id: String, // id in xml
+    val idInXML: String, // id in xml
     val type: String,
     val element: Element
 ) {
     override fun toString(): String {
-        return "ItemResource(id=$id, type=$type)"
+        return "ItemResource(idInXML=$idInXML, type=$type)"
     }
 }
 

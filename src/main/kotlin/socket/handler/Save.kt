@@ -89,16 +89,20 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 val lootParameter = LootParameter(
                     areaLevel = (data["areaLevel"] as Int),
                     playerLevel = 30,
-                    itemWeightOverrides = mapOf(
-                        "fuel" to 50.0
+                    itemWeightOverrides = mapOf(),
+                    specificItemBoost = mapOf(
+                        "fuel-bottle" to 3.0,    // +300% find fuel chance (of the base chance)
+                        "fuel-container" to 3.0,
+                        "fuel" to 3.0,
+                        "fuel-cans" to 3.0,
                     ),
-                    itemTypeMultiplier = mapOf(
-                        "junk" to 5.0
+                    itemTypeBoost = mapOf(
+                        "junk" to 0.8 // +80% junk find chance
                     ),
-                    itemQualityMultiplier = mapOf(
-                        "blue" to 5.0
+                    itemQualityBoost = mapOf(
+                        "blue" to 0.5 // +50% blue quality find chance
                     ),
-                    baseWeight = 1000.0,
+                    baseWeight = 1.0,
                     fuelLimit = 50
                 )
                 val lootManager = LootManager(Dependency.gameData, sceneXML, lootParameter)

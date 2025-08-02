@@ -1,12 +1,8 @@
 package dev.deadzone.core.mission
 
 import dev.deadzone.core.data.assets.ItemResource
-import dev.deadzone.core.model.factory.ItemFactory
-import dev.deadzone.core.model.game.data.Item
 import dev.deadzone.module.Dependency
 import dev.deadzone.module.GameData
-import dev.deadzone.module.LogSource
-import dev.deadzone.module.Logger
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import java.io.StringReader
@@ -18,6 +14,7 @@ import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
 import javax.xml.parsers.DocumentBuilder
 import org.xml.sax.InputSource
+import java.util.TreeMap
 import java.util.UUID
 import kotlin.collections.emptyMap
 import kotlin.random.Random
@@ -39,20 +36,23 @@ data class LootContent(
 // Loot system config, contains variables that affects loot
 data class LootParameter(
     val areaLevel: Int,
-    val playerLevel: Int,
-    val itemWeightOverrides: Map<String, Double>,
-    val itemTypeMultiplier: Map<String, Double>,
-    val itemQualityMultiplier: Map<String, Double>,
-    val baseWeight: Double,
-    val fuelLimit: Int,
+    val playerLevel: Int, // not used yet
+    val itemWeightOverrides: Map<String, Double> = emptyMap(), // absolute override if needed
+    val specificItemBoost: Map<String, Double> = emptyMap(),   // e.g. "fuel" to 0.2 (+20%)
+    val itemTypeBoost: Map<String, Double> = emptyMap(),       // e.g. "weapon" to 0.1 (+10%)
+    val itemQualityBoost: Map<String, Double> = emptyMap(),    // e.g. "blue" to -0.4 (-40%)
+    val baseWeight: Double = 1.0,
+    val fuelLimit: Int = 0 // not used yet
 )
+
 
 class LootManager(
     private val gameData: GameData = Dependency.gameData,
     private val sceneXML: String,
     private val parameter: LootParameter
 ) {
-    val lootableItemsOnEachLocs: MutableMap<String, MutableList<Pair<LootContent, Double>>> = mutableMapOf()
+    val cumulativeLootsPerLoc: MutableMap<String, TreeMap<Double, LootContent>> = mutableMapOf()
+    val totalWeightPerLoc: MutableMap<String, Double> = mutableMapOf()
     val insertedLoots: MutableList<LootContent> = mutableListOf()
     val itemsLootedByPlayer: MutableList<LootContent> = mutableListOf()
 
@@ -63,29 +63,41 @@ class LootManager(
     private fun buildIndexOfLootableItems() {
         ALL_LOCS.forEach { loc ->
             val lootableInLoc = gameData.itemsByLootable[loc] ?: emptyList()
+            // create a binary search tree whose key is cumulative weight and value is the loot
+            // this will allow us to quickly search for an item based on a rolled double value just by seeing the cumulative weight
+            val treeMap = TreeMap<Double, LootContent>()
+            var cumulativeWeight = 0.0
 
             for (item in lootableInLoc) {
+                // only pick items which level range contain areaLevel
                 val lvlMin = item.element.getElementsByTagName("lvl_min").item(0)?.textContent?.toIntOrNull() ?: 0
                 val lvlMax = item.element.getElementsByTagName("lvl_max").item(0)?.textContent?.toIntOrNull()
                     ?: Int.MAX_VALUE
                 if (parameter.areaLevel !in (lvlMin..lvlMax)) continue
 
-                // get the item rarity, type, quality, and assign a weight
-                val rarity = item.element.getAttribute("rarity").toIntOrNull() ?: 0
+                val rarity = item.element.getAttribute("rarity").toIntOrNull() ?: 1
+                val type = item.element.getAttribute("type")
+                val quality = item.element.getAttribute("quality")
 
-                val type = item.element.getAttribute("type").ifBlank { "unknown" }
-                val typeMultiplier = parameter.itemTypeMultiplier[type] ?: 1.0
+                val baseWeight = parameter.itemWeightOverrides[item.idInXML]
+                    ?: (parameter.baseWeight / rarity.toDouble())
 
-                val quality = item.element.getAttribute("quality").ifBlank { "common" }
-                val qualityMultiplier = parameter.itemQualityMultiplier[quality] ?: 1.0
+                // e.g., +0.2 means +20%
+                val itemBoost = parameter.specificItemBoost[item.idInXML] ?: 0.0
+                val typeBoost = parameter.itemTypeBoost[type] ?: 0.0
+                val qualityBoost = parameter.itemQualityBoost[quality] ?: 0.0
 
-                val baseWeight = 1000.0 / (rarity.coerceAtLeast(1))
-                val finalWeight =
-                    (parameter.itemWeightOverrides[item.id] ?: baseWeight) * typeMultiplier * qualityMultiplier
+                val totalMultiplier = (1.0 + itemBoost) * (1.0 + typeBoost) * (1.0 + qualityBoost)
 
-                lootableItemsOnEachLocs.computeIfAbsent(loc) { mutableListOf() }.add(
-                    createLootContent(item) to finalWeight
-                )
+                val finalWeight = (baseWeight * totalMultiplier).coerceAtLeast(0.0001)
+
+                cumulativeWeight += finalWeight
+                treeMap[cumulativeWeight] = createLootContent(item)
+            }
+
+            if (treeMap.isNotEmpty()) {
+                cumulativeLootsPerLoc[loc] = treeMap
+                totalWeightPerLoc[loc] = cumulativeWeight
             }
         }
     }
@@ -135,41 +147,33 @@ class LootManager(
     }
 
     private fun getRollsFromLocs(locs: List<String>): List<LootContent> {
-        // roll 0-4 items per container
-        val lootsAmount = (0..4).random()
-        var remainingLoot = lootsAmount
+        // roll 0-6 items per container
+        val lootsAmount = (0..6).random()
         val lootResults: MutableList<LootContent> = mutableListOf()
 
-        // one item per shuffled locs
+        // shuffle the list of locs, and pick one item per loc
+        // go back to start if still need more item
         val shuffledLocs = locs.shuffled()
         var i = 0
 
-        while (remainingLoot > 0) {
+        while (lootResults.size < lootsAmount) {
             val loc = shuffledLocs[i % shuffledLocs.size]
-            val lootCandidates = lootableItemsOnEachLocs[loc] ?: emptyList()
-            if (lootCandidates.isEmpty()) return emptyList()
-
-            val chosen = weightedRandom(lootCandidates)
-            chosen?.let { lootResults.add(it) }
-            remainingLoot -= 1
+            weightedRandomTree(loc)?.let { lootResults.add(it) }
             i += 1
         }
 
         return lootResults
     }
 
-    private fun weightedRandom(choices: List<Pair<LootContent, Double>>): LootContent? {
-        // sum all weights and pick a random within the weight range
-        // item with higher weight (more common) is more likely to be picked
-        val totalWeight = choices.sumOf { it.second }
-        var rand = Math.random() * totalWeight
-
-        for ((lootContent, weight) in choices) {
-            rand -= weight
-            if (rand <= 0) return lootContent
-        }
-
-        return choices.lastOrNull()?.first
+    private fun weightedRandomTree(loc: String): LootContent? {
+        // use RNG to roll a double value within the total weight of a loc
+        // quickly find the loot with cumulative weight lower or equal than the roll
+        // e.g., for cumulative weight [1.5, 2.0, 3.0], or [0.0-1.5, 1.5-2.0, 2.0-3.0]
+        // if roll is 1.4, pick the first
+        val possibleLoots = cumulativeLootsPerLoc[loc] ?: return null
+        val totalWeight = totalWeightPerLoc[loc] ?: return null
+        val roll = Random.nextDouble(0.0, totalWeight)
+        return possibleLoots.ceilingEntry(roll)?.value
     }
 
     private fun createLootContent(res: ItemResource): LootContent {
@@ -179,10 +183,12 @@ class LootManager(
         val min = minOf(qntMin, qntMax)
         val max = maxOf(qntMin, qntMax)
         val qty = (min..max).random()
+        // may want to set quantity depending on item type
+        // i.e., weapon, schematics, is limited to 1 but junk items can be 5
 
         return LootContent(
             itemId = UUID.randomUUID().toString(),
-            itemIdInXML = res.id,
+            itemIdInXML = res.idInXML,
             quantity = qty,
         )
     }

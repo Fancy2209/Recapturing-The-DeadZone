@@ -3,7 +3,6 @@ package dev.deadzone.core.model.factory
 import dev.deadzone.core.data.assets.ItemResource
 import dev.deadzone.core.model.game.data.Item
 import dev.deadzone.core.model.game.data.ItemQualityType
-import dev.deadzone.core.model.game.data.ItemQualityType_Constants
 import dev.deadzone.module.Dependency
 import org.w3c.dom.Element
 import java.util.UUID
@@ -25,7 +24,7 @@ object ItemFactory {
     fun createItemFromResource(itemId: String = UUID.randomUUID().toString(), res: ItemResource): Item {
         val baseItem = Item(
             id = itemId,
-            type = res.id,
+            type = res.idInXML,
             quality = ItemQualityType.fromString(res.element.getAttribute("quality"))
         )
 

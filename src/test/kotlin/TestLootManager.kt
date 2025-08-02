@@ -7,6 +7,7 @@ import java.io.InputStreamReader
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.zip.GZIPInputStream
+import kotlin.collections.get
 import kotlin.test.Test
 
 object TestDependency {
@@ -15,18 +16,19 @@ object TestDependency {
 
 class TestLootManager {
     private val PARAMETER1 = LootParameter(
-        areaLevel = 30, // set this manually
+        areaLevel = 30,
         playerLevel = 30,
-        itemWeightOverrides = mapOf(
-            "fuel" to 50.0
+        itemWeightOverrides = mapOf(),
+        specificItemBoost = mapOf(
+            "fuel-cans" to 3.0 // +300% find fuel chance (of the base chance)
         ),
-        itemTypeMultiplier = mapOf(
-            "junk" to 5.0
+        itemTypeBoost = mapOf(
+            "junk" to 0.8 // +80% junk find chance
         ),
-        itemQualityMultiplier = mapOf(
-            "blue" to 5.0
+        itemQualityBoost = mapOf(
+            "blue" to 0.5 // +50% blue quality find chance
         ),
-        baseWeight = 1000.0,
+        baseWeight = 1.0,
         fuelLimit = 50
     )
     private val SCENES_TO_TEST = listOf("exterior-bridge-1")
