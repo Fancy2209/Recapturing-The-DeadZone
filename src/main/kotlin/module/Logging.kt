@@ -11,10 +11,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.encodeToJsonElement
 import java.io.File
 import java.text.SimpleDateFormat
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 
 fun Application.configureLogging() {
     install(CallLogging)
@@ -151,7 +150,17 @@ object Logger {
                     CoroutineScope(Dispatchers.IO).launch {
                         for ((clientId, session) in Dependency.wsManager.getAllClients()) {
                             try {
-                                session.send(Frame.Text(Json.encodeToString(logMsg)))
+                                val logJson = Json.encodeToJsonElement(logMsg)
+                                session.send(
+                                    Frame.Text(
+                                        Json.encodeToString(
+                                            WsMessage(
+                                                type = "log",
+                                                payload = logJson
+                                            )
+                                        )
+                                    )
+                                )
                             } catch (e: Exception) {
                                 println("Failed to send log to client $session: $e")
                                 Dependency.wsManager.removeClient(clientId)

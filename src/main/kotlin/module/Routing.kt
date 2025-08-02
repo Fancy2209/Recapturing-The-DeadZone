@@ -9,6 +9,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
+import kotlinx.serialization.json.Json
 import java.io.File
 
 fun Application.configureRouting(db: BigDB) {
@@ -48,8 +49,12 @@ fun Application.configureRouting(db: BigDB) {
                 for (frame in incoming) {
                     if (frame is Frame.Text) {
                         val msg = frame.readText()
-                        when (msg) {
-                            "close" -> break
+                        try {
+                            val wsMessage = Json.decodeFromString<WsMessage>(msg)
+                            if (wsMessage.type == "close") break
+                            Dependency.wsManager.handleMessage(this, wsMessage)
+                        } catch (e: Exception) {
+                            Logger.error { "Failed to parse WS message: $msg\n$e" }
                         }
                     }
                 }

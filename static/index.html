@@ -49,7 +49,8 @@
                     scrolling="no" frameborder="0" style="max-width:85px;" allowtransparency="true"
                     data-ruffle-polyfilled=""></iframe>
             </div>
-            <div class="debug-log-btn-container">
+            <div class="debug-container">
+                <p class="server-status">Server status: online</p>
                 <button class="debug-log-btn">Open debug log</button>
             </div>
         </div>
@@ -120,16 +121,41 @@
 
         window.websocket = new WebSocket(`ws://127.0.0.1:8080/debuglog?clientId=${clientId}`);
 
+        window.websocket.onopen = () => {
+            const msg = {
+                type: "isready",
+                payload: null
+            };
+            window.websocket.send(JSON.stringify(msg));
+        };
+
         window.websocket.onmessage = (event) => {
             try {
-                const logMsg = JSON.parse(event.data);
+                const msg = JSON.parse(event.data);
+                const type = msg.type;
+                const payload = msg.payload;
+                const ss = document.querySelector(".server-status");
 
-                logHistory.push(logMsg);
-                if (logHistory.length > 1000) logHistory.shift();
-                localStorage.setItem("debugLogHistory", JSON.stringify(logHistory));
+                switch (type) {
+                    case "ready":
+                        ss.textContent = "Server status: online";
+                        ss.style.color = "#538c50";
+                        break;
+                    case "notready":
+                        ss.textContent = "Server status: offline";
+                        ss.style.color = "#b54941";
+                        break;
+                    case "log":
+                        logHistory.push(payload);
+                        if (logHistory.length > 1000) logHistory.shift();
+                        localStorage.setItem("debugLogHistory", JSON.stringify(logHistory));
 
-                if (debugWindow && !debugWindow.closed) {
-                    debugWindow.postMessage({ type: "log", payload: logMsg }, window.location.origin);
+                        if (debugWindow && !debugWindow.closed) {
+                            debugWindow.postMessage({ type: "log", payload }, window.location.origin);
+                        }
+                        break;
+                    default:
+                        console.warn("Unknown message type:", type);
                 }
             } catch (e) {
                 console.error("Invalid log format", e);
@@ -165,7 +191,6 @@
             window.addEventListener("beforeunload", () => {
                 try {
                     if (debugWindow && !debugWindow.closed) {
-                        debugWindow.postMessage("close");
                         debugWindow.close();
                         debugWindow = null;
                     }
