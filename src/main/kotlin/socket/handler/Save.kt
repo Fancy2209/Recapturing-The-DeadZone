@@ -1,6 +1,7 @@
 package dev.deadzone.socket.handler
 
 import dev.deadzone.core.mission.LootManager
+import dev.deadzone.core.mission.LootParameter
 import dev.deadzone.core.model.factory.ItemFactory
 import dev.deadzone.core.model.game.data.*
 import dev.deadzone.core.utils.PIOSerializer
@@ -85,7 +86,23 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 Logger.info(LogConfigSocketToClient) { "Going to scene with areaType=$areaType" }
 
                 val sceneXML = resolveAndLoadScene(areaType)
-                val sceneXMLWithLoot = LootManager().insertLoots(sceneXML)
+                val lootParameter = LootParameter(
+                    areaLevel = 10,
+                    playerLevel = 30,
+                    itemWeightOverrides = mapOf(
+                        "fuel" to 50.0
+                    ),
+                    itemTypeMultiplier = mapOf(
+                        "junk" to 5.0
+                    ),
+                    itemQualityMultiplier = mapOf(
+                        "blue" to 5.0
+                    ),
+                    baseWeight = 1000.0,
+                    fuelLimit = 50
+                )
+                val lootManager = LootManager(sceneXML, lootParameter)
+                val sceneXMLWithLoot = lootManager.insertLoots()
 
                 val zombies = listOf(
                     ZombieData.dogTank(101),
@@ -161,10 +178,6 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 // there could be 'rush' flag somewhere, which means we need to send runner zombies
 
                 val zombies = listOf(
-                    ZombieData.strongRunner(101),
-                    ZombieData.strongRunner(101),
-                    ZombieData.strongRunner(101),
-                    ZombieData.strongRunner(101),
                     ZombieData.strongRunner(101),
                     ZombieData.strongRunner(101),
                     ZombieData.strongRunner(101),

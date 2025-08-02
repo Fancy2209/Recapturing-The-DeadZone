@@ -28,7 +28,7 @@ class ItemsParser() : GameResourcesParser {
 
             gameData.itemsById.putIfAbsent(itemId, res)
             gameData.itemsByType.computeIfAbsent(itemId) { mutableListOf() }.add(res)
-            if (itemLocs?.isNotEmpty() == true) {
+            if (itemLocs?.isNotEmpty() ?: false) {
                 val locList = itemLocs.split(',').map { it.trim() }
                 for (loc in locList) {
                     gameData.itemsByLootable.computeIfAbsent(loc) { mutableListOf() }.add(res)
