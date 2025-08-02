@@ -101,7 +101,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                     baseWeight = 1000.0,
                     fuelLimit = 50
                 )
-                val lootManager = LootManager(sceneXML, lootParameter)
+                val lootManager = LootManager(Dependency.gameData, sceneXML, lootParameter)
                 val sceneXMLWithLoot = lootManager.insertLoots()
 
                 val zombies = listOf(

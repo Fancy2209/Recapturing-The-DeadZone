@@ -4,6 +4,7 @@ import dev.deadzone.core.data.assets.ItemResource
 import dev.deadzone.core.model.factory.ItemFactory
 import dev.deadzone.core.model.game.data.Item
 import dev.deadzone.module.Dependency
+import dev.deadzone.module.GameData
 import dev.deadzone.module.LogSource
 import dev.deadzone.module.Logger
 import org.w3c.dom.Document
@@ -47,6 +48,7 @@ data class LootParameter(
 )
 
 class LootManager(
+    private val gameData: GameData = Dependency.gameData,
     private val sceneXML: String,
     private val parameter: LootParameter
 ) {
@@ -60,7 +62,7 @@ class LootManager(
 
     private fun buildIndexOfLootableItems() {
         ALL_LOCS.forEach { loc ->
-            val lootableInLoc = Dependency.gameData.itemsByLootable[loc] ?: emptyList()
+            val lootableInLoc = gameData.itemsByLootable[loc] ?: emptyList()
 
             for (item in lootableInLoc) {
                 val lvlMin = item.element.getElementsByTagName("lvl_min").item(0)?.textContent?.toIntOrNull() ?: 0
