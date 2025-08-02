@@ -1,5 +1,7 @@
 package dev.deadzone.core.model.game.data
 
+import dev.deadzone.core.data.HardcodedData
+import dev.deadzone.core.model.factory.ItemFactory
 import kotlinx.serialization.Serializable
 import dev.deadzone.core.model.game.data.Item
 
@@ -10,24 +12,34 @@ data class Inventory(
 ) {
     companion object {
         fun dummy(): Inventory {
+            val items = listOf(
+                ItemFactory.createItemFromId(idInXML = "crate-tutorial"),
+                ItemFactory.createItemFromId(idInXML = "crate-tutorial"),
+                ItemFactory.createItemFromId(idInXML = "crate-tutorial"),
+                ItemFactory.createItemFromId(idInXML = "crate-tutorial"),
+                ItemFactory.createItemFromId(idInXML = "crate-tutorial"),
+                ItemFactory.createItemFromId(idInXML = "crate-tutorial"),
+                ItemFactory.createItemFromId(idInXML = "crate-tutorial"),
+                ItemFactory.createItemFromId(idInXML = "crate-tutorial"),
+                ItemFactory.createItemFromId(idInXML = "crate-tutorial"),
+                ItemFactory.createItemFromId(idInXML = "crate-tutorial"),
+                ItemFactory.createItemFromId(idInXML = "key-herc-level-1").copy(new = false, qty = 10u),
+                ItemFactory.createItemFromId(idInXML = "grenade-christmas-2"),
+                ItemFactory.createItemFromId(idInXML = "p90").copy(level = 37, quality = 3),
+                ItemFactory.createItemFromId(idInXML = "sword-unique").copy(level = 49, quality = 51),
+                ItemFactory.createItemFromId(itemId = HardcodedData.FIGHTER_WEP_ID, "bladesaw")
+                    .copy(level = 58, quality = 50),
+                ItemFactory.createItemFromId(itemId = HardcodedData.PLAYER_WEP_ID, "freedom-desert-eagle-2-replica")
+                    .copy(level = 49, quality = 100),
+                ItemFactory.createItemFromId(itemId = HardcodedData.RECON_WEP_ID, "fal-winter-2017-3")
+                    .copy(level = 59, quality = 100),
+                ItemFactory.createItemFromId(idInXML = "goldAK47-special").copy(level = 19, quality = 100, bind = 1u),
+                ItemFactory.createItemFromId(idInXML = "helmet-wasteland-knight").copy(level = 50, quality = 100),
+                ItemFactory.createItemFromId(idInXML = "christmas-canned-meat")
+            )
+
             return Inventory(
-                inventory = listOf(
-                    Item.crateTutorial(),
-                    Item.crateTutorial(),
-                    Item.crateTutorial(),
-                    Item.crateTutorial(),
-                    Item.crateTutorial(),
-                    Item.keyHercLevel1(),
-                    Item.grenadeChristmas2(),
-                    Item.p90(),
-                    Item.swordUnique(),
-                    Item.bladesaw(),
-                    Item.freedomDesertEagle2Replica(),
-                    Item.falWinter2017_3(),
-                    Item.goldAK47Special(),
-                    Item.helmetWastelandKnight(),
-                    Item.christmasCannedMeat(),
-                ),
+                inventory = items,
                 schematics = byteArrayOf()
             )
         }
