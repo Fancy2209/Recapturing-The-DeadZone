@@ -1,12 +1,13 @@
 package dev.deadzone.module
 
 import dev.deadzone.core.data.assets.*
-import dev.deadzone.core.model.game.data.Item
-import java.io.File
+import io.ktor.util.date.*
 import java.util.zip.GZIPInputStream
 import javax.xml.parsers.DocumentBuilderFactory
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
-class GameData {
+class GameData(onResourceLoadComplete: () -> Unit) {
     val itemsById = mutableMapOf<String, ItemResource>()
     val itemsByType = mutableMapOf<String, MutableList<ItemResource>>()
     val itemsByLootable = mutableMapOf<String, MutableList<ItemResource>>()
@@ -37,6 +38,7 @@ class GameData {
         val classLoader = Thread.currentThread().contextClassLoader
 
         for ((path, parser) in resourcesToLoad) {
+            val start = getTimeMillis()
             val inputStream = classLoader.getResourceAsStream(path)
                 ?: throw IllegalStateException("File not found in resources: $path")
 
@@ -46,6 +48,11 @@ class GameData {
             val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlStream)
 
             parser.parse(document, this)
+            val end = getTimeMillis()
+            val resName = path.removePrefix("static/game/data/xml/").removeSuffix(".gz")
+
+            Logger.info { "Finished parsing $resName in ${(end - start).milliseconds}" }
         }
+        onResourceLoadComplete()
     }
 }
