@@ -3,14 +3,10 @@
 package dev.deadzone.core.model.game.data
 
 import dev.deadzone.core.data.HardcodedData
-import kotlinx.serialization.Serializable
-import dev.deadzone.core.model.game.data.CraftingInfo
-import dev.deadzone.core.model.game.data.ItemBonusStats
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
-import java.util.UUID
-import kotlin.random.Random
-import kotlin.uuid.Uuid
+import kotlinx.serialization.Serializable
+import java.util.*
 
 @Serializable
 data class Item(
