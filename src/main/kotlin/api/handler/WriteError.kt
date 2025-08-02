@@ -33,7 +33,15 @@ suspend fun RoutingContext.writeError(db: BigDB) {
     if (writeErrorArgs.details.contains("Load Never Completed", ignoreCase = true) ||
         writeErrorArgs.details.contains("Resource not found", ignoreCase = true)
     ) {
-        Logger.error(LogConfigAssetsError) { writeErrorArgs.details.toString() }
+        val regex = Regex("""URL:\s*(?:https?://[^/]+)?(//game/[^ \n]+)""")
+        val match = regex.find(writeErrorArgs.details)
+
+        if (match != null) {
+            val assetPath = match.groupValues[2]
+            Logger.error(LogConfigAssetsError) { "MISSING ASSETS [please report]: $assetPath" }
+        } else {
+            Logger.error(LogConfigAssetsError) { writeErrorArgs.details }
+        }
     }
 
     val writeErrorError = ProtoBuf.encodeToByteArray<WriteErrorError>(

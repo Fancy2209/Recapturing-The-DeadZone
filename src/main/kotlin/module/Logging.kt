@@ -124,7 +124,11 @@ object Logger {
         }
 
         val timestamp = dateFormatter.format(getTimeMillis())
-        val logMessage = "[$srcName | $timestamp] [${level.name}]: $msgString"
+        val logMessage = if (srcName.isEmpty()) {
+            "[$timestamp] [${level.name}]: $msgString"
+        } else {
+            "[$srcName | $timestamp] [${level.name}]: $msgString"
+        }
 
         targets.forEach { target ->
             when (target) {
