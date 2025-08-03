@@ -79,6 +79,7 @@ class Server(
                     val socket = serverSocket.accept()
 
                     val connection = Connection(
+                        connectionId = UUID.randomUUID().toString(),
                         socket = socket,
                         output = socket.openWriteChannel(autoFlush = true)
                     )
