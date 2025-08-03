@@ -1,20 +1,17 @@
 package dev.deadzone.core.model.data
 
-import dev.deadzone.core.data.HardcodedData
+import dev.deadzone.core.data.DummyData
 import kotlinx.serialization.Serializable
 import dev.deadzone.core.model.data.user.AbstractUser
 import dev.deadzone.core.model.game.data.Attributes
 import dev.deadzone.core.model.game.data.BuildingCollection
-import dev.deadzone.core.model.game.data.quests.DynamicQuest
 import dev.deadzone.core.model.game.data.GameResources
 import dev.deadzone.core.model.game.data.BatchRecycleJob
 import dev.deadzone.core.model.game.data.Building
-import dev.deadzone.core.model.game.data.EffectCollection
 import dev.deadzone.core.model.game.data.bounty.InfectedBounty
 import dev.deadzone.core.model.game.data.Inventory
 import dev.deadzone.core.model.game.data.MissionData
 import dev.deadzone.core.model.game.data.Survivor
-import dev.deadzone.core.model.game.data.SurvivorClassConstants_Constants
 import dev.deadzone.core.model.network.RemotePlayerData
 import dev.deadzone.core.model.game.data.research.ResearchState
 import dev.deadzone.core.model.game.data.SurvivorCollection
@@ -94,7 +91,7 @@ data class PlayerData(
                 flags = boolsToByteArray(exampleBools2),
                 upgrades = FlagSet.mockFlagSetByteArray(),
                 nickname = "dzplayer",
-                playerSurvivor = HardcodedData.PLAYER_SRV_ID,
+                playerSurvivor = DummyData.PLAYER_SRV_ID,
                 neighbors = null,
                 friends = null,
                 neighborHistory = null,
@@ -114,12 +111,12 @@ data class PlayerData(
                 buildings = BuildingCollection.goodBase(),
                 rally = mapOf(
                     // depends on BuildingCollection!
-                    "B23" to listOf(HardcodedData.FIGHTER_SRV_ID),
-                    "B45" to listOf(HardcodedData.RECON_SRV_ID),
-                    "B52" to listOf(HardcodedData.PLAYER_SRV_ID),
+                    "B23" to listOf(DummyData.FIGHTER_SRV_ID),
+                    "B45" to listOf(DummyData.RECON_SRV_ID),
+                    "B52" to listOf(DummyData.PLAYER_SRV_ID),
                 ),
                 tasks = TaskCollection().list,
-                missions = listOf(MissionData.dummy(HardcodedData.PLAYER_SRV_ID)),
+                missions = listOf(MissionData.dummy(DummyData.PLAYER_SRV_ID)),
                 assignments = null,
 //                inventory = null,
                 effects = listOf(Effect.halloweenTrickPumpkinZombie(), Effect.halloweenTrickPewPew()),
@@ -127,14 +124,14 @@ data class PlayerData(
                 cooldowns = null,
                 batchRecycles = null,
                 offenceLoadout = mapOf(
-                    HardcodedData.PLAYER_SRV_ID to SurvivorLoadoutEntry.playerLoudout(),
-                    HardcodedData.FIGHTER_SRV_ID to SurvivorLoadoutEntry.fighterLoadout(),
-                    HardcodedData.RECON_SRV_ID to SurvivorLoadoutEntry.reconLoadout(),
+                    DummyData.PLAYER_SRV_ID to SurvivorLoadoutEntry.playerLoudout(),
+                    DummyData.FIGHTER_SRV_ID to SurvivorLoadoutEntry.fighterLoadout(),
+                    DummyData.RECON_SRV_ID to SurvivorLoadoutEntry.reconLoadout(),
                 ),
                 defenceLoadout = mapOf(
-                    HardcodedData.PLAYER_SRV_ID to SurvivorLoadoutEntry.playerLoudout(),
-                    HardcodedData.FIGHTER_SRV_ID to SurvivorLoadoutEntry.fighterLoadout(),
-                    HardcodedData.RECON_SRV_ID to SurvivorLoadoutEntry.reconLoadout(),
+                    DummyData.PLAYER_SRV_ID to SurvivorLoadoutEntry.playerLoudout(),
+                    DummyData.FIGHTER_SRV_ID to SurvivorLoadoutEntry.fighterLoadout(),
+                    DummyData.RECON_SRV_ID to SurvivorLoadoutEntry.reconLoadout(),
                 ),
                 quests = boolsToByteArray(exampleBools),
                 questsCollected = boolsToByteArray(exampleBools),

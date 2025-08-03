@@ -1,9 +1,8 @@
 package dev.deadzone.core.model.game.data
 
-import dev.deadzone.core.data.HardcodedData
+import dev.deadzone.core.data.DummyData
 import dev.deadzone.core.model.factory.ItemFactory
 import kotlinx.serialization.Serializable
-import dev.deadzone.core.model.game.data.Item
 
 @Serializable
 data class Inventory(
@@ -27,11 +26,11 @@ data class Inventory(
                 ItemFactory.createItemFromId(idInXML = "grenade-christmas-2"),
                 ItemFactory.createItemFromId(idInXML = "p90").copy(level = 37, quality = 3),
                 ItemFactory.createItemFromId(idInXML = "sword-unique").copy(level = 49, quality = 51),
-                ItemFactory.createItemFromId(itemId = HardcodedData.FIGHTER_WEP_ID, "bladesaw")
+                ItemFactory.createItemFromId(itemId = DummyData.FIGHTER_WEP_ID, "bladesaw")
                     .copy(level = 58, quality = 50),
-                ItemFactory.createItemFromId(itemId = HardcodedData.PLAYER_WEP_ID, "freedom-desert-eagle-2-replica")
+                ItemFactory.createItemFromId(itemId = DummyData.PLAYER_WEP_ID, "freedom-desert-eagle-2-replica")
                     .copy(level = 49, quality = 100),
-                ItemFactory.createItemFromId(itemId = HardcodedData.RECON_WEP_ID, "fal-winter-2017-3")
+                ItemFactory.createItemFromId(itemId = DummyData.RECON_WEP_ID, "fal-winter-2017-3")
                     .copy(level = 59, quality = 100),
                 ItemFactory.createItemFromId(idInXML = "goldAK47-special").copy(level = 19, quality = 100, bind = 1u),
                 ItemFactory.createItemFromId(idInXML = "helmet-wasteland-knight").copy(level = 50, quality = 100),
