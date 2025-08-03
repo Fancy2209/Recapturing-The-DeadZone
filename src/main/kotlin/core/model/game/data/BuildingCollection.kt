@@ -7,12 +7,6 @@ data class BuildingCollection(
     val list: List<Building> = listOf()
 ) {
     companion object {
-        fun dummy(l: List<Building>): List<Building> {
-            return listOf(
-                Building.bed(25, 40),
-            ) + l
-        }
-
         fun simpleBase(): List<Building> {
             return listOf(
                 Building(id = "B1", type = "bed", tx = 19, ty = 35, level = 2, rotation = 3),
