@@ -1,10 +1,10 @@
-package dev.deadzone.core.model.data.user
+package dev.deadzone.core.auth.model
 
 import io.ktor.util.date.getTimeMillis
 import kotlinx.serialization.Serializable
 
 /**
- * @property playerId reference to `playerId` in [dev.deadzone.core.auth.model.UserDocument]
+ * @property playerId reference to `playerId` in [UserDocument]
  * @property email unused
  * @property displayName nickname or display name in-game
  * @property avatarUrl in-game avatar display and website

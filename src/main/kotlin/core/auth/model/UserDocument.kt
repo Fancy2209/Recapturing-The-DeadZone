@@ -1,6 +1,6 @@
 package dev.deadzone.core.auth.model
 
-import dev.deadzone.core.model.data.user.UserProfile
+import dev.deadzone.core.auth.model.UserProfile
 import kotlinx.serialization.Serializable
 
 /**
