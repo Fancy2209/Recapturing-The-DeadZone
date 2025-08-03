@@ -1,7 +1,6 @@
 package dev.deadzone.core.model.game.data
 
 import kotlinx.serialization.Serializable
-import java.util.UUID
 
 @Serializable
 data class BuildingCollection(
@@ -9,27 +8,52 @@ data class BuildingCollection(
 ) {
     companion object {
         fun starterBase(): List<BuildingLike> {
-            return listOf(
-                // initial player's junk
-                JunkBuilding.create(type = "junk1", tx = 10, ty = 20, rotation = 0),
-                JunkBuilding.create(type = "junk-tutorial", tx = 12, ty = 20, rotation = 1),
-                JunkBuilding.create(type = "junk-pile-corner", tx = 14, ty = 22, rotation = 0),
-                JunkBuilding.create(type = "junk-cloth", tx = 16, ty = 23, rotation = 2),
-                JunkBuilding.create(type = "junk-drums", tx = 18, ty = 24, rotation = 3),
-                JunkBuilding.create(type = "junk-pallets", tx = 20, ty = 25, rotation = 1),
-                JunkBuilding.create(type = "junk-pile-mid", tx = 22, ty = 27, rotation = 0),
-                JunkBuilding.create(type = "junk-pile-small", tx = 24, ty = 29, rotation = 2),
-                JunkBuilding.create(type = "junk-pile-huge", tx = 26, ty = 31, rotation = 0),
-                JunkBuilding.create(type = "junk-pile-huge-2", tx = 28, ty = 33, rotation = 1),
-                JunkBuilding.create(type = "junk-pile-car", tx = 30, ty = 35, rotation = 3),
-                JunkBuilding.create(type = "junk-machinery-small", tx = 32, ty = 37, rotation = 0),
-                JunkBuilding.create(type = "junk-machinery-large", tx = 34, ty = 40, rotation = 2),
-
-                // defaults building
-                Building(type = "rally", tx = 15, ty = 33, rotation = 0),
-                Building(type = "bed", tx = 15, ty = 42, rotation = 0),
-                Building(type = "car", tx = 35, ty = 50, rotation = 0)
+            // player starter junks, based on compound.xml; id based on name.
+            val junks = listOf(
+                JunkBuilding(name = "junk", type = "junk-tutorial", pos = "-650,950,-1", rot = "0,0,0"),
+                JunkBuilding(name = "junk1", type = "junk-pile-corner", pos = "-927,-1026,0", rot = "0,0,90"),
+                JunkBuilding(name = "junk2", type = "junk-drums", pos = "-974,-323,0", rot = "0,0,90"),
+                JunkBuilding(name = "junk3", type = "junk-machinery-small", pos = "1150,1150,0", rot = "0,0,0"),
+                JunkBuilding(name = "junk4", type = "junk-pile-corner", pos = "-950,1150,0", rot = "0,0,0"),
+                JunkBuilding(name = "junk5", type = "junk-pile-mid", pos = "-950,-639,0", rot = "0,0,180"),
+                JunkBuilding(name = "junk6", type = "junk-machinery-large", pos = "-1050,150,0", rot = "0,0,270"),
+                JunkBuilding(name = "junk7", type = "junk-pallets", pos = "-850,550,0", rot = "0,0,0"),
+                JunkBuilding(name = "junk9", type = "junk-drums", pos = "-550,1150,0", rot = "0,0,0"),
+                JunkBuilding(name = "junk11", type = "junk-drums", pos = "462,-1116,0", rot = "0,0,220"),
+                JunkBuilding(name = "junk12", type = "junk-pile-small", pos = "950,-550,-1", rot = "0,0,180"),
+                JunkBuilding(name = "junk14", type = "junk-pile-mid", pos = "650,-950,0", rot = "0,0,270"),
+                JunkBuilding(name = "junk15", type = "junk-pallets", pos = "1048,-350,0", rot = "0,0,155"),
+                JunkBuilding(name = "junk16", type = "junk-pile-mid", pos = "950,850,0", rot = "0,0,0"),
+                JunkBuilding(name = "junk17", type = "junk-pallets", pos = "151,1161,0", rot = "0,0,270"),
+                JunkBuilding(name = "junk20", type = "junk-machinery-small", pos = "1060,-1196,0", rot = "0,0,270"),
+                JunkBuilding(name = "junk-outside-1", type = "junk-pile-small", pos = "950,-1950,-1", rot = "0,0,35"),
+                JunkBuilding(name = "junk-outside-2", type = "junk-pallets", pos = "1214,-1984,0", rot = "0,0,0"),
+                JunkBuilding(name = "junk-outside-3", type = "junk-pile-mid", pos = "1450,-1050,0", rot = "0,0,265"),
+                JunkBuilding(name = "junk-outside-4", type = "junk-pile-car", pos = "1541,952,0", rot = "0,0,0"),
+                JunkBuilding(name = "junk-outside-5", type = "junk-pile-small", pos = "1450,1850,-1", rot = "0,0,65"),
+                JunkBuilding(name = "junk-outside-6", type = "junk-drums", pos = "1351,2149,0", rot = "0,0,90"),
+                JunkBuilding(name = "junkCloth1", type = "junk-cloth", pos = "1420,-639,0", rot = "0,0,0"),
+                JunkBuilding(name = "junkCloth2", type = "junk-cloth", pos = "-750,2750,0", rot = "0,0,180"),
+                JunkBuilding(name = "junkCloth3", type = "junk-cloth", pos = "-850,-2350,0", rot = "0,0,90"),
+                JunkBuilding(name = "junkCloth4", type = "junk-cloth", pos = "450,-450,0", rot = "0,0,0"),
+                JunkBuilding(name = "junk-outside-25", type = "junk-pile-mid", pos = "2250,-52,0", rot = "0,0,0"),
+                JunkBuilding(name = "junk-outside-26", type = "junk-pile-small", pos = "2350,2451,0", rot = "0,0,0"),
+                JunkBuilding(name = "junk-outside-27", type = "junk-pile-mid", pos = "-450,-1650,0", rot = "0,0,0"),
+                JunkBuilding(name = "junk-outside-wood-1", type = "junk-pallets", pos = "3392,2987,0", rot = "0,0,0"),
+                JunkBuilding(name = "junk-outside-metal-1", type = "junk-drums", pos = "3550,-3050,0", rot = "0,0,0"),
+                JunkBuilding(name = "junk-huge-1", type = "junk-pile-huge", pos = "2521,-2201,0", rot = "0,0,0"),
+                JunkBuilding(name = "junk-huge-2", type = "junk-pile-huge-2", pos = "2441,-1635,0", rot = "0,0,0"),
+                JunkBuilding(name = "junk-pile-huge-1-2", type = "junk-pile-huge", pos = "320,1982,0", rot = "0,0,180"),
+                JunkBuilding(name = "junk-pile-huge-2-2", type = "junk-pile-huge-2", pos = "2600,1366,0", rot = "0,0,90"),
             )
+
+            return buildList {
+                addAll(junks)
+                // defaults building
+                add(Building(type = "rally", tx = 15, ty = 33, rotation = 0))
+                add(Building(type = "bed", tx = 15, ty = 42, rotation = 0))
+                add(Building(type = "car", tx = 35, ty = 50, rotation = 0))
+            }
         }
 
         fun simpleBase(): List<BuildingLike> {

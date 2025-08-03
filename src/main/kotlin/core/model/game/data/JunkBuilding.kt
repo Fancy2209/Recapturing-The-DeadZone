@@ -13,9 +13,9 @@ data class JunkBuilding(
     val name: String? = null,
     val type: String,
     val level: Int = 0,
-    val rotation: Int,
-    val tx: Int,
-    val ty: Int,
+    val rotation: Int = 0,
+    val tx: Int = 0,
+    val ty: Int = 0,
     val destroyed: Boolean = false,
     val resourceValue: Double = 0.0,
     val upgrade: TimerData? = null,
@@ -25,28 +25,4 @@ data class JunkBuilding(
     val items: List<Item> = emptyList(),
     val pos: String,
     val rot: String
-) : BuildingLike() {
-    companion object {
-        fun create(
-            id: String = UUID.randomUUID().toString(),
-            type: String,
-            tx: Int,
-            ty: Int,
-            rotation: Int = 0,
-            level: Int = 0,
-            items: List<Item> = emptyList()
-        ): JunkBuilding {
-            return JunkBuilding(
-                id = id,
-                type = type,
-                tx = tx,
-                ty = ty,
-                rotation = rotation,
-                level = level,
-                items = items,
-                pos = "$tx,$ty,0",
-                rot = "0.0,0.0,${(rotation % 4) * 90f}"
-            )
-        }
-    }
-}
+) : BuildingLike()
