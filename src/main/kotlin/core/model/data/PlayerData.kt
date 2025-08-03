@@ -1,31 +1,17 @@
 package dev.deadzone.core.model.data
 
 import dev.deadzone.core.data.HardcodedData
-import kotlinx.serialization.Serializable
 import dev.deadzone.core.model.data.user.AbstractUser
-import dev.deadzone.core.model.game.data.Attributes
-import dev.deadzone.core.model.game.data.BuildingCollection
-import dev.deadzone.core.model.game.data.quests.DynamicQuest
-import dev.deadzone.core.model.game.data.GameResources
-import dev.deadzone.core.model.game.data.BatchRecycleJob
-import dev.deadzone.core.model.game.data.Building
-import dev.deadzone.core.model.game.data.EffectCollection
-import dev.deadzone.core.model.game.data.bounty.InfectedBounty
-import dev.deadzone.core.model.game.data.Inventory
-import dev.deadzone.core.model.game.data.MissionData
-import dev.deadzone.core.model.game.data.Survivor
-import dev.deadzone.core.model.game.data.SurvivorClassConstants_Constants
-import dev.deadzone.core.model.network.RemotePlayerData
-import dev.deadzone.core.model.game.data.research.ResearchState
-import dev.deadzone.core.model.game.data.SurvivorCollection
-import dev.deadzone.core.model.game.data.SurvivorLoadoutEntry
-import dev.deadzone.core.model.game.data.Task
-import dev.deadzone.core.model.game.data.TaskCollection
+import dev.deadzone.core.model.game.data.*
 import dev.deadzone.core.model.game.data.assignment.AssignmentData
+import dev.deadzone.core.model.game.data.bounty.InfectedBounty
 import dev.deadzone.core.model.game.data.effects.Effect
 import dev.deadzone.core.model.game.data.quests.GQDataObj
+import dev.deadzone.core.model.game.data.research.ResearchState
 import dev.deadzone.core.model.game.data.skills.SkillState
-import io.ktor.util.date.getTimeMillis
+import dev.deadzone.core.model.network.RemotePlayerData
+import io.ktor.util.date.*
+import kotlinx.serialization.Serializable
 import kotlin.experimental.or
 
 @Serializable
@@ -50,7 +36,7 @@ data class PlayerData(
     val resources: GameResources,
     val survivors: List<Survivor>,
     val playerAttributes: Attributes,
-    val buildings: List<Building>,
+    val buildings: List<BuildingLike>,
     val rally: Map<String, List<String>>?,  // key building id, value list of survivor ids
     val tasks: List<Task>,
     val missions: List<MissionData>?,
@@ -111,7 +97,7 @@ data class PlayerData(
                 ),
                 survivors = SurvivorCollection.threeSurvivors(),
                 playerAttributes = Attributes.dummy(),
-                buildings = BuildingCollection.goodBase(),
+                buildings = BuildingCollection.starterBase(),
                 rally = mapOf(
                     // depends on BuildingCollection!
                     "B23" to listOf(HardcodedData.FIGHTER_SRV_ID),
