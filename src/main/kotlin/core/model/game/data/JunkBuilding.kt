@@ -9,7 +9,7 @@ import java.util.UUID
 @Serializable
 data class JunkBuilding(
     // from Building
-    val id: String,
+    val id: String = UUID.randomUUID().toString(),
     val name: String? = null,
     val type: String,
     val level: Int = 0,

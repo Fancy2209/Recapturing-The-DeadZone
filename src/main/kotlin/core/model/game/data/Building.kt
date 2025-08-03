@@ -3,6 +3,7 @@ package dev.deadzone.core.model.game.data
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonClassDiscriminator
+import java.util.UUID
 
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
@@ -11,7 +12,7 @@ sealed class BuildingLike
 
 @Serializable
 data class Building(
-    val id: String,    // building's unique ID
+    val id: String = UUID.randomUUID().toString(),    // building's unique ID
     val name: String? = null,
     val type: String,  // building's ID in buildings.xml, not to be confused with type in XML
     val level: Int = 0,
