@@ -4,6 +4,7 @@ import dev.deadzone.api.message.db.BigDBObject
 import dev.deadzone.api.message.db.LoadObjectsArgs
 import dev.deadzone.api.message.db.LoadObjectsOutput
 import dev.deadzone.core.data.BigDB
+import dev.deadzone.core.data.DummyData
 import dev.deadzone.module.LogConfigAPIError
 import dev.deadzone.module.Logger
 import dev.deadzone.module.logInput
@@ -33,12 +34,11 @@ suspend fun RoutingContext.loadObjects(db: BigDB) {
 
     logInput(loadObjectsArgs)
 
-    val validUsers = setOf("user123", "userABC")
     val objs = mutableListOf<BigDBObject>()
 
     for (objId in loadObjectsArgs.objectIds) {
         val key = objId.keys.firstOrNull() ?: continue
-        if (key !in validUsers) continue
+        if (key != DummyData.PLAYER_ID) continue
 
         val obj: BigDBObject? = when (objId.table) {
             "PlayerObjects" -> LoadObjectsOutput.playerObjects()
