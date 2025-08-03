@@ -27,7 +27,8 @@ class InitCompleteHandler(private val context: ServerContext) : SocketMessageHan
         // Client part sends network INIT_COMPLETE message, with no handler attached
         // not sure the purpose of that or what it expects the server to do
 
-        // When game init is completed, periodically send time update to client
+        // When game init is completed, mark player as active and periodically send time update to client
+        connection.playerId?.let { context.playerRegistry.markOnline(it) }
         context.runTask("tu")
         context.addTaskCompletionCallback("tu") {
             Logger.info(LogSource.SOCKET) { "tu completed from ic" }

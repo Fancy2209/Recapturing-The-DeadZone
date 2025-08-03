@@ -42,4 +42,11 @@ class PlayerRegistry {
     fun listOnline(): List<PlayerStatus> {
         return players.values.toList()
     }
+
+    /**
+     * Clear all players
+     */
+    fun shutdown() {
+        players.clear()
+    }
 }

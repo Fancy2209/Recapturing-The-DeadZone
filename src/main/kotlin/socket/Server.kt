@@ -139,8 +139,14 @@ class Server(
                 }
             } catch (e: Exception) {
                 Logger.error { "Error in socket for ${connection.socket.remoteAddress}: $e" }
+                connection.playerId?.let {
+                    playerRegistry.markOffline(it)
+                }
             } finally {
                 Logger.info { "Client ${connection.socket.remoteAddress} disconnected" }
+                connection.playerId?.let {
+                    playerRegistry.markOffline(it)
+                }
                 taskDispatcher.stopAllPushTasks()
                 pushJob.cancelAndJoin()
                 clients.remove(connection)
@@ -154,6 +160,7 @@ class Server(
         clients.forEach {
             it.socket.close()
         }
+        playerRegistry.shutdown()
         Logger.info { "Server closed." }
     }
 }

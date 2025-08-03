@@ -29,7 +29,7 @@ class JoinHandler(private val context: ServerContext) : SocketMessageHandler {
         val joinKey = message.getString("join")
         Logger.info { "Handling join with key: $joinKey" }
 
-        val userId = message.getString("serviceUserId")
+        val userId = message.getString("serviceUserId") ?: throw IllegalArgumentException("No userId for connection: $connection")
         connection.playerId = userId
 
         // First message: join result
