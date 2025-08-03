@@ -1,4 +1,4 @@
-package dev.deadzone.core.auth
+package dev.deadzone.socket
 
 import io.ktor.util.date.*
 import java.util.concurrent.ConcurrentHashMap

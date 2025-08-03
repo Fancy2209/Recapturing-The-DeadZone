@@ -1,5 +1,6 @@
 package dev.deadzone.socket
 
+import dev.deadzone.core.auth.SessionManager
 import dev.deadzone.core.data.BigDB
 import dev.deadzone.core.utils.PIODeserializer
 import dev.deadzone.module.Logger
@@ -26,17 +27,31 @@ const val POLICY_FILE_REQUEST = "<policy-file-request/>"
 const val POLICY_FILE_RESPONSE =
     "<cross-domain-policy><allow-access-from domain=\"*\" to-ports=\"7777\"/></cross-domain-policy>\u0000"
 
+data class ServerContext(
+    val db: BigDB,
+    val sessionManager: SessionManager,
+    val playerRegistry: PlayerRegistry,
+    val runTask: (String) -> Unit,
+    val stopTask: (String) -> Unit,
+    val addTaskCompletionCallback: (String, () -> Unit) -> Unit
+)
+
 class Server(
     private val host: String = "127.0.0.1",
     private val port: Int = 7777,
     private val db: BigDB,
+    private val sessionManager: SessionManager = SessionManager(),
+    private val playerRegistry: PlayerRegistry = PlayerRegistry(),
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
 ) {
     private val clients = Collections.synchronizedList(mutableListOf<Connection>())
     private val socketDispatcher = SocketMessageDispatcher()
     private val taskDispatcher = ServerPushTaskDispatcher()
+
     private val context = ServerContext(
         db = db,
+        sessionManager = sessionManager,
+        playerRegistry = playerRegistry,
         runTask = { key -> taskDispatcher.signalTaskReady(key) },
         stopTask = { key -> taskDispatcher.signalTaskStop(key) },
         addTaskCompletionCallback = { key, cb -> taskDispatcher.addCompletionListener(key, cb) }
