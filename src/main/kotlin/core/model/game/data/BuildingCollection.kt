@@ -1,13 +1,33 @@
 package dev.deadzone.core.model.game.data
 
 import kotlinx.serialization.Serializable
+import java.util.UUID
 
 @Serializable
 data class BuildingCollection(
-    val list: List<Building> = listOf()
+    val list: List<BuildingLike> = listOf()
 ) {
     companion object {
-        fun simpleBase(): List<Building> {
+        fun starterBase(): List<BuildingLike> {
+            return listOf(
+                JunkBuilding.create(id = UUID.randomUUID().toString(), type = "junk1", tx = 10, ty = 20, rotation = 0),
+                JunkBuilding.create(id = UUID.randomUUID().toString(), type = "junk-tutorial", tx = 12, ty = 20, rotation = 1),
+                JunkBuilding.create(id = UUID.randomUUID().toString(), type = "junk-pile-corner", tx = 14, ty = 22, rotation = 0),
+                JunkBuilding.create(id = UUID.randomUUID().toString(), type = "junk-cloth", tx = 16, ty = 23, rotation = 2),
+                JunkBuilding.create(id = UUID.randomUUID().toString(), type = "junk-drums", tx = 18, ty = 24, rotation = 3),
+                JunkBuilding.create(id = UUID.randomUUID().toString(), type = "junk-pallets", tx = 20, ty = 25, rotation = 1),
+                JunkBuilding.create(id = UUID.randomUUID().toString(), type = "junk-pile-mid", tx = 22, ty = 27, rotation = 0),
+                JunkBuilding.create(id = UUID.randomUUID().toString(), type = "junk-pile-small", tx = 24, ty = 29, rotation = 2),
+                JunkBuilding.create(id = UUID.randomUUID().toString(), type = "junk-pile-huge", tx = 26, ty = 31, rotation = 0),
+                JunkBuilding.create(id = UUID.randomUUID().toString(), type = "junk-pile-huge-2", tx = 28, ty = 33, rotation = 1),
+                JunkBuilding.create(id = UUID.randomUUID().toString(), type = "junk-pile-car", tx = 30, ty = 35, rotation = 3),
+                JunkBuilding.create(id = UUID.randomUUID().toString(), type = "junk-machinery-small", tx = 32, ty = 37, rotation = 0),
+                JunkBuilding.create(id = UUID.randomUUID().toString(), type = "junk-machinery-large", tx = 34, ty = 40, rotation = 2),
+                Building(id = UUID.randomUUID().toString(), type = "car", tx = 36, ty = 42, rotation = 1)
+            )
+        }
+
+        fun simpleBase(): List<BuildingLike> {
             return listOf(
                 Building(id = "B1", type = "bed", tx = 19, ty = 35, level = 2, rotation = 3),
                 Building(id = "B2", type = "storage-ammunition", tx = 11, ty = 47, level = 5, rotation = 2),
@@ -33,7 +53,7 @@ data class BuildingCollection(
             )
         }
 
-        fun goodBase(): List<Building> {
+        fun goodBase(): List<BuildingLike> {
             return listOf(
                 // inside
                 Building(id = "B1", type = "bed", tx = 9, ty = 46, level = 4, rotation = 0),
