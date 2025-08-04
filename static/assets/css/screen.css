@@ -454,7 +454,7 @@ li#feedback a:focus {
   width: 100%;
 }
 
-#login-form button[type="submit"] {
+#login-button {
   background-color: #86270d;
   color: #fff;
   border: 1px solid #757678;
@@ -463,8 +463,16 @@ li#feedback a:focus {
   cursor: pointer;
 }
 
-#login-form button[type="submit"]:hover {
+#login-button:hover {
   background-color: #b22;
+}
+
+#login-button.disabled {
+  background-color: #555;
+  color: #aaa;
+  border-color: #444;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 #footer {
@@ -509,4 +517,14 @@ li#feedback a:focus {
 
 .debug-log-btn:hover {
   color: #949392ff;
+}
+
+.username-info {
+  text-align: start;
+  margin-bottom: 20px;
+}
+
+.password-info {
+  text-align: start;
+  margin-bottom: 20px;
 }

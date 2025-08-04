@@ -4,6 +4,11 @@ var unloadMessage = "";
 var mt = false;
 var mtPST = "00:00";
 
+let debounceTimeout;
+let usernameTimer;
+let isUsernameValid = false;
+let isPasswordValid = false;
+
 $(document).ready(function () {
   if (mt) {
     showMaintenanceScreen();
@@ -11,13 +16,153 @@ $(document).ready(function () {
     showGameScreen();
   }
 
+  updateSubmitButton();
+
+  const initialUsername = $("#username").val();
+  if (initialUsername) {
+    if (validateUsername(initialUsername)) {
+      clearTimeout(usernameTimer);
+      usernameTimer = setTimeout(() => {
+        doesUserExist(username);
+      }, 500);
+    }
+  }
+
+  $("#username").on("input", function () {
+    const value = $(this).val();
+
+    clearTimeout(debounceTimeout);
+    $(".username-info").text("");
+    debounceTimeout = setTimeout(() => {
+      if (validateUsername(value)) {
+        clearTimeout(usernameTimer);
+        usernameTimer = setTimeout(() => {
+          doesUserExist(username);
+        }, 500);
+      }
+    }, 500);
+  });
+
+  $("#password").on("input", function () {
+    const value = $(this).val();
+
+    clearTimeout(debounceTimeout);
+    $(".password-info").text("");
+    debounceTimeout = setTimeout(() => {
+      validatePassword(value);
+    }, 500);
+  });
+
   $("#pio-login").submit(function (event) {
     event.preventDefault();
     var username = $("#username").val();
     var password = $("#password").val();
-    startGame();
   });
 });
+
+function updateSubmitButton(enabled) {
+  const btn = $("#login-button");
+  if (enabled) {
+    btn.prop("disabled", false).removeClass("disabled");
+  } else {
+    btn.prop("disabled", true).addClass("disabled");
+  }
+}
+
+function validateUsername(username) {
+  const usernameRegex = /^[a-zA-Z0-9]+$/;
+  const badwords = ["dick"]; // expand as needed
+  const infoDiv = $(".username-info");
+
+  if (username === "givemeadmin") {
+    infoDiv
+      .text("Admin username detected, you will be granted admin access.")
+      .css("color", "green");
+    isUsernameValid = true;
+    updateSubmitButton();
+    return true;
+  }
+
+  if (username.length < 6 || !usernameRegex.test(username)) {
+    infoDiv
+      .text(
+        "Username must be at least 6 characters. Only letters and digits allowed."
+      )
+      .css("color", "red");
+    isUsernameValid = false;
+    updateSubmitButton();
+    return false;
+  }
+
+  if (badwords.some((bad) => username.toLowerCase().includes(bad))) {
+    infoDiv
+      .text("Possible badword detected. Please choose another name.")
+      .css("color", "orange");
+    isUsernameValid = false;
+    updateSubmitButton();
+    return false;
+  }
+
+  infoDiv.text("Checking to server...").css("color", "orange");
+  return true;
+}
+
+function doesUserExist(username) {
+  fetch(`/api/userexist?username=${encodeURIComponent(username)}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "text/plain",
+    },
+  })
+    .then(async (response) => {
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Login failed");
+      }
+      return response.text();
+    })
+    .then((result) => {
+      if (result == "yes") {
+        $(".username-info")
+          .text(
+            "Username already exists. Input the correct password if you are trying to log in."
+          )
+          .css("color", "#7a8bac");
+        $(".username-info").append(
+          '<p style="color:#b86b5f">If you are trying to register, choose another name.</p>'
+        );
+        isUsernameValid = true;
+      } else {
+        $(".username-info")
+          .text("Username is available, you will be registered.")
+          .css("color", "green");
+        isUsernameValid = true;
+      }
+      updateSubmitButton();
+    })
+    .catch((error) => {
+      console.error("Error:", error.message);
+      $(".username-info").text("Error checking username").css("color", "red");
+    });
+}
+
+function validatePassword(password) {
+  const infoDiv = $(".password-info");
+
+  if (password.length >= 6) {
+    infoDiv.text("Password is fine.").css("color", "green");
+    isPasswordValid = true;
+  } else {
+    infoDiv.text("Password must be at least 6 characters.").css("color", "red");
+    isPasswordValid = false;
+  }
+  updateSubmitButton();
+}
+
+function login(username, password) {
+  // register or login to server...
+  // then start game if success
+}
 
 function showGameScreen() {
   var a = swfobject.getFlashPlayerVersion();

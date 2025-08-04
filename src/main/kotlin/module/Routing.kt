@@ -66,6 +66,8 @@ fun Application.configureRouting(context: ServerContext) {
             }
         }
 
+        authRoute(context)
+
         post("/api/{path}") {
             val path = call.parameters["path"] ?: return@post call.respond(HttpStatusCode.BadRequest)
 

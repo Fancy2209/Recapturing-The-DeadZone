@@ -81,15 +81,21 @@
                 <p>Login Please...</p>
                 <div id="login-form">
                     <form id="pio-login">
-                        <div class="form-group">
-                            <label for="username">Username:</label>
-                            <input type="text" id="username" name="username" required value="givemeadmin" />
+                        <div>
+                            <div class="form-group">
+                                <label for="username">Username:</label>
+                                <input type="text" id="username" name="username" required />
+                            </div>
+                            <div class="username-info"></div>
                         </div>
-                        <div class="form-group">
-                            <label for="password">Password:</label>
-                            <input type="password" id="password" name="password" required value="anypassword" />
+                        <div>
+                            <div class="form-group">
+                                <label for="password">Password:</label>
+                                <input type="password" id="password" name="password" required />
+                            </div>
+                            <div class="password-info"></div>
                         </div>
-                        <button type="submit">Login</button>
+                        <button type="submit" id="login-button">Login</button>
                     </form>
                 </div>
             </div>
