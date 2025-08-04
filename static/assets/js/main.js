@@ -40,6 +40,10 @@ $(document).ready(function () {
           doesUserExist(value);
         }, 500);
       }
+
+      // revalidate username. this must be done if username was initially admin
+      const currentPassword = $("#password").val();
+      validatePassword(currentPassword);
     }, 500);
   });
 
