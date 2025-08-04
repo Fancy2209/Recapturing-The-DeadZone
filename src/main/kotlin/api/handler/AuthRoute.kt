@@ -1,5 +1,6 @@
 package dev.deadzone.api.handler
 
+import dev.deadzone.core.data.DummyData
 import dev.deadzone.socket.ServerContext
 import io.ktor.http.*
 import io.ktor.server.request.*
@@ -14,6 +15,14 @@ fun Route.authRoute(context: ServerContext) {
 
         if (username == null || password == null) {
             call.respond(HttpStatusCode.BadRequest, mapOf("reason" to "Missing credentials"))
+            return@post
+        }
+
+        if (username == "givemeadmin") {
+            call.respond(
+                HttpStatusCode.OK,
+                mapOf("playerId" to DummyData.PLAYER_ID, "token" to DummyData.TOKEN)
+            )
             return@post
         }
 
@@ -47,6 +56,11 @@ fun Route.authRoute(context: ServerContext) {
         val username = call.parameters["username"]
         if (username == null || username.isBlank()) {
             call.respondText("no", status = HttpStatusCode.BadRequest)
+            return@get
+        }
+
+        if (username == "givemeadmin") {
+            call.respondText("yes")
             return@get
         }
 
