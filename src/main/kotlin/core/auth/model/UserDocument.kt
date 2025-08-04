@@ -1,6 +1,7 @@
 package dev.deadzone.core.auth.model
 
 import dev.deadzone.core.auth.model.UserProfile
+import dev.deadzone.core.data.DummyData
 import kotlinx.serialization.Serializable
 
 /**
@@ -16,4 +17,16 @@ data class UserDocument(
     val profile: UserProfile,
     val playerSave: PlayerSave,
     val metadata: ServerMetadata,
-)
+) {
+    companion object {
+        fun admin(): UserDocument {
+            return UserDocument(
+                playerId = DummyData.PLAYER_ID,
+                hashedPassword = DummyData.PASSWORD,
+                profile = UserProfile.admin(),
+                playerSave = PlayerSave.admin(),
+                metadata = ServerMetadata()
+            )
+        }
+    }
+}

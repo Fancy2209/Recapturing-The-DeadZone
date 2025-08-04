@@ -28,4 +28,12 @@ data class PlayerLoginState(
     val globalStats: Map<String, List<String>> = mapOf(
         "idList" to emptyList()
     ),
-)
+) {
+    companion object {
+        fun admin(): PlayerLoginState {
+            return PlayerLoginState(
+                invsize = 3000
+            )
+        }
+    }
+}

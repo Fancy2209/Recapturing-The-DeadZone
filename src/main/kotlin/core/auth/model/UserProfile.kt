@@ -1,5 +1,6 @@
 package dev.deadzone.core.auth.model
 
+import dev.deadzone.core.data.DummyData
 import io.ktor.util.date.getTimeMillis
 import kotlinx.serialization.Serializable
 
@@ -25,4 +26,16 @@ data class UserProfile(
     val countryCode: String? = null,
     val friends: Set<UserProfile> = emptySet(),
     val enemies: Set<UserProfile> = emptySet(),
-)
+) {
+    companion object {
+        fun admin(): UserProfile {
+            return UserProfile(
+                playerId = DummyData.PLAYER_ID,
+                email = DummyData.EMAIL,
+                displayName = DummyData.DISPLAY_NAME,
+                avatarUrl = DummyData.AVATAR_URL,
+                countryCode = DummyData.COUNTRY_CODE,
+            )
+        }
+    }
+}

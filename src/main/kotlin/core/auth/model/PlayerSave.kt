@@ -14,4 +14,15 @@ data class PlayerSave(
     val inventory: Inventory,
     val neighborHistory: Map<String, RemotePlayerData>? = emptyMap(),
     val loginState: PlayerLoginState,
-)
+) {
+    companion object {
+        fun admin(): PlayerSave {
+            return PlayerSave(
+                playerObjects = PlayerData.dummy(),
+                inventory = Inventory.dummy(),
+                neighborHistory = emptyMap(),
+                loginState = PlayerLoginState.admin()
+            )
+        }
+    }
+}
