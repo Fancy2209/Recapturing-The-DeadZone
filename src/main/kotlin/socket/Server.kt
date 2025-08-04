@@ -31,37 +31,23 @@ data class ServerContext(
     val db: BigDB,
     val sessionManager: SessionManager,
     val playerRegistry: PlayerRegistry,
-    val runTask: (String) -> Unit,
-    val stopTask: (String) -> Unit,
-    val addTaskCompletionCallback: (String, () -> Unit) -> Unit
 )
 
 class Server(
     private val host: String = "127.0.0.1",
     private val port: Int = 7777,
-    private val db: BigDB,
-    private val sessionManager: SessionManager = SessionManager(),
-    private val playerRegistry: PlayerRegistry = PlayerRegistry(),
+    private val context: ServerContext,
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-) {
+): TaskController {
     private val clients = Collections.synchronizedList(mutableListOf<Connection>())
     private val socketDispatcher = SocketMessageDispatcher()
     private val taskDispatcher = ServerPushTaskDispatcher()
-
-    private val context = ServerContext(
-        db = db,
-        sessionManager = sessionManager,
-        playerRegistry = playerRegistry,
-        runTask = { key -> taskDispatcher.signalTaskReady(key) },
-        stopTask = { key -> taskDispatcher.signalTaskStop(key) },
-        addTaskCompletionCallback = { key, cb -> taskDispatcher.addCompletionListener(key, cb) }
-    )
 
     init {
         with(context) {
             socketDispatcher.register(JoinHandler(this))
             socketDispatcher.register(QuestProgressHandler(this))
-            socketDispatcher.register(InitCompleteHandler(this))
+            socketDispatcher.register(InitCompleteHandler(this, this@Server))
             socketDispatcher.register(SaveHandler(this))
             socketDispatcher.register(ZombieAttackHandler(this))
             taskDispatcher.register(TimeUpdate(this))
@@ -140,12 +126,12 @@ class Server(
             } catch (e: Exception) {
                 Logger.error { "Error in socket for ${connection.socket.remoteAddress}: $e" }
                 connection.playerId?.let {
-                    playerRegistry.markOffline(it)
+                    context.playerRegistry.markOffline(it)
                 }
             } finally {
                 Logger.info { "Client ${connection.socket.remoteAddress} disconnected" }
                 connection.playerId?.let {
-                    playerRegistry.markOffline(it)
+                    context.playerRegistry.markOffline(it)
                 }
                 taskDispatcher.stopAllPushTasks()
                 pushJob.cancelAndJoin()
@@ -160,8 +146,20 @@ class Server(
         clients.forEach {
             it.socket.close()
         }
-        playerRegistry.shutdown()
+        context.playerRegistry.shutdown()
         Logger.info { "Server closed." }
+    }
+
+    override fun runTask(key: String) {
+        taskDispatcher.signalTaskReady(key)
+    }
+
+    override fun stopTask(key: String) {
+        taskDispatcher.signalTaskStop(key)
+    }
+
+    override fun addTaskCompletionCallback(key: String, cb: () -> Unit) {
+        taskDispatcher.addCompletionListener(key, cb)
     }
 }
 

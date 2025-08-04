@@ -6,6 +6,7 @@ import dev.deadzone.socket.utils.SocketMessage
 import dev.deadzone.socket.utils.SocketMessageHandler
 import dev.deadzone.socket.Connection
 import dev.deadzone.socket.ServerContext
+import dev.deadzone.socket.TaskController
 
 /**
  * Handle `ic` message by:
@@ -13,7 +14,11 @@ import dev.deadzone.socket.ServerContext
  * 1. IC
  *
  */
-class InitCompleteHandler(private val context: ServerContext) : SocketMessageHandler {
+class InitCompleteHandler(
+    private val context: ServerContext,
+    private val taskController: TaskController
+) :
+    SocketMessageHandler {
     override fun match(message: SocketMessage): Boolean {
         // IC message is null, so only check for "ic" present
         return message.contains("ic")
@@ -29,8 +34,8 @@ class InitCompleteHandler(private val context: ServerContext) : SocketMessageHan
 
         // When game init is completed, mark player as active and periodically send time update to client
         connection.playerId?.let { context.playerRegistry.markOnline(it) }
-        context.runTask("tu")
-        context.addTaskCompletionCallback("tu") {
+        taskController.runTask("tu")
+        taskController.addTaskCompletionCallback("tu") {
             Logger.info(LogSource.SOCKET) { "tu completed from ic" }
         }
     }

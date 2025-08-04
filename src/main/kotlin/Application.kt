@@ -1,17 +1,26 @@
 package dev.deadzone
 
+import dev.deadzone.core.auth.SessionManager
 import dev.deadzone.module.*
+import dev.deadzone.socket.PlayerRegistry
+import dev.deadzone.socket.ServerContext
 import io.ktor.server.application.*
+import io.ktor.server.netty.EngineMain
 import kotlinx.coroutines.launch
 
 fun main(args: Array<String>) {
-    io.ktor.server.netty.EngineMain.main(args)
+    EngineMain.main(args)
 }
 
 fun Application.module() {
     configureDatabase()
+    val serverContext = ServerContext(
+        db = Dependency.database,
+        sessionManager = SessionManager(),
+        playerRegistry = PlayerRegistry(),
+    )
     configureWebsocket()
-    configureRouting(db = Dependency.database)
+    configureRouting(context = serverContext)
     Dependency.gameData = GameData(onResourceLoadComplete = {
         launch {
             Dependency.wsManager.onResourceLoadComplete()
@@ -21,5 +30,5 @@ fun Application.module() {
     configureLogging()
     Logger.level = LogLevel.DEBUG // use LogLevel.NOTHING to disable logging
     configureSerialization()
-    configureSocket(db = Dependency.database)
+    configureSocket(context = serverContext)
 }

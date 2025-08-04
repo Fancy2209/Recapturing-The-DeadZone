@@ -2,10 +2,10 @@ package dev.deadzone.api.handler
 
 import dev.deadzone.api.message.auth.AuthenticateArgs
 import dev.deadzone.api.message.auth.AuthenticateOutput
-import dev.deadzone.core.data.BigDB
 import dev.deadzone.module.logInput
 import dev.deadzone.module.logOutput
 import dev.deadzone.module.pioFraming
+import dev.deadzone.socket.ServerContext
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -23,7 +23,7 @@ import kotlinx.serialization.protobuf.ProtoBuf
  * Output: `AuthenticateOutput`
  */
 @OptIn(ExperimentalSerializationApi::class)
-suspend fun RoutingContext.authenticate(db: BigDB) {
+suspend fun RoutingContext.authenticate(context: ServerContext) {
     val authenticateArgs = ProtoBuf.decodeFromByteArray<AuthenticateArgs>(
         call.receiveChannel().toByteArray()
     )
