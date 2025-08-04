@@ -15,8 +15,7 @@ $(document).ready(function () {
     event.preventDefault();
     var username = $("#username").val();
     var password = $("#password").val();
-    console.log("Login attempt with username: " + username);
-    startGame("pio-access-token");
+    startGame();
   });
 });
 
@@ -29,22 +28,22 @@ function showGameScreen() {
   }
 }
 
-function startGame(username, password) {
+function startGame() {
   $("#loading").css("display", "block");
   const flashVars = {
     path: "/game/",
     service: "pio",
-    username: username,
-    password: password,
+    // username: username,
+    // password: password,
     affiliate: getParameterByName("a"),
     useSSL: 0,
-    //    core: "core.swf",
+    // core: "core.swf",
     gameId: "laststand-deadzone",
     connectionId: "public",
     clientAPI: "javascript",
     playerInsightSegments: [],
     playCodes: [],
-    //    local: 0,
+    // local: 0,
     clientInfo: {
       platform: navigator.platform,
       userAgent: navigator.userAgent,
