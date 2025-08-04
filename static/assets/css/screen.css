@@ -528,3 +528,8 @@ li#feedback a:focus {
   text-align: start;
   margin-bottom: 20px;
 }
+
+.login-info {
+  text-align: start;
+  margin-top: 8px;
+}

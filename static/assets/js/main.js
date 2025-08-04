@@ -57,12 +57,17 @@ $(document).ready(function () {
     event.preventDefault();
     var username = $("#username").val();
     var password = $("#password").val();
+    login(username, password).then((success) => {
+      if (success) {
+        startGame();
+      }
+    });
   });
 });
 
-function updateSubmitButton(enabled) {
+function updateSubmitButton() {
   const btn = $("#login-button");
-  if (enabled) {
+  if (isUsernameValid && isPasswordValid) {
     btn.prop("disabled", false).removeClass("disabled");
   } else {
     btn.prop("disabled", true).addClass("disabled");
@@ -117,7 +122,7 @@ function doesUserExist(username) {
     .then(async (response) => {
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Login failed");
+        throw new Error(error.message || "User check failed");
       }
       return response.text();
     })
@@ -160,8 +165,38 @@ function validatePassword(password) {
 }
 
 function login(username, password) {
-  // register or login to server...
-  // then start game if success
+  const loginDiv = $(".login-info");
+  loginDiv.text("Logging in...").css("color", "orange");
+
+  return fetch("/api/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ username: username, password: password }),
+  })
+    .then(async (response) => {
+      if (!response.ok) {
+        const error = await response.json();
+        loginDiv.text(`Login failed: ${error.reason}`).css("color", "red");
+        return false;
+      }
+      return response.json();
+    })
+    .then((data) => {
+      const { playerId, token } = data;
+      loginDiv
+        .text("Login success, now getting you in...")
+        .css("color", "green");
+      return true;
+    })
+    .catch((error) => {
+      console.error("Login error:", error.message);
+      $(".error-reason")
+        .text("Unexpected error during login")
+        .css("color", "red");
+      return false;
+    });
 }
 
 function showGameScreen() {
