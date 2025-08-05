@@ -2,6 +2,7 @@ package dev.deadzone.socket.handler.saveresponse.mission
 
 import dev.deadzone.socket.handler.saveresponse.BaseResponse
 import kotlinx.serialization.Serializable
+import java.io.File
 import java.io.InputStreamReader
 import java.util.zip.GZIPInputStream
 
@@ -32,11 +33,10 @@ fun resolveAndLoadScene(areaType: String): String {
 }
 
 fun loadSceneXML(filename: String): String {
-    val path = "static/game/data/xml/scenes/" + filename + ".xml.gz"
-    val resourceStream = object {}.javaClass.classLoader.getResourceAsStream(path)
-        ?: throw IllegalArgumentException("Resource not found: $path")
+    val path = "static/game/data/xml/scenes/$filename.xml.gz"
+    val file = File(path)
 
-    GZIPInputStream(resourceStream).use { gzipStream ->
+    GZIPInputStream(file.inputStream()).use { gzipStream ->
         InputStreamReader(gzipStream, Charsets.UTF_8).use { reader ->
             return reader.readText()
         }

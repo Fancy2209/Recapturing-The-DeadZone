@@ -9,6 +9,7 @@ import dev.deadzone.socket.utils.SocketMessage
 import dev.deadzone.socket.utils.SocketMessageHandler
 import io.ktor.util.date.*
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.util.zip.GZIPOutputStream
@@ -29,7 +30,8 @@ class JoinHandler(private val context: ServerContext) : SocketMessageHandler {
         val joinKey = message.getString("join")
         Logger.info { "Handling join with key: $joinKey" }
 
-        val userId = message.getString("serviceUserId") ?: throw IllegalArgumentException("No userId for connection: $connection")
+        val userId = message.getString("serviceUserId")
+            ?: throw IllegalArgumentException("No userId for connection: $connection")
         connection.playerId = userId
 
         // First message: join result
@@ -91,40 +93,37 @@ class JoinHandler(private val context: ServerContext) : SocketMessageHandler {
         // 1. Write number of files as a single byte
         output.write(xmlResources.size)
 
-        val classLoader = Thread.currentThread().contextClassLoader
-
         for (path in xmlResources) {
-            val inputStream = classLoader.getResourceAsStream(path)
-                ?: throw IllegalStateException("File not found in resources: $path")
+            File(path).inputStream().use {
+                val rawBytes = it.readBytes()
 
-            val rawBytes = inputStream.readBytes()
-
-            val fileBytes = if (path.endsWith(".gz")) {
-                rawBytes
-            } else {
-                val compressed = ByteArrayOutputStream()
-                GZIPOutputStream(compressed).use { gzip ->
-                    gzip.write(rawBytes)
+                val fileBytes = if (path.endsWith(".gz")) {
+                    rawBytes
+                } else {
+                    val compressed = ByteArrayOutputStream()
+                    GZIPOutputStream(compressed).use { gzip ->
+                        gzip.write(rawBytes)
+                    }
+                    compressed.toByteArray()
                 }
-                compressed.toByteArray()
+
+                val uri = path
+                    .removePrefix("static/game/data/")
+                    .removeSuffix(".gz")
+                val uriBytes = uri.toByteArray(Charsets.UTF_8)
+
+                // 2. Write URI length as 2-byte little endian
+                output.writeShortLE(uriBytes.size)
+
+                // 3. Write URI bytes
+                output.write(uriBytes)
+
+                // 4. Write file size as 4-byte little endian
+                output.writeIntLE(fileBytes.size)
+
+                // 5. Write file data
+                output.write(fileBytes)
             }
-
-            val uri = path
-                .removePrefix("static/game/data/")
-                .removeSuffix(".gz")
-            val uriBytes = uri.toByteArray(Charsets.UTF_8)
-
-            // 2. Write URI length as 2-byte little endian
-            output.writeShortLE(uriBytes.size)
-
-            // 3. Write URI bytes
-            output.write(uriBytes)
-
-            // 4. Write file size as 4-byte little endian
-            output.writeIntLE(fileBytes.size)
-
-            // 5. Write file data
-            output.write(fileBytes)
         }
 
         return output.toByteArray()

@@ -25,7 +25,7 @@ fun Application.configureRouting(context: ServerContext) {
 
         staticFiles("/game", File("static/game/"))
         staticFiles("/assets", File("static/assets"))
-        caseInsensitiveStaticResources("/game/data", "static")
+        caseInsensitiveStaticResources("/game/data", File("static"))
 
         get("/debuglog") {
             val file = File("static/debuglog.html")
