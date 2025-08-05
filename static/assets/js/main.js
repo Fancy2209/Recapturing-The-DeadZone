@@ -4,6 +4,11 @@ var unloadMessage = "";
 var mt = false;
 var mtPST = "00:00";
 
+let debounceTimeout;
+let usernameTimer;
+let isUsernameValid = false;
+let isPasswordValid = false;
+
 $(document).ready(function () {
   if (mt) {
     showMaintenanceScreen();
@@ -11,14 +16,208 @@ $(document).ready(function () {
     showGameScreen();
   }
 
+  updateSubmitButton();
+
+  const initialUsername = $("#username").val();
+  if (initialUsername) {
+    if (validateUsername(initialUsername)) {
+      clearTimeout(usernameTimer);
+      usernameTimer = setTimeout(() => {
+        doesUserExist(initialUsername);
+      }, 500);
+    }
+  }
+
+  $("#username").on("input", function () {
+    const value = $(this).val();
+
+    clearTimeout(debounceTimeout);
+    $(".username-info").text("");
+    debounceTimeout = setTimeout(() => {
+      if (validateUsername(value)) {
+        clearTimeout(usernameTimer);
+        usernameTimer = setTimeout(() => {
+          doesUserExist(value);
+        }, 500);
+      }
+
+      // revalidate username. this must be done if username was initially admin
+      const currentPassword = $("#password").val();
+      validatePassword(currentPassword);
+    }, 500);
+  });
+
+  $("#password").on("input", function () {
+    const value = $(this).val();
+
+    clearTimeout(debounceTimeout);
+    $(".password-info").text("");
+    debounceTimeout = setTimeout(() => {
+      validatePassword(value);
+    }, 500);
+  });
+
   $("#pio-login").submit(function (event) {
     event.preventDefault();
     var username = $("#username").val();
     var password = $("#password").val();
-    console.log("Login attempt with username: " + username);
-    startGame("pio-access-token");
+    login(username, password).then((success) => {
+      if (success) {
+        startGame();
+      }
+    });
   });
 });
+
+function updateSubmitButton() {
+  const btn = $("#login-button");
+  if (isUsernameValid && isPasswordValid) {
+    btn.prop("disabled", false).removeClass("disabled");
+  } else {
+    btn.prop("disabled", true).addClass("disabled");
+  }
+}
+
+function validateUsername(username) {
+  const usernameRegex = /^[a-zA-Z0-9]+$/;
+  const badwords = ["dick"]; // expand as needed
+  const infoDiv = $(".username-info");
+
+  if (username === "givemeadmin") {
+    infoDiv
+      .text("Admin username detected, you will be granted admin access.")
+      .css("color", "green");
+    isUsernameValid = true;
+    updateSubmitButton();
+    return true;
+  }
+
+  if (username.length < 6 || !usernameRegex.test(username)) {
+    infoDiv
+      .text(
+        "Username must be at least 6 characters. Only letters and digits allowed."
+      )
+      .css("color", "red");
+    isUsernameValid = false;
+    updateSubmitButton();
+    return false;
+  }
+
+  if (badwords.some((bad) => username.toLowerCase().includes(bad))) {
+    infoDiv
+      .text("Possible badword detected. Please choose another name.")
+      .css("color", "orange");
+    isUsernameValid = false;
+    updateSubmitButton();
+    return false;
+  }
+
+  infoDiv.text("Checking to server...").css("color", "orange");
+  return true;
+}
+
+function doesUserExist(username) {
+  if (username == "givemeadmin") {
+    isUsernameValid = true;
+    updateSubmitButton();
+    return;
+  }
+
+  fetch(`/api/userexist?username=${encodeURIComponent(username)}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "text/plain",
+    },
+  })
+    .then(async (response) => {
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "User check failed");
+      }
+      return response.text();
+    })
+    .then((result) => {
+      if (result == "yes") {
+        $(".username-info")
+          .text(
+            "Username already exists. Input the correct password if you are trying to log in."
+          )
+          .css("color", "#7a8bac");
+        $(".username-info").append(
+          '<p style="color:#b86b5f">If you are trying to register, choose another name.</p>'
+        );
+        isUsernameValid = true;
+      } else {
+        $(".username-info")
+          .text("Username is available, you will be registered.")
+          .css("color", "green");
+        isUsernameValid = true;
+      }
+      updateSubmitButton();
+    })
+    .catch((error) => {
+      console.error("Error:", error.message);
+      $(".username-info").text("Error checking username").css("color", "red");
+    });
+}
+
+function validatePassword(password) {
+  const infoDiv = $(".password-info");
+  const username = $("#username").val();
+
+  if (username === "givemeadmin") {
+    infoDiv.text("Admin access granted.").css("color", "green");
+    isPasswordValid = true;
+    updateSubmitButton();
+    return;
+  }
+
+  if (password.length >= 6) {
+    infoDiv.text("Password is fine.").css("color", "green");
+    isPasswordValid = true;
+  } else {
+    infoDiv.text("Password must be at least 6 characters.").css("color", "red");
+    isPasswordValid = false;
+  }
+  updateSubmitButton();
+}
+
+function login(username, password) {
+  const loginDiv = $(".login-info");
+  loginDiv.text("Logging in...").css("color", "orange");
+
+  return fetch("/api/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ username: username, password: password }),
+  })
+    .then(async (response) => {
+      if (!response.ok) {
+        const error = await response.json();
+        loginDiv.text(`Login failed: ${error.reason}`).css("color", "red");
+        return false;
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (!data || !data.token) return false;
+
+      const { playerId, token } = data;
+      loginDiv
+        .text("Login success, now getting you in...")
+        .css("color", "green");
+      return true;
+    })
+    .catch((error) => {
+      console.error("Login error:", error.message);
+      $(".error-reason")
+        .text("Unexpected error during login")
+        .css("color", "red");
+      return false;
+    });
+}
 
 function showGameScreen() {
   var a = swfobject.getFlashPlayerVersion();
@@ -29,22 +228,22 @@ function showGameScreen() {
   }
 }
 
-function startGame(username, password) {
+function startGame() {
   $("#loading").css("display", "block");
   const flashVars = {
     path: "/game/",
     service: "pio",
-    username: username,
-    password: password,
+    // username: username,
+    // password: password,
     affiliate: getParameterByName("a"),
     useSSL: 0,
-    //    core: "core.swf",
+    // core: "core.swf",
     gameId: "laststand-deadzone",
     connectionId: "public",
     clientAPI: "javascript",
     playerInsightSegments: [],
     playCodes: [],
-    //    local: 0,
+    // local: 0,
     clientInfo: {
       platform: navigator.platform,
       userAgent: navigator.userAgent,

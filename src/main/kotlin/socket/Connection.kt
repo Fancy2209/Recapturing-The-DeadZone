@@ -5,12 +5,14 @@ import dev.deadzone.module.LogSource
 import dev.deadzone.module.Logger
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
+import java.util.UUID
 
 /**
  * Representation of a player connection.
  * @property playerId reference to which player does this socket belongs to. Only known after client send join message.
  */
 class Connection(
+    val connectionId: String = UUID.randomUUID().toString(),
     val socket: Socket,
     var playerId: String? = null,
     private val output: ByteWriteChannel,
@@ -44,6 +46,6 @@ class Connection(
     }
 
     override fun toString(): String {
-        return "[ADDR]: ${this.socket.remoteAddress} | playerId: $playerId"
+        return "[ADDR]: ${this.socket.remoteAddress} | playerId=$playerId | connectionId=$connectionId"
     }
 }

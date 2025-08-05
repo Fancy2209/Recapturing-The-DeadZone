@@ -1,7 +1,7 @@
 package dev.deadzone.module
 
 import dev.deadzone.api.handler.*
-import dev.deadzone.core.data.BigDB
+import dev.deadzone.socket.ServerContext
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
@@ -12,7 +12,7 @@ import io.ktor.websocket.*
 import kotlinx.serialization.json.Json
 import java.io.File
 
-fun Application.configureRouting(db: BigDB) {
+fun Application.configureRouting(context: ServerContext) {
     routing {
         get("/") {
             val indexFile = File("static/index.html")
@@ -66,15 +66,17 @@ fun Application.configureRouting(db: BigDB) {
             }
         }
 
+        authRoute(context)
+
         post("/api/{path}") {
             val path = call.parameters["path"] ?: return@post call.respond(HttpStatusCode.BadRequest)
 
             when (path) {
-                "13" -> authenticate(db)
-                "601" -> socialRefresh(db)
-                "27" -> createJoinRoom(db)
-                "50" -> writeError(db)
-                "85" -> loadObjects(db)
+                "13" -> authenticate(context)
+                "601" -> socialRefresh(context)
+                "27" -> createJoinRoom(context)
+                "50" -> writeError(context)
+                "85" -> loadObjects(context)
                 else -> {
                     Logger.error(LogConfigAPIError) { "Unimplemented API route: $path" }
                     call.respond(HttpStatusCode.NotFound, "Unimplemented API: $path")

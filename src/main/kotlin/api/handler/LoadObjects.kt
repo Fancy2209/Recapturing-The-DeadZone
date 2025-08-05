@@ -3,12 +3,12 @@ package dev.deadzone.api.handler
 import dev.deadzone.api.message.db.BigDBObject
 import dev.deadzone.api.message.db.LoadObjectsArgs
 import dev.deadzone.api.message.db.LoadObjectsOutput
-import dev.deadzone.core.data.BigDB
+import dev.deadzone.core.data.AdminData
 import dev.deadzone.module.LogConfigAPIError
 import dev.deadzone.module.Logger
 import dev.deadzone.module.logInput
-import dev.deadzone.module.logOutput
 import dev.deadzone.module.pioFraming
+import dev.deadzone.socket.ServerContext
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -26,19 +26,18 @@ import kotlinx.serialization.protobuf.ProtoBuf
  * Output: `[LoadObjectsOutput]`
  */
 @OptIn(ExperimentalSerializationApi::class)
-suspend fun RoutingContext.loadObjects(db: BigDB) {
+suspend fun RoutingContext.loadObjects(context: ServerContext) {
     val loadObjectsArgs = ProtoBuf.decodeFromByteArray<LoadObjectsArgs>(
         call.receiveChannel().toByteArray()
     )
 
     logInput(loadObjectsArgs)
 
-    val validUsers = setOf("user123", "userABC")
     val objs = mutableListOf<BigDBObject>()
 
     for (objId in loadObjectsArgs.objectIds) {
         val key = objId.keys.firstOrNull() ?: continue
-        if (key !in validUsers) continue
+        if (key != AdminData.PLAYER_ID) continue
 
         val obj: BigDBObject? = when (objId.table) {
             "PlayerObjects" -> LoadObjectsOutput.playerObjects()

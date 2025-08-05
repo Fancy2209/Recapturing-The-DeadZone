@@ -1,10 +1,137 @@
 package dev.deadzone.core.data
 
+import com.github.lamba92.kotlin.document.store.core.DataStore
+import com.github.lamba92.kotlin.document.store.core.KotlinDocumentStore
+import com.github.lamba92.kotlin.document.store.core.ObjectCollection
+import com.github.lamba92.kotlin.document.store.core.find
+import com.github.lamba92.kotlin.document.store.core.getObjectCollection
+import com.toxicbakery.bcrypt.Bcrypt
+import dev.deadzone.core.auth.model.PlayerSave
+import dev.deadzone.core.auth.model.ServerMetadata
+import dev.deadzone.core.auth.model.UserDocument
+import dev.deadzone.core.auth.model.UserProfile
+import dev.deadzone.module.Logger
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
+import java.util.UUID
+import kotlin.io.encoding.Base64
+
 /**
  * An implementation of [BigDB], uses [kotlin.document.store](https://github.com/lamba92/kotlin.document.store) library.
  */
-class DocumentStoreDB: BigDB {
-    override fun getCollection(name: String): String {
-        return ""
+class DocumentStoreDB(store: DataStore) : BigDB {
+    private val db = KotlinDocumentStore(store)
+    private val USER_DOCUMENT_NAME = "userdocument"
+    private lateinit var udocs: ObjectCollection<UserDocument>
+
+    init {
+        CoroutineScope(Dispatchers.IO).launch {
+            setupUserDocument()
+        }
+    }
+
+    private suspend fun setupUserDocument() {
+        try {
+            val docs = db.getObjectCollection<UserDocument>(USER_DOCUMENT_NAME)
+            val count = docs.size()
+            Logger.info { "User collection ready, contains $count users." }
+
+            val adminDoc = docs.find("playerId", AdminData.PLAYER_ID).firstOrNull()
+            if (adminDoc == null) {
+                // likely very first-time DB setup
+                val id = docs.insert(UserDocument.admin())
+                Logger.info { "Inserted admin collection with id: $id" }
+                val count = docs.size()
+                Logger.info { "Now the collection contains $count users." }
+            } else {
+                Logger.info { "Admin collection found, is password right: ${adminDoc.hashedPassword == AdminData.PASSWORD}" }
+            }
+            Logger.info { "DocumentStoreDB is running fine..." }
+            udocs = docs
+            setupIndexes()
+        } catch (e: Exception) {
+            Logger.error { "DocumentStoreDB fail during setupUserDocument: $e" }
+        }
+    }
+
+    /**
+     * Access of nested objects can be done through dot notation.
+     * It is required to setup the index for accessing the object nested structure.
+     */
+    private suspend fun setupIndexes() {
+        udocs.createIndex("profile.displayName")
+    }
+
+    override suspend fun doesUserExist(username: String): Boolean {
+        return udocs.find("profile.displayName", username).firstOrNull() != null
+    }
+
+    override suspend fun createUser(username: String, password: String): String {
+        val pid = UUID.randomUUID().toString()
+        val profile = UserProfile(
+            playerId = pid,
+            email = "",
+            displayName = username,
+            avatarUrl = "",
+        )
+
+        val doc = UserDocument(
+            playerId = pid,
+            hashedPassword = hashPw(password),
+            profile = profile,
+            playerSave = PlayerSave.newgame(),
+            metadata = ServerMetadata()
+        )
+
+        udocs.insert(doc)
+
+        return pid
+    }
+
+    override suspend fun getUserDocByUsername(username: String): UserDocument? {
+        return udocs.find("profie.displayName", username).firstOrNull()
+    }
+
+    override suspend fun getPlayerIdOfUsername(username: String): String? {
+        return udocs.find("profie.displayName", username).firstOrNull()?.playerId
+    }
+
+    override suspend fun verifyCredentials(username: String, password: String): String? {
+        val user = udocs.find("profile.displayName", username).firstOrNull() ?: return null
+
+        val hashed = user.hashedPassword
+        val matches = Bcrypt.verify(password, Base64.decode(hashed))
+
+        return if (matches) user.playerId else null
+    }
+
+    override suspend fun createAdminAccount(): String {
+        // each admin account is unique per user
+        val doc = UserDocument.admin().copy(
+            playerId = AdminData.PLAYER_ID + UUID.randomUUID().toString()
+        )
+
+        udocs.insert(doc)
+        return doc.playerId
+    }
+
+    private fun hashPw(password: String): String {
+        return Base64.encode(Bcrypt.hash(password, 10))
+    }
+
+    suspend fun shutdown() {
+        db.close()
+    }
+
+    /**
+     * Reset an entire UserDocument collection by name.
+     *
+     * This is same as deleting the database folder (data/db)
+     */
+    suspend fun resetUserCollection(name: String = USER_DOCUMENT_NAME) {
+        val collection = db.getObjectCollection<UserDocument>(name)
+        collection.clear()
     }
 }

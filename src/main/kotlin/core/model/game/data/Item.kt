@@ -5,6 +5,7 @@ package dev.deadzone.core.model.game.data
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
+import java.util.UUID
 
 @Serializable
 data class Item(
@@ -12,7 +13,7 @@ data class Item(
     // In the client-side, item factory always check whether the fields are present or not
     // If they are, they will use it without checking null (silent NPE is very often here)
     // This is why we shouldn't encode them if we don't intend to specify the field
-    @EncodeDefault(EncodeDefault.Mode.NEVER) val id: String,
+    @EncodeDefault(EncodeDefault.Mode.NEVER) val id: String = UUID.randomUUID().toString(),
     @EncodeDefault(EncodeDefault.Mode.NEVER) val new: Boolean = false,
     @EncodeDefault(EncodeDefault.Mode.NEVER) val storeId: String? = null,
     @EncodeDefault(EncodeDefault.Mode.NEVER) val bought: Boolean = false,
