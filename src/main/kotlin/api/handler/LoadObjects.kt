@@ -3,7 +3,7 @@ package dev.deadzone.api.handler
 import dev.deadzone.api.message.db.BigDBObject
 import dev.deadzone.api.message.db.LoadObjectsArgs
 import dev.deadzone.api.message.db.LoadObjectsOutput
-import dev.deadzone.core.data.DummyData
+import dev.deadzone.core.data.AdminData
 import dev.deadzone.module.LogConfigAPIError
 import dev.deadzone.module.Logger
 import dev.deadzone.module.logInput
@@ -37,7 +37,7 @@ suspend fun RoutingContext.loadObjects(context: ServerContext) {
 
     for (objId in loadObjectsArgs.objectIds) {
         val key = objId.keys.firstOrNull() ?: continue
-        if (key != DummyData.PLAYER_ID) continue
+        if (key != AdminData.PLAYER_ID) continue
 
         val obj: BigDBObject? = when (objId.table) {
             "PlayerObjects" -> LoadObjectsOutput.playerObjects()

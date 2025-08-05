@@ -38,7 +38,7 @@ class DocumentStoreDB(store: DataStore) : BigDB {
             val count = docs.size()
             Logger.info { "User collection ready, contains $count users." }
 
-            val adminDoc = docs.find("playerId", DummyData.PLAYER_ID).firstOrNull()
+            val adminDoc = docs.find("playerId", AdminData.PLAYER_ID).firstOrNull()
             if (adminDoc == null) {
                 // likely very first-time DB setup
                 val id = docs.insert(UserDocument.admin())
@@ -46,7 +46,7 @@ class DocumentStoreDB(store: DataStore) : BigDB {
                 val count = docs.size()
                 Logger.info { "Now the collection contains $count users." }
             } else {
-                Logger.info { "Admin collection found, is password right: ${adminDoc.hashedPassword == DummyData.PASSWORD}" }
+                Logger.info { "Admin collection found, is password right: ${adminDoc.hashedPassword == AdminData.PASSWORD}" }
             }
             Logger.info { "DocumentStoreDB is running fine..." }
             udocs = docs

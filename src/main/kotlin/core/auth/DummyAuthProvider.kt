@@ -1,7 +1,7 @@
 package dev.deadzone.core.auth
 
 import dev.deadzone.core.auth.model.PlayerSession
-import dev.deadzone.core.data.DummyData
+import dev.deadzone.core.data.AdminData
 import io.ktor.util.date.getTimeMillis
 
 /**
@@ -14,8 +14,8 @@ object DummyAuthProvider : AuthProvider {
         password: String
     ): PlayerSession {
         return PlayerSession(
-            playerId = DummyData.PLAYER_ID,
-            token = DummyData.TOKEN,
+            playerId = AdminData.PLAYER_ID,
+            token = AdminData.TOKEN,
             issuedAt = getTimeMillis(),
             expiresAt = getTimeMillis() + 60 * 1000 * 5 // 5 minutes
         )
@@ -26,8 +26,8 @@ object DummyAuthProvider : AuthProvider {
         password: String
     ): PlayerSession {
         return PlayerSession(
-            playerId = DummyData.PLAYER_ID,
-            token = DummyData.TOKEN,
+            playerId = AdminData.PLAYER_ID,
+            token = AdminData.TOKEN,
             issuedAt = getTimeMillis(),
             expiresAt = getTimeMillis() + 60 * 1000 * 5 // 5 minutes
         )

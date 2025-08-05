@@ -1,6 +1,6 @@
 package dev.deadzone.api.message.auth
 
-import dev.deadzone.core.data.DummyData
+import dev.deadzone.core.data.AdminData
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -18,8 +18,8 @@ data class AuthenticateOutput(
     companion object {
         fun dummy(): AuthenticateOutput {
             return AuthenticateOutput(
-                token = DummyData.TOKEN,
-                userId = DummyData.PLAYER_ID,
+                token = AdminData.TOKEN,
+                userId = AdminData.PLAYER_ID,
                 showBranding = false,
                 playerInsightState = "",
                 isSocialNetworkUser = false,

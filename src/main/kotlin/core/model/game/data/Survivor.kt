@@ -1,6 +1,6 @@
 package dev.deadzone.core.model.game.data
 
-import dev.deadzone.core.data.DummyData
+import dev.deadzone.core.data.AdminData
 import dev.deadzone.core.model.game.data.injury.Injury
 import dev.deadzone.core.model.game.data.injury.InjuryList
 import kotlinx.serialization.Serializable
@@ -30,7 +30,7 @@ data class Survivor(
     companion object {
         fun playerM(): Survivor {
             return Survivor(
-                id = DummyData.PLAYER_SRV_ID,
+                id = AdminData.PLAYER_SRV_ID,
                 title = "MercifulLeader",
                 firstName = "Merciful",
                 lastName = "Leader",
@@ -54,7 +54,7 @@ data class Survivor(
 
         fun reconF(): Survivor {
             return Survivor(
-                id = DummyData.RECON_SRV_ID,
+                id = AdminData.RECON_SRV_ID,
                 title = "NoisyRecon",
                 firstName = "Noisy",
                 lastName = "Recon",
@@ -78,7 +78,7 @@ data class Survivor(
 
         fun fighterM(): Survivor {
             return Survivor(
-                id = DummyData.FIGHTER_SRV_ID,
+                id = AdminData.FIGHTER_SRV_ID,
                 title = "AngryFighter",
                 firstName = "Angry",
                 lastName = "Fighter",

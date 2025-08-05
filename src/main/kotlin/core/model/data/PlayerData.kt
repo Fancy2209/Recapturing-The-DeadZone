@@ -1,6 +1,6 @@
 package dev.deadzone.core.model.data
 
-import dev.deadzone.core.data.DummyData
+import dev.deadzone.core.data.AdminData
 import kotlinx.serialization.Serializable
 import dev.deadzone.core.model.data.user.AbstractUser
 import dev.deadzone.core.model.game.data.Attributes
@@ -91,7 +91,7 @@ data class PlayerData(
                 flags = boolsToByteArray(exampleBools2),
                 upgrades = FlagSet.mockFlagSetByteArray(),
                 nickname = "dzplayer",
-                playerSurvivor = DummyData.PLAYER_SRV_ID,
+                playerSurvivor = AdminData.PLAYER_SRV_ID,
                 neighbors = null,
                 friends = null,
                 neighborHistory = null,
@@ -111,12 +111,12 @@ data class PlayerData(
                 buildings = BuildingCollection.starterBase(),
                 rally = mapOf(
                     // depends on BuildingCollection!
-                    "B23" to listOf(DummyData.FIGHTER_SRV_ID),
-                    "B45" to listOf(DummyData.RECON_SRV_ID),
-                    "B52" to listOf(DummyData.PLAYER_SRV_ID),
+                    "B23" to listOf(AdminData.FIGHTER_SRV_ID),
+                    "B45" to listOf(AdminData.RECON_SRV_ID),
+                    "B52" to listOf(AdminData.PLAYER_SRV_ID),
                 ),
                 tasks = TaskCollection().list,
-                missions = listOf(MissionData.dummy(DummyData.PLAYER_SRV_ID)),
+                missions = listOf(MissionData.dummy(AdminData.PLAYER_SRV_ID)),
                 assignments = null,
 //                inventory = null,
                 effects = listOf(Effect.halloweenTrickPumpkinZombie(), Effect.halloweenTrickPewPew()),
@@ -124,14 +124,14 @@ data class PlayerData(
                 cooldowns = null,
                 batchRecycles = null,
                 offenceLoadout = mapOf(
-                    DummyData.PLAYER_SRV_ID to SurvivorLoadoutEntry.playerLoudout(),
-                    DummyData.FIGHTER_SRV_ID to SurvivorLoadoutEntry.fighterLoadout(),
-                    DummyData.RECON_SRV_ID to SurvivorLoadoutEntry.reconLoadout(),
+                    AdminData.PLAYER_SRV_ID to SurvivorLoadoutEntry.playerLoudout(),
+                    AdminData.FIGHTER_SRV_ID to SurvivorLoadoutEntry.fighterLoadout(),
+                    AdminData.RECON_SRV_ID to SurvivorLoadoutEntry.reconLoadout(),
                 ),
                 defenceLoadout = mapOf(
-                    DummyData.PLAYER_SRV_ID to SurvivorLoadoutEntry.playerLoudout(),
-                    DummyData.FIGHTER_SRV_ID to SurvivorLoadoutEntry.fighterLoadout(),
-                    DummyData.RECON_SRV_ID to SurvivorLoadoutEntry.reconLoadout(),
+                    AdminData.PLAYER_SRV_ID to SurvivorLoadoutEntry.playerLoudout(),
+                    AdminData.FIGHTER_SRV_ID to SurvivorLoadoutEntry.fighterLoadout(),
+                    AdminData.RECON_SRV_ID to SurvivorLoadoutEntry.reconLoadout(),
                 ),
                 quests = boolsToByteArray(exampleBools),
                 questsCollected = boolsToByteArray(exampleBools),

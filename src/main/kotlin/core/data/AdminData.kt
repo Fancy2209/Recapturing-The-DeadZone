@@ -1,11 +1,11 @@
 package dev.deadzone.core.data
 
-object DummyData {
-    const val PLAYER_ID = "dummy-player-id"
-    const val DISPLAY_NAME = "DummyPlayer" // also known as username or nickname
-    const val EMAIL = "dummyplayer@dummy.com"
-    const val PASSWORD = "dummy-password"
-    const val TOKEN = "dummy-token-123456"
+object AdminData {
+    const val PLAYER_ID = "adm"
+    const val DISPLAY_NAME = "AdminPlayer" // also known as username or nickname
+    const val EMAIL = "admin@admin.com"
+    const val PASSWORD = "admin"
+    const val TOKEN = "admin-token-123456"
     const val COUNTRY_CODE = "US"
     const val AVATAR_URL = "https://picsum.photos/200"
     const val IS_ADMIN = true

@@ -1,6 +1,6 @@
 package dev.deadzone.core.model.game.data
 
-import dev.deadzone.core.data.DummyData
+import dev.deadzone.core.data.AdminData
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -12,7 +12,7 @@ data class SurvivorLoadoutEntry(
     companion object {
         fun playerLoudout(): SurvivorLoadoutEntry {
             return SurvivorLoadoutEntry(
-                weapon = DummyData.PLAYER_WEP_ID,
+                weapon = AdminData.PLAYER_WEP_ID,
                 gear1 = "",
                 gear2 = "",
             )
@@ -20,7 +20,7 @@ data class SurvivorLoadoutEntry(
 
         fun fighterLoadout(): SurvivorLoadoutEntry {
             return SurvivorLoadoutEntry(
-                weapon = DummyData.FIGHTER_WEP_ID,
+                weapon = AdminData.FIGHTER_WEP_ID,
                 gear1 = "",
                 gear2 = "",
             )
@@ -28,7 +28,7 @@ data class SurvivorLoadoutEntry(
 
         fun reconLoadout(): SurvivorLoadoutEntry {
             return SurvivorLoadoutEntry(
-                weapon = DummyData.RECON_WEP_ID,
+                weapon = AdminData.RECON_WEP_ID,
                 gear1 = "",
                 gear2 = "",
             )

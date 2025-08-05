@@ -1,6 +1,6 @@
 package dev.deadzone.api.handler
 
-import dev.deadzone.core.data.DummyData
+import dev.deadzone.core.data.AdminData
 import dev.deadzone.socket.ServerContext
 import io.ktor.http.*
 import io.ktor.server.request.*
@@ -21,7 +21,7 @@ fun Route.authRoute(context: ServerContext) {
         if (username == "givemeadmin") {
             call.respond(
                 HttpStatusCode.OK,
-                mapOf("playerId" to DummyData.PLAYER_ID, "token" to DummyData.TOKEN)
+                mapOf("playerId" to AdminData.PLAYER_ID, "token" to AdminData.TOKEN)
             )
             return@post
         }
