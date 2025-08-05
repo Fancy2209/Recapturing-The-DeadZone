@@ -1,5 +1,6 @@
 package dev.deadzone.socket
 
+import dev.deadzone.core.auth.AuthProvider
 import dev.deadzone.core.auth.SessionManager
 import dev.deadzone.core.data.BigDB
 import dev.deadzone.core.utils.PIODeserializer
@@ -31,6 +32,7 @@ data class ServerContext(
     val db: BigDB,
     val sessionManager: SessionManager,
     val playerRegistry: PlayerRegistry,
+    val authProvider: AuthProvider,
 )
 
 class Server(
