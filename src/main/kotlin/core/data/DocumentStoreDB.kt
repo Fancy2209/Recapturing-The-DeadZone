@@ -107,6 +107,16 @@ class DocumentStoreDB(store: DataStore) : BigDB {
         return if (matches) user.playerId else null
     }
 
+    override suspend fun createAdminAccount(): String {
+        // each admin account is unique per user
+        val doc = UserDocument.admin().copy(
+            playerId = AdminData.PLAYER_ID + UUID.randomUUID().toString()
+        )
+
+        udocs.insert(doc)
+        return doc.playerId
+    }
+
     private fun hashPw(password: String): String {
         return Base64.encode(Bcrypt.hash(password, 10))
     }

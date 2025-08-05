@@ -21,4 +21,6 @@ interface AuthProvider {
      * Check whether a user with [username] exists.
      */
     suspend fun doesUserExist(username: String): Boolean
+
+    suspend fun createAdminAccount(): PlayerSession
 }

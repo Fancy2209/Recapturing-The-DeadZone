@@ -20,4 +20,9 @@ class WebsiteAuthProvider(
     override suspend fun doesUserExist(username: String): Boolean {
         return db.doesUserExist(username)
     }
+
+    override suspend fun createAdminAccount(): PlayerSession {
+        val adminpid = db.createAdminAccount()
+        return sessionManager.create(adminpid)
+    }
 }

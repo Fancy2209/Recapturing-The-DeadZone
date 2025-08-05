@@ -19,9 +19,10 @@ fun Route.authRoute(context: ServerContext) {
         }
 
         if (username == "givemeadmin") {
+            val session = context.authProvider.createAdminAccount()
             call.respond(
                 HttpStatusCode.OK,
-                mapOf("playerId" to AdminData.PLAYER_ID, "token" to AdminData.TOKEN)
+                mapOf("playerId" to session.playerId, "token" to session.token)
             )
             return@post
         }

@@ -27,4 +27,6 @@ interface BigDB {
      * @return playerId for the corresponding username if success
      */
     suspend fun verifyCredentials(username: String, password: String): String?
+
+    suspend fun createAdminAccount(): String
 }
