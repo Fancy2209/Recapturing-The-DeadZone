@@ -83,15 +83,6 @@ function validateUsername(username) {
   const badwords = ["dick"]; // expand as needed
   const infoDiv = $(".username-info");
 
-  if (username === "givemeadmin") {
-    infoDiv
-      .text("Admin username detected, you will be granted admin access.")
-      .css("color", "green");
-    isUsernameValid = true;
-    updateSubmitButton();
-    return true;
-  }
-
   if (username.length < 6 || !usernameRegex.test(username)) {
     infoDiv
       .text(
@@ -117,12 +108,6 @@ function validateUsername(username) {
 }
 
 function doesUserExist(username) {
-  if (username == "givemeadmin") {
-    isUsernameValid = true;
-    updateSubmitButton();
-    return;
-  }
-
   fetch(`/api/userexist?username=${encodeURIComponent(username)}`, {
     method: "GET",
     headers: {
@@ -137,22 +122,35 @@ function doesUserExist(username) {
       return response.text();
     })
     .then((result) => {
-      if (result == "yes") {
-        $(".username-info")
+      const infoDiv = $(".username-info");
+
+      if (result === "granted") {
+        infoDiv
+          .text("Admin account available. You will log in as admin.")
+          .css("color", "green");
+        isUsernameValid = true;
+      } else if (result === "reserved") {
+        infoDiv
+          .text("Admin account is disabled on this server.")
+          .css("color", "red");
+        isUsernameValid = false;
+      } else if (result === "yes") {
+        infoDiv
           .text(
             "Username already exists. Input the correct password if you are trying to log in."
           )
           .css("color", "#7a8bac");
-        $(".username-info").append(
+        infoDiv.append(
           '<p style="color:#b86b5f">If you are trying to register, choose another name.</p>'
         );
         isUsernameValid = true;
       } else {
-        $(".username-info")
+        infoDiv
           .text("Username is available, you will be registered.")
           .css("color", "green");
         isUsernameValid = true;
       }
+
       updateSubmitButton();
     })
     .catch((error) => {
@@ -166,7 +164,6 @@ function validatePassword(password) {
   const username = $("#username").val();
 
   if (username === "givemeadmin") {
-    infoDiv.text("Admin access granted.").css("color", "green");
     isPasswordValid = true;
     updateSubmitButton();
     return;

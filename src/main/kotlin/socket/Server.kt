@@ -33,6 +33,7 @@ data class ServerContext(
     val sessionManager: SessionManager,
     val playerRegistry: PlayerRegistry,
     val authProvider: AuthProvider,
+    val adminEnabled: Boolean = false,
 )
 
 class Server(

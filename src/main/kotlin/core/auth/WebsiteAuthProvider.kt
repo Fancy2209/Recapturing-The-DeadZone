@@ -1,6 +1,7 @@
 package dev.deadzone.core.auth
 
 import dev.deadzone.core.auth.model.PlayerSession
+import dev.deadzone.core.data.AdminData
 import dev.deadzone.core.data.BigDB
 
 class WebsiteAuthProvider(
@@ -17,12 +18,11 @@ class WebsiteAuthProvider(
         return sessionManager.create(pid)
     }
 
-    override suspend fun doesUserExist(username: String): Boolean {
-        return db.doesUserExist(username)
+    override suspend fun adminLogin(): PlayerSession? {
+        return sessionManager.create(AdminData.PLAYER_ID)
     }
 
-    override suspend fun createAdminAccount(): PlayerSession {
-        val adminpid = db.createAdminAccount()
-        return sessionManager.create(adminpid)
+    override suspend fun doesUserExist(username: String): Boolean {
+        return db.doesUserExist(username)
     }
 }

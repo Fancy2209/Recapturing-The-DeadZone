@@ -20,13 +20,15 @@ fun Application.module() {
             Dependency.wsManager.onResourceLoadComplete()
         }
     })
-    configureDatabase()
+    val adminEnabled = environment.config.propertyOrNull("game.enableAdmin")?.getString()?.toBooleanStrictOrNull() ?: false
+    configureDatabase(adminEnabled)
     val sessionManager = SessionManager()
     val serverContext = ServerContext(
         db = Dependency.database,
         sessionManager = sessionManager,
         playerRegistry = PlayerRegistry(),
-        authProvider = WebsiteAuthProvider(Dependency.database, sessionManager)
+        authProvider = WebsiteAuthProvider(Dependency.database, sessionManager),
+        adminEnabled = adminEnabled
     )
     configureRouting(context = serverContext)
     configureHTTP()

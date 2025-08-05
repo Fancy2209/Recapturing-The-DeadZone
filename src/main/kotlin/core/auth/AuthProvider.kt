@@ -18,9 +18,12 @@ interface AuthProvider {
     suspend fun login(username: String, password: String): PlayerSession?
 
     /**
+     * Login with admin account, will always succeed.
+     */
+    suspend fun adminLogin(): PlayerSession?
+
+    /**
      * Check whether a user with [username] exists.
      */
     suspend fun doesUserExist(username: String): Boolean
-
-    suspend fun createAdminAccount(): PlayerSession
 }

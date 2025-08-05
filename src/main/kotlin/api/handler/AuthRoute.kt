@@ -1,6 +1,5 @@
 package dev.deadzone.api.handler
 
-import dev.deadzone.core.data.AdminData
 import dev.deadzone.socket.ServerContext
 import io.ktor.http.*
 import io.ktor.server.request.*
@@ -19,11 +18,16 @@ fun Route.authRoute(context: ServerContext) {
         }
 
         if (username == "givemeadmin") {
-            val session = context.authProvider.createAdminAccount()
-            call.respond(
-                HttpStatusCode.OK,
-                mapOf("playerId" to session.playerId, "token" to session.token)
-            )
+            if (context.adminEnabled) {
+                val session = context.authProvider.adminLogin()
+                if (session != null) {
+                    call.respond(HttpStatusCode.OK, mapOf("playerId" to session.playerId, "token" to session.token))
+                } else {
+                    call.respond(HttpStatusCode.InternalServerError, mapOf("reason" to "unexpected error: admin account doesn't exist"))
+                }
+            } else {
+                call.respond(HttpStatusCode.Forbidden, mapOf("reason" to "admin account not enabled"))
+            }
             return@post
         }
 
@@ -59,7 +63,11 @@ fun Route.authRoute(context: ServerContext) {
         }
 
         if (username == "givemeadmin") {
-            call.respondText("yes")
+            if (context.adminEnabled) {
+                call.respondText("granted")
+            } else {
+                call.respondText("reserved")
+            }
             return@get
         }
 

@@ -21,7 +21,7 @@ import kotlin.io.encoding.Base64
 /**
  * An implementation of [BigDB], uses [kotlin.document.store](https://github.com/lamba92/kotlin.document.store) library.
  */
-class DocumentStoreDB(store: DataStore) : BigDB {
+class DocumentStoreDB(store: DataStore, private val adminEnabled: Boolean) : BigDB {
     private val db = KotlinDocumentStore(store)
     private val USER_DOCUMENT_NAME = "userdocument"
     private lateinit var udocs: ObjectCollection<UserDocument>
@@ -37,19 +37,19 @@ class DocumentStoreDB(store: DataStore) : BigDB {
             val docs = db.getObjectCollection<UserDocument>(USER_DOCUMENT_NAME)
             val count = docs.size()
             Logger.info { "User collection ready, contains $count users." }
-
-            val adminDoc = docs.find("playerId", AdminData.PLAYER_ID).firstOrNull()
-            if (adminDoc == null) {
-                // likely very first-time DB setup
-                val id = docs.insert(UserDocument.admin())
-                Logger.info { "Inserted admin collection with id: $id" }
-                val count = docs.size()
-                Logger.info { "Now the collection contains $count users." }
-            } else {
-                Logger.info { "Admin collection found, is password right: ${adminDoc.hashedPassword == AdminData.PASSWORD}" }
-            }
-            Logger.info { "DocumentStoreDB is running fine..." }
             udocs = docs
+
+            if (adminEnabled) {
+                val adminDoc = docs.find("playerId", AdminData.PLAYER_ID).firstOrNull()
+                if (adminDoc == null) {
+                    val doc = UserDocument.admin().copy(playerId = AdminData.PLAYER_ID)
+                    docs.insert(doc)
+                    Logger.info { "Admin account inserted with playerId=${doc.playerId}" }
+                } else {
+                    Logger.info { "Admin account already exists." }
+                }
+            }
+
             setupIndexes()
         } catch (e: Exception) {
             Logger.error { "DocumentStoreDB fail during setupUserDocument: $e" }
@@ -86,7 +86,6 @@ class DocumentStoreDB(store: DataStore) : BigDB {
         )
 
         udocs.insert(doc)
-
         return pid
     }
 
@@ -105,16 +104,6 @@ class DocumentStoreDB(store: DataStore) : BigDB {
         val matches = Bcrypt.verify(password, Base64.decode(hashed))
 
         return if (matches) user.playerId else null
-    }
-
-    override suspend fun createAdminAccount(): String {
-        // each admin account is unique per user
-        val doc = UserDocument.admin().copy(
-            playerId = AdminData.PLAYER_ID + UUID.randomUUID().toString()
-        )
-
-        udocs.insert(doc)
-        return doc.playerId
     }
 
     private fun hashPw(password: String): String {

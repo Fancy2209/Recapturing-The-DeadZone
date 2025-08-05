@@ -1,7 +1,7 @@
 package dev.deadzone.core.data
 
 object AdminData {
-    const val PLAYER_ID = "adm"
+    const val PLAYER_ID = "adm-id-123456"
     const val DISPLAY_NAME = "AdminPlayer" // also known as username or nickname
     const val EMAIL = "admin@admin.com"
     const val PASSWORD = "admin"
