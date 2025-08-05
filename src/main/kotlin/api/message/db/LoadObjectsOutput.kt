@@ -12,7 +12,7 @@ data class LoadObjectsOutput(
 ) {
     companion object {
         fun playerObjects(): BigDBObject {
-            val data = PlayerData.dummy()
+            val data = PlayerData.admin()
             return Converter.toBigDBObject<PlayerData>(obj = data)
         }
 

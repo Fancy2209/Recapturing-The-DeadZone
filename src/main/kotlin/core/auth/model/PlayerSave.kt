@@ -18,7 +18,7 @@ data class PlayerSave(
     companion object {
         fun admin(): PlayerSave {
             return PlayerSave(
-                playerObjects = PlayerData.dummy(),
+                playerObjects = PlayerData.admin(),
                 inventory = Inventory.dummy(),
                 neighborHistory = emptyMap(),
                 loginState = PlayerLoginState.admin()
@@ -27,7 +27,7 @@ data class PlayerSave(
 
         fun newgame(): PlayerSave {
             return PlayerSave(
-                playerObjects = PlayerData.dummy(),
+                playerObjects = PlayerData.admin(),
                 inventory = Inventory.newgame(),
                 neighborHistory = emptyMap(),
                 loginState = PlayerLoginState.newgame()

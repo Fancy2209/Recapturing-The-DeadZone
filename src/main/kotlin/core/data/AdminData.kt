@@ -9,6 +9,7 @@ object AdminData {
     const val COUNTRY_CODE = "US"
     const val AVATAR_URL = "https://picsum.photos/200"
     const val IS_ADMIN = true
+    const val PLAYER_DATA_KEY = "admkey"
     const val PLAYER_SRV_ID = "srv-player"
     const val FIGHTER_SRV_ID = "srv-fighter-m"
     const val RECON_SRV_ID = "srv-recon-f"
