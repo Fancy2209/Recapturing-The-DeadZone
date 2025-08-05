@@ -7,9 +7,9 @@ class WebsiteAuthProvider(
     private val db: BigDB,
     private val sessionManager: SessionManager
 ) : AuthProvider {
-    override suspend fun register(username: String, password: String) {
-        db.createUser(username, password)
-        login(username, password)
+    override suspend fun register(username: String, password: String): PlayerSession {
+        val pid = db.createUser(username, password)
+        return sessionManager.create(playerId = pid)
     }
 
     override suspend fun login(username: String, password: String): PlayerSession? {

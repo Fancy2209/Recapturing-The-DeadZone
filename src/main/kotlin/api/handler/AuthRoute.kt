@@ -26,15 +26,14 @@ fun Route.authRoute(context: ServerContext) {
             return@post
         }
 
-        val usernameExist = false
+        val usernameExist = context.authProvider.doesUserExist(username)
         if (usernameExist) {
-            val passwordRight = true
+            val loginSession = context.authProvider.login(username, password)
+            val passwordRight = loginSession != null
             if (passwordRight) {
-                val playerId = "pid"
-                val token = "loggedin"
                 call.respond(
                     HttpStatusCode.OK,
-                    mapOf("playerId" to playerId, "token" to token)
+                    mapOf("playerId" to loginSession.playerId, "token" to loginSession.token)
                 )
             } else {
                 call.respond(
@@ -43,11 +42,10 @@ fun Route.authRoute(context: ServerContext) {
                 )
             }
         } else {
-            val newPlayerId = "pidnew"
-            val token = "registered"
+            val session = context.authProvider.register(username, password)
             call.respond(
                 HttpStatusCode.OK,
-                mapOf("playerId" to newPlayerId, "token" to token)
+                mapOf("playerId" to session.playerId, "token" to session.token)
             )
         }
     }
@@ -64,7 +62,7 @@ fun Route.authRoute(context: ServerContext) {
             return@get
         }
 
-        val exists = false
+        val exists = context.authProvider.doesUserExist(username)
         call.respondText(if (exists) "yes" else "no")
     }
 }

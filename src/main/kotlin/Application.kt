@@ -1,6 +1,7 @@
 package dev.deadzone
 
 import dev.deadzone.core.auth.SessionManager
+import dev.deadzone.core.auth.WebsiteAuthProvider
 import dev.deadzone.module.*
 import dev.deadzone.socket.PlayerRegistry
 import dev.deadzone.socket.ServerContext
@@ -20,10 +21,12 @@ fun Application.module() {
         }
     })
     configureDatabase()
+    val sessionManager = SessionManager()
     val serverContext = ServerContext(
         db = Dependency.database,
-        sessionManager = SessionManager(),
+        sessionManager = sessionManager,
         playerRegistry = PlayerRegistry(),
+        authProvider = WebsiteAuthProvider(Dependency.database, sessionManager)
     )
     configureRouting(context = serverContext)
     configureHTTP()
