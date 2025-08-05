@@ -5,17 +5,15 @@ import dev.deadzone.core.auth.model.PlayerSession
 interface AuthProvider {
     /**
      * Register a new account with [username] and [password].
-     *
-     * @return [PlayerSession] which includes newly created playerId and a token.
      */
-    suspend fun register(username: String, password: String): PlayerSession
+    suspend fun register(username: String, password: String)
 
     /**
      * Login with [username] and [password].
      *
-     * @return [PlayerSession] which is used for further authentication.
+     * @return [PlayerSession] which is used for further authentication, null if login is failed.
      */
-    suspend fun login(username: String, password: String): PlayerSession
+    suspend fun login(username: String, password: String): PlayerSession?
 
     /**
      * Check whether a user with [username] exists.
