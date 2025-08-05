@@ -202,6 +202,8 @@ function login(username, password) {
       return response.json();
     })
     .then((data) => {
+      if (!data || !data.token) return false;
+
       const { playerId, token } = data;
       loginDiv
         .text("Login success, now getting you in...")
