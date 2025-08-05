@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Inventory(
-    val inventory: List<Item> = listOf(),
+    val inventory: List<Item> = emptyList(),
     val schematics: ByteArray = byteArrayOf(),  // see line 643 of Inventory.as
 ) {
     companion object {
@@ -37,6 +37,16 @@ data class Inventory(
                 ItemFactory.createItemFromId(idInXML = "christmas-canned-meat")
             )
 
+            return Inventory(
+                inventory = items,
+                schematics = byteArrayOf()
+            )
+        }
+
+        fun newgame(): Inventory {
+            val items = listOf(
+                Item(type = "pocketKnife")
+            )
             return Inventory(
                 inventory = items,
                 schematics = byteArrayOf()

@@ -24,5 +24,14 @@ data class PlayerSave(
                 loginState = PlayerLoginState.admin()
             )
         }
+
+        fun newgame(): PlayerSave {
+            return PlayerSave(
+                playerObjects = PlayerData.dummy(),
+                inventory = Inventory.newgame(),
+                neighborHistory = emptyMap(),
+                loginState = PlayerLoginState.newgame()
+            )
+        }
     }
 }

@@ -35,5 +35,11 @@ data class PlayerLoginState(
                 invsize = 3000
             )
         }
+
+        fun newgame(): PlayerLoginState {
+            return PlayerLoginState(
+                invsize = 20
+            )
+        }
     }
 }
