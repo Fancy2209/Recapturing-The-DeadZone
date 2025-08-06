@@ -7,7 +7,7 @@ import java.util.UUID
 
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
-@JsonClassDiscriminator("")
+@JsonClassDiscriminator("_t")
 sealed class BuildingLike
 
 @Serializable

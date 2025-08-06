@@ -12,7 +12,7 @@ import kotlinx.serialization.protobuf.ProtoBuf
 fun Application.configureSerialization() {
     install(ContentNegotiation) {
         val json = Json {
-            classDiscriminator = ""
+            classDiscriminator = "_t"
             prettyPrint = true
             isLenient = true
             ignoreUnknownKeys = true
