@@ -33,6 +33,7 @@ dependencies {
     implementation(libs.classgraph)
     implementation(libs.kotlin.document.store)
     implementation(libs.mongodb.driver.kotlin.coroutine)
+    implementation(libs.mongodb.bson.kotlinx)
     implementation(libs.library.bcrypt)
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)
