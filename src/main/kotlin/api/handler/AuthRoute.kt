@@ -1,5 +1,6 @@
 package dev.deadzone.api.handler
 
+import dev.deadzone.module.Logger
 import dev.deadzone.socket.ServerContext
 import io.ktor.http.*
 import io.ktor.server.request.*
@@ -57,7 +58,7 @@ fun Route.authRoute(context: ServerContext) {
 
     get("/api/userexist") {
         val username = call.parameters["username"]
-        if (username == null || username.isBlank()) {
+        if (username.isNullOrBlank()) {
             call.respondText("no", status = HttpStatusCode.BadRequest)
             return@get
         }
@@ -69,6 +70,14 @@ fun Route.authRoute(context: ServerContext) {
                 call.respondText("reserved")
             }
             return@get
+        }
+
+        try {
+            val exists = context.authProvider.doesUserExist(username)
+            call.respond(mapOf("status" to if (exists) "yes" else "no"))
+        } catch (e: Exception) {
+            Logger.error { "Failed to check if user exists: $username, e.message:${e.message}" }
+            call.respond(HttpStatusCode.InternalServerError, mapOf("message" to "Database error"))
         }
 
         val exists = context.authProvider.doesUserExist(username)
