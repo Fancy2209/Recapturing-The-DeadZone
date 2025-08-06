@@ -3,7 +3,7 @@ package dev.deadzone.api.message.db
 import dev.deadzone.core.model.data.PlayerData
 import dev.deadzone.core.model.game.data.Inventory
 import dev.deadzone.core.model.network.RemotePlayerData
-import dev.deadzone.core.utils.Converter
+import dev.deadzone.utils.Converter
 import kotlinx.serialization.Serializable
 
 @Serializable

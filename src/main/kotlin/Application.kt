@@ -2,6 +2,7 @@ package dev.deadzone
 
 import dev.deadzone.core.auth.SessionManager
 import dev.deadzone.core.auth.WebsiteAuthProvider
+import dev.deadzone.core.data.GameResourceRegistry
 import dev.deadzone.module.*
 import dev.deadzone.socket.PlayerRegistry
 import dev.deadzone.socket.ServerContext
@@ -15,7 +16,7 @@ fun main(args: Array<String>) {
 
 suspend fun Application.module() {
     configureWebsocket()
-    Dependency.gameData = GameData(onResourceLoadComplete = {
+    Dependency.gameResourceRegistry = GameResourceRegistry(onResourceLoadComplete = {
         launch {
             Dependency.wsManager.onResourceLoadComplete()
         }

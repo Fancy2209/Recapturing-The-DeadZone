@@ -1,5 +1,8 @@
 package dev.deadzone.core.data
 
+/**
+ * Dummy data ready to use, typically for admin account.
+ */
 object AdminData {
     const val PLAYER_ID = "adm-id-123456"
     const val DISPLAY_NAME = "AdminPlayer" // also known as username or nickname

@@ -1,11 +1,10 @@
 package dev.deadzone.socket
 
-import dev.deadzone.core.utils.PIOSerializer
-import dev.deadzone.module.LogSource
+import dev.deadzone.utils.PIOSerializer
 import dev.deadzone.module.Logger
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
-import java.util.UUID
+import java.util.*
 
 /**
  * Representation of a player connection.

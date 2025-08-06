@@ -2,9 +2,9 @@ package dev.deadzone.socket.handler
 
 import dev.deadzone.core.mission.LootManager
 import dev.deadzone.core.mission.LootParameter
-import dev.deadzone.core.model.factory.ItemFactory
+import dev.deadzone.core.factory.ItemFactory
 import dev.deadzone.core.model.game.data.*
-import dev.deadzone.core.utils.PIOSerializer
+import dev.deadzone.utils.PIOSerializer
 import dev.deadzone.module.Dependency
 import dev.deadzone.module.LogConfigSocketError
 import dev.deadzone.module.LogConfigSocketToClient
@@ -13,7 +13,6 @@ import dev.deadzone.socket.Connection
 import dev.deadzone.socket.ServerContext
 import dev.deadzone.socket.handler.saveresponse.compound.BuildingMoveResponse
 import dev.deadzone.socket.handler.saveresponse.crate.CrateUnlockResponse
-import dev.deadzone.socket.handler.saveresponse.crate.gachaPoolExample
 import dev.deadzone.socket.handler.saveresponse.mission.GetZombieResponse
 import dev.deadzone.socket.handler.saveresponse.mission.MissionEndResponse
 import dev.deadzone.socket.handler.saveresponse.mission.MissionStartResponse
@@ -105,7 +104,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                     baseWeight = 1.0,
                     fuelLimit = 50
                 )
-                val lootManager = LootManager(Dependency.gameData, sceneXML, lootParameter)
+                val lootManager = LootManager(Dependency.gameResourceRegistry, sceneXML, lootParameter)
                 val sceneXMLWithLoot = lootManager.insertLoots()
 
                 val zombies = listOf(

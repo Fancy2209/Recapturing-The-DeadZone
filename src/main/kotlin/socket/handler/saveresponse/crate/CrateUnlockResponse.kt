@@ -1,9 +1,8 @@
 package dev.deadzone.socket.handler.saveresponse.crate
 
-import dev.deadzone.core.model.factory.ItemFactory
+import dev.deadzone.core.factory.ItemFactory
 import dev.deadzone.core.model.game.data.Item
 import kotlinx.serialization.Serializable
-import java.util.UUID
 
 @Serializable
 data class CrateUnlockResponse(

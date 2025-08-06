@@ -1,7 +1,7 @@
 package dev.deadzone.socket.handler
 
-import dev.deadzone.core.data.game.InMemoryDataProvider
-import dev.deadzone.core.utils.PIOSerializer
+import dev.deadzone.core.data.InMemoryDataProvider
+import dev.deadzone.utils.PIOSerializer
 import dev.deadzone.module.Logger
 import dev.deadzone.socket.Connection
 import dev.deadzone.socket.ServerContext

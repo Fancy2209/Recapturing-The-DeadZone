@@ -2,8 +2,8 @@ package dev.deadzone.socket
 
 import dev.deadzone.core.auth.AuthProvider
 import dev.deadzone.core.auth.SessionManager
-import dev.deadzone.core.data.BigDB
-import dev.deadzone.core.utils.PIODeserializer
+import dev.deadzone.data.db.BigDB
+import dev.deadzone.utils.PIODeserializer
 import dev.deadzone.module.Logger
 import dev.deadzone.socket.handler.InitCompleteHandler
 import dev.deadzone.socket.utils.SocketMessage

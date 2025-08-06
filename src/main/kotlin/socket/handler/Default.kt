@@ -1,6 +1,6 @@
 package dev.deadzone.socket.handler
 
-import dev.deadzone.core.utils.PIOSerializer
+import dev.deadzone.utils.PIOSerializer
 import dev.deadzone.module.LogConfigSocketError
 import dev.deadzone.socket.utils.SocketMessage
 import dev.deadzone.socket.utils.SocketMessageHandler

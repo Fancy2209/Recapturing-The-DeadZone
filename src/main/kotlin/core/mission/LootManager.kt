@@ -2,7 +2,7 @@ package dev.deadzone.core.mission
 
 import dev.deadzone.core.data.assets.ItemResource
 import dev.deadzone.module.Dependency
-import dev.deadzone.module.GameData
+import dev.deadzone.core.data.GameResourceRegistry
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import java.io.StringReader
@@ -47,7 +47,7 @@ data class LootParameter(
 
 
 class LootManager(
-    private val gameData: GameData = Dependency.gameData,
+    private val gameResourceRegistry: GameResourceRegistry = Dependency.gameResourceRegistry,
     private val sceneXML: String,
     private val parameter: LootParameter
 ) {
@@ -62,7 +62,7 @@ class LootManager(
 
     private fun buildIndexOfLootableItems() {
         ALL_LOCS.forEach { loc ->
-            val lootableInLoc = gameData.itemsByLootable[loc] ?: emptyList()
+            val lootableInLoc = gameResourceRegistry.itemsByLootable[loc] ?: emptyList()
             // create a binary search tree whose key is cumulative weight and value is the loot
             // this will allow us to quickly search for an item based on a rolled double value just by seeing the cumulative weight
             val treeMap = TreeMap<Double, LootContent>()

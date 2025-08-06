@@ -1,6 +1,6 @@
 package dev.deadzone.socket.handler
 
-import dev.deadzone.core.utils.PIOSerializer
+import dev.deadzone.utils.PIOSerializer
 import dev.deadzone.socket.Connection
 import dev.deadzone.socket.ServerContext
 import dev.deadzone.socket.utils.SocketMessage

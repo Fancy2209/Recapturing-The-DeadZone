@@ -1,17 +1,14 @@
 import dev.deadzone.core.mission.LootManager
 import dev.deadzone.core.mission.LootParameter
-import dev.deadzone.module.GameData
+import dev.deadzone.core.data.GameResourceRegistry
 import dev.deadzone.socket.handler.saveresponse.mission.loadSceneXML
 import java.io.File
-import java.io.InputStreamReader
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.zip.GZIPInputStream
-import kotlin.collections.get
 import kotlin.test.Test
 
 object TestDependency {
-    val gameData: GameData = GameData({})
+    val gameResourceRegistry: GameResourceRegistry = GameResourceRegistry({})
 }
 
 class TestLootManager {
@@ -48,7 +45,7 @@ class TestLootManager {
                 repeat(GENERATION_PER_SCENE) { i ->
                     val sceneXML = loadSceneXML(filename)
                     val manager = LootManager(
-                        gameData = TestDependency.gameData,
+                        gameResourceRegistry = TestDependency.gameResourceRegistry,
                         sceneXML = sceneXML,
                         parameter = PARAMETER1
                     )
