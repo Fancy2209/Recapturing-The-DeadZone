@@ -117,7 +117,7 @@ function doesUserExist(username) {
     .then(async (response) => {
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "User check failed");
+        throw new Error(error.reason || "User check failed");
       }
       return response.text();
     })
@@ -144,7 +144,7 @@ function doesUserExist(username) {
           '<p style="color:#b86b5f">If you are trying to register, choose another name.</p>'
         );
         isUsernameValid = true;
-      } else {
+      } else if (result == "no") {
         infoDiv
           .text("Username is available, you will be registered.")
           .css("color", "green");
@@ -154,7 +154,7 @@ function doesUserExist(username) {
       updateSubmitButton();
     })
     .catch((error) => {
-      console.error("Error:", error.message);
+      console.error("Error:", error.reason);
       $(".username-info").text("Error checking username").css("color", "red");
     });
 }
@@ -208,7 +208,7 @@ function login(username, password) {
       return true;
     })
     .catch((error) => {
-      console.error("Login error:", error.message);
+      console.error("Login error:", error.reason);
       $(".error-reason")
         .text("Unexpected error during login")
         .css("color", "red");

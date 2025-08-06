@@ -74,13 +74,10 @@ fun Route.authRoute(context: ServerContext) {
 
         try {
             val exists = context.authProvider.doesUserExist(username)
-            call.respond(mapOf("status" to if (exists) "yes" else "no"))
+            call.respondText(if (exists) "yes" else "no")
         } catch (e: Exception) {
             Logger.error { "Failed to check if user exists: $username, e.message:${e.message}" }
-            call.respond(HttpStatusCode.InternalServerError, mapOf("message" to "Database error"))
+            call.respond(HttpStatusCode.InternalServerError, mapOf("reason" to "Database error"))
         }
-
-        val exists = context.authProvider.doesUserExist(username)
-        call.respondText(if (exists) "yes" else "no")
     }
 }
