@@ -13,7 +13,7 @@ fun main(args: Array<String>) {
     EngineMain.main(args)
 }
 
-fun Application.module() {
+suspend fun Application.module() {
     configureWebsocket()
     Dependency.gameData = GameData(onResourceLoadComplete = {
         launch {
@@ -21,7 +21,8 @@ fun Application.module() {
         }
     })
     val adminEnabled = environment.config.propertyOrNull("game.enableAdmin")?.getString()?.toBooleanStrictOrNull() ?: false
-    configureDatabase(adminEnabled)
+    val mongoUrl = environment.config.propertyOrNull("mongo.url")?.getString()!!
+    configureDatabase(mongoUrl, adminEnabled)
     val sessionManager = SessionManager()
     val serverContext = ServerContext(
         db = Dependency.database,

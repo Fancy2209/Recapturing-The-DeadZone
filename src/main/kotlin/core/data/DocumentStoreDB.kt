@@ -26,17 +26,11 @@ class DocumentStoreDB(store: DataStore, private val adminEnabled: Boolean) : Big
     private val USER_DOCUMENT_NAME = "userdocument"
     private lateinit var udocs: ObjectCollection<UserDocument>
 
-    init {
-        CoroutineScope(Dispatchers.IO).launch {
-            setupUserDocument()
-        }
-    }
-
-    private suspend fun setupUserDocument() {
+    suspend fun setupUserDocument() {
         try {
             val docs = db.getObjectCollection<UserDocument>(USER_DOCUMENT_NAME)
             val count = docs.size()
-            Logger.info { "User collection ready, contains $count users." }
+            Logger.info { "DocumentStoreDB: User collection ready, contains $count users." }
             udocs = docs
 
             if (adminEnabled) {
@@ -44,15 +38,15 @@ class DocumentStoreDB(store: DataStore, private val adminEnabled: Boolean) : Big
                 if (adminDoc == null) {
                     val doc = UserDocument.admin().copy(playerId = AdminData.PLAYER_ID)
                     docs.insert(doc)
-                    Logger.info { "Admin account inserted with playerId=${doc.playerId}" }
+                    Logger.info { "DocumentStoreDB: Admin account inserted with playerId=${doc.playerId}" }
                 } else {
-                    Logger.info { "Admin account already exists." }
+                    Logger.info { "DocumentStoreDB: Admin account already exists." }
                 }
             }
 
             setupIndexes()
         } catch (e: Exception) {
-            Logger.error { "DocumentStoreDB fail during setupUserDocument: $e" }
+            Logger.error { "DocumentStoreDB: fail during setupUserDocument: $e" }
         }
     }
 

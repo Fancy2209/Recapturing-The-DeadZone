@@ -5,5 +5,7 @@ ktor:
     development: true
     deployment:
         port: 8080
+mongo:
+    url: "$MONGO_URL:mongodb://localhost:27017"
 game:
     enableAdmin: false
