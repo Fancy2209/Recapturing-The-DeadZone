@@ -24,7 +24,7 @@ data class Survivor(
     val appearance: SurvivorAppearance? = null, // HumanAppearance > SurvivorAppearance
     val scale: Double = 1.22,
     val voice: String,
-    val accessories: Map<Int, String>,  // string is accessory id
+    val accessories: Map<String, String>,  // key is parsed to int, string is accessory id
     val maxClothingAccessories: Int
 ) {
     companion object {
