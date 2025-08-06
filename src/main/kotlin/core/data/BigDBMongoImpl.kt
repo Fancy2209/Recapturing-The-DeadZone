@@ -2,6 +2,7 @@ package dev.deadzone.core.data
 
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Indexes
+import com.mongodb.client.model.Projections
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import com.toxicbakery.bcrypt.Bcrypt
 import dev.deadzone.core.auth.model.PlayerSave
@@ -13,11 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import org.bson.BsonReader
-import org.bson.BsonWriter
-import org.bson.codecs.Codec
-import org.bson.codecs.DecoderContext
-import org.bson.codecs.EncoderContext
+import org.bson.Document
 import java.util.*
 import kotlin.io.encoding.Base64
 
@@ -80,7 +77,10 @@ class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : Big
     }
 
     override suspend fun doesUserExist(username: String): Boolean {
-        return udocs.find(Filters.eq("profile.displayName", username)).firstOrNull() != null
+        return udocs
+            .find(Filters.eq("profile.displayName", username))
+            .projection(null)
+            .firstOrNull() != null
     }
 
     override suspend fun getUserDocByUsername(username: String): UserDocument? {
@@ -88,16 +88,27 @@ class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : Big
     }
 
     override suspend fun getPlayerIdOfUsername(username: String): String? {
-        return udocs.find(Filters.eq("profile.displayName", username)).firstOrNull()?.playerId
+        return udocs
+            .find(Filters.eq("profile.displayName", username))
+            .projection(Projections.include("playerId"))
+            .firstOrNull()
+            ?.playerId
     }
 
     override suspend fun verifyCredentials(username: String, password: String): String? {
-        val user = udocs.find(Filters.eq("profile.displayName", username)).firstOrNull() ?: return null
+        val doc = udocs
+            .withDocumentClass<Document>()
+            .find(Filters.eq("profile.displayName", username))
+            .projection(Projections.include("hashedPassword", "playerId"))
+            .firstOrNull()
 
-        val hashed = user.hashedPassword
+        if (doc == null) return null
+
+        val hashed = doc.getString("hashedPassword")
+        val playerId = doc.getString("playerId")
         val matches = Bcrypt.verify(password, Base64.decode(hashed))
 
-        return if (matches) user.playerId else null
+        return if (matches) playerId else null
     }
 
     private fun hashPw(password: String): String {

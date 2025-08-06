@@ -1,20 +1,11 @@
 package dev.deadzone.module
 
 import com.github.lamba92.kotlin.document.store.stores.leveldb.LevelDBStore
-import com.mongodb.ConnectionString
-import com.mongodb.KotlinCodecProvider
-import com.mongodb.MongoClientSettings
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import dev.deadzone.core.data.BigDBMongoImpl
 import dev.deadzone.core.data.DocumentStoreDB
 import kotlinx.coroutines.withTimeout
-import org.bson.BsonReader
-import org.bson.BsonWriter
 import org.bson.Document
-import org.bson.codecs.Codec
-import org.bson.codecs.DecoderContext
-import org.bson.codecs.EncoderContext
-import org.bson.codecs.configuration.CodecRegistries
 import java.io.File
 
 // Start MongoDB community edition (local)
