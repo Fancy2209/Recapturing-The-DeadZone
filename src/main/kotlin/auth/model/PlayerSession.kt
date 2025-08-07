@@ -18,5 +18,6 @@ data class PlayerSession(
     val playerId: String,
     val token: String,
     val issuedAt: Long,
-    val expiresAt: Long,
+    var expiresAt: Long,
+    var lifetime: Long,
 )

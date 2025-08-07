@@ -12,61 +12,82 @@ import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * Handles short-lived authentication sessions between web login and game socket connection.
+ * Manages authentication sessions between web login and game client.
  *
- * ### Flow:
  * - After a successful website login, this class issues a session token for the player.
- * - The client uses this token during API 13 and API 601.
- * - Later, when the game client connects to the socket server, it sends the `playerId`.
- * - If a valid session exists for that `playerId` (based on token and expiry), the socket is accepted.
+ * - The client uses this token for API requests.
+ * - On API requests, this class verifies if the token is valid and unexpired.
+ * - Token will be refreshed upon successful verification.
+ * - The client website makes API requests every 50 minutes to refresh the token.
+ * This ensures that the token remains valid, even when the game is not actively making API requests.
+ * - Session refreshes is limited to 6 hours. This means player will not be able to make API requests after 6 hours online.
  */
 class SessionManager {
-    private val sessions = ConcurrentHashMap<String, PlayerSession>()
-    private val cleanupInterval = 60_000L // 60 seconds
+    private val sessions = ConcurrentHashMap<String, PlayerSession>() // token -> session
+    private val CLEANUP_INTERVAL_MS = 5 * 60 * 1000L // 5 minutes
     private val cleanupJob = Job()
+    private val SESSION_DURATION_MS = 1 * 60 * 60 * 1000L // 2 hours
+    private val SESSION_LIFETIME_MS = 6 * 60 * 60 * 1000L // 6 hours
     private val scope = CoroutineScope(Dispatchers.IO + cleanupJob)
 
     init {
         scope.launch {
             while (isActive) {
                 cleanupExpiredSessions()
-                delay(cleanupInterval)
+                delay(CLEANUP_INTERVAL_MS)
             }
         }
     }
 
     fun create(playerId: String): PlayerSession {
         val now = getTimeMillis()
+        val token = UUID.randomUUID().toString()
 
         val session = PlayerSession(
             playerId = playerId,
-            token = UUID.randomUUID().toString(),
+            token = token,
             issuedAt = now,
-            expiresAt = now + 2 * 60 * 1000 // 2 minutes
+            expiresAt = now + SESSION_DURATION_MS,
+            lifetime = SESSION_LIFETIME_MS
         )
 
-        sessions[playerId] = session
+        sessions[token] = session
         return session
     }
 
-    fun verify(playerId: String, token: String): Boolean {
-        val session = sessions[playerId] ?: return false
+    fun verify(token: String): Boolean {
+        // token invalid
+        val session = sessions[token] ?: return false
         val now = getTimeMillis()
 
+        // token expired
         if (now >= session.expiresAt) {
-            sessions.remove(playerId)
+            sessions.remove(token)
             return false
         }
 
-        return session.token == token
+        // max lifetime exceeded
+        val lifetime = now - session.issuedAt
+        if (lifetime > SESSION_LIFETIME_MS) {
+            sessions.remove(token)
+            return false
+        }
+
+        // token is valid, refresh expiration
+        session.expiresAt = now + 1 * 60 * 60 * 1000 // refresh to 1 hour
+        return true
     }
 
-    fun getSession(playerId: String): PlayerSession? {
-        val session = sessions[playerId] ?: return null
+    fun getPlayerId(token: String): String? {
+        return sessions[token]?.takeIf { getTimeMillis() < it.expiresAt }?.playerId
+    }
+
+    fun getSession(token: String): PlayerSession? {
+        val session = sessions[token] ?: return null
         val now = getTimeMillis()
 
         return if (now >= session.expiresAt) {
-            sessions.remove(playerId)
+            sessions.remove(token)
             null
         } else {
             session
