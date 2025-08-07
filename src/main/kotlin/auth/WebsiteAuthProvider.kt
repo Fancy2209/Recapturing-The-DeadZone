@@ -1,8 +1,10 @@
-package dev.deadzone.core.auth
+package dev.deadzone.auth
 
+import dev.deadzone.core.auth.AuthProvider
+import dev.deadzone.core.auth.SessionManager
 import dev.deadzone.core.auth.model.PlayerSession
 import dev.deadzone.core.data.AdminData
-import dev.deadzone.core.data.BigDB
+import dev.deadzone.data.db.BigDB
 
 class WebsiteAuthProvider(
     private val db: BigDB,
