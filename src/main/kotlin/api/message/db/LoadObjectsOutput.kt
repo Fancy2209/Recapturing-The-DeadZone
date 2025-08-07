@@ -17,11 +17,11 @@ data class LoadObjectsOutput(
         }
 
         data class NeighborHistory(
-            val map: Map<String, RemotePlayerData>?
+            val map: Map<String, RemotePlayerData>? = emptyMap()
         )
 
         fun neighborHistory(): BigDBObject {
-            val data = NeighborHistory(mapOf())
+            val data = NeighborHistory(emptyMap())
             return Converter.toBigDBObject<NeighborHistory>(obj = data)
         }
 

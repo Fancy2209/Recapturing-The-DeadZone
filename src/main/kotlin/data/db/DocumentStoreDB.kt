@@ -1,20 +1,15 @@
 package dev.deadzone.core.data
 
-import com.github.lamba92.kotlin.document.store.core.DataStore
-import com.github.lamba92.kotlin.document.store.core.KotlinDocumentStore
-import com.github.lamba92.kotlin.document.store.core.ObjectCollection
-import com.github.lamba92.kotlin.document.store.core.find
-import com.github.lamba92.kotlin.document.store.core.getObjectCollection
+import com.github.lamba92.kotlin.document.store.core.*
 import com.toxicbakery.bcrypt.Bcrypt
 import dev.deadzone.core.auth.model.PlayerSave
 import dev.deadzone.core.auth.model.ServerMetadata
 import dev.deadzone.core.auth.model.UserDocument
 import dev.deadzone.core.auth.model.UserProfile
-import dev.deadzone.core.data.AdminData
 import dev.deadzone.data.db.BigDB
 import dev.deadzone.module.Logger
 import kotlinx.coroutines.flow.firstOrNull
-import java.util.UUID
+import java.util.*
 import kotlin.io.encoding.Base64
 
 /**
@@ -92,6 +87,8 @@ class DocumentStoreDB(store: DataStore, private val adminEnabled: Boolean) : Big
 
     override suspend fun verifyCredentials(username: String, password: String): String? {
         val user = udocs.find("profile.displayName", username).firstOrNull() ?: return null
+
+        Logger.info { udocs.toString() }
 
         val hashed = user.hashedPassword
         val matches = Bcrypt.verify(password, Base64.decode(hashed))
