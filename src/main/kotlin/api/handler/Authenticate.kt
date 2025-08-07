@@ -2,10 +2,13 @@ package dev.deadzone.api.handler
 
 import dev.deadzone.api.message.auth.AuthenticateArgs
 import dev.deadzone.api.message.auth.AuthenticateOutput
+import dev.deadzone.core.data.AdminData
+import dev.deadzone.module.Logger
 import dev.deadzone.module.logInput
 import dev.deadzone.module.logOutput
 import dev.deadzone.module.pioFraming
 import dev.deadzone.socket.ServerContext
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -30,11 +33,38 @@ suspend fun RoutingContext.authenticate(context: ServerContext) {
 
     logInput(authenticateArgs)
 
-    val authenticateOutput = ProtoBuf.encodeToByteArray<AuthenticateOutput>(
-        AuthenticateOutput.dummy()
+    val userToken = authenticateArgs
+        .authenticationArguments
+        .find { it.key == "userToken" }?.value
+
+    if (userToken == null) {
+        Logger.error { "Missing userToken in API 13 request" }
+        call.respond(HttpStatusCode.BadRequest, "userToken is missing")
+        return
+    }
+
+    val authenticateOutput = if (userToken == AdminData.TOKEN) {
+        Logger.info { "auth by admin" }
+        AuthenticateOutput.admin()
+    } else {
+        val isValidToken = context.sessionManager.verify(userToken)
+        if (isValidToken) {
+            AuthenticateOutput(
+                token = userToken,
+                userId = context.sessionManager.getPlayerId(userToken)!!,
+                apiServerHosts = listOf("127.0.0.1:8080")
+            )
+        } else {
+            call.respond(HttpStatusCode.Unauthorized, "token is invalid")
+            null
+        }
+    } ?: return
+
+    val encodedOutput = ProtoBuf.encodeToByteArray<AuthenticateOutput>(
+        authenticateOutput
     )
 
-    logOutput(authenticateOutput)
+    logOutput(encodedOutput)
 
-    call.respondBytes(authenticateOutput.pioFraming())
+    call.respondBytes(encodedOutput.pioFraming())
 }

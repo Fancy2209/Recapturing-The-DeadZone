@@ -21,7 +21,7 @@ data class AuthenticateOutput(
     val apiServerHosts: List<String> = emptyList()
 ) {
     companion object {
-        fun dummy(): AuthenticateOutput {
+        fun admin(): AuthenticateOutput {
             return AuthenticateOutput(
                 token = AdminData.TOKEN,
                 userId = AdminData.PLAYER_ID,
