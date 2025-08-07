@@ -78,11 +78,18 @@ class DocumentStoreDB(store: DataStore, private val adminEnabled: Boolean) : Big
     }
 
     override suspend fun getUserDocByUsername(username: String): UserDocument? {
-        return udocs.find("profie.displayName", username).firstOrNull()
+        return udocs.find("profile.displayName", username).firstOrNull()
     }
 
     override suspend fun getPlayerIdOfUsername(username: String): String? {
-        return udocs.find("profie.displayName", username).firstOrNull()?.playerId
+        return udocs.find("profile.displayName", username).firstOrNull()?.playerId
+    }
+
+    override suspend fun getProfileOfPlayerId(playerId: String): UserProfile? {
+        return udocs
+            .find("playerId", playerId)
+            .firstOrNull()
+            ?.profile
     }
 
     override suspend fun verifyCredentials(username: String, password: String): String? {

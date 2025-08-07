@@ -1,6 +1,7 @@
 package dev.deadzone.data.db
 
 import dev.deadzone.core.auth.model.UserDocument
+import dev.deadzone.core.auth.model.UserProfile
 
 /**
  * Representation of PlayerIO BigDB
@@ -20,6 +21,8 @@ interface BigDB {
     suspend fun getUserDocByUsername(username: String): UserDocument?
 
     suspend fun getPlayerIdOfUsername(username: String): String?
+
+    suspend fun getProfileOfPlayerId(playerId: String): UserProfile?
 
     /**
      * Verify credentials of the given username and password

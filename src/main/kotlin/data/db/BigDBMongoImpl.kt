@@ -9,8 +9,8 @@ import dev.deadzone.core.auth.model.PlayerSave
 import dev.deadzone.core.auth.model.ServerMetadata
 import dev.deadzone.core.auth.model.UserDocument
 import dev.deadzone.core.auth.model.UserProfile
-import dev.deadzone.core.data.AdminData
 import dev.deadzone.data.db.BigDB
+import dev.deadzone.module.Dependency
 import dev.deadzone.module.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -95,6 +95,20 @@ class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : Big
             .projection(Projections.include("playerId"))
             .firstOrNull()
             ?.playerId
+    }
+
+    override suspend fun getProfileOfPlayerId(playerId: String): UserProfile? {
+        val doc = udocs
+            .withDocumentClass<Document>()
+            .find(Filters.eq("playerId", playerId))
+            .projection(Projections.include("profile"))
+            .firstOrNull()
+
+        val profileDoc = doc?.get("profile") as? Document
+        return profileDoc?.let {
+            val jsonString = it.toJson()
+            Dependency.json.decodeFromString<UserProfile>(jsonString)
+        }
     }
 
     override suspend fun verifyCredentials(username: String, password: String): String? {

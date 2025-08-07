@@ -1,18 +1,18 @@
-package dev.deadzone.api.message.auth
+package dev.deadzone.api.message.social
 
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class SocialRefreshOutput(
     val myProfile: SocialProfile = SocialProfile(),
-    val friends: List<SocialProfile> = listOf(),
+    val friends: List<SocialProfile> = emptyList(),
     val blocked: String = "",
 ) {
     companion object {
-        fun dummy(): SocialRefreshOutput {
+        fun admin(): SocialRefreshOutput {
             return SocialRefreshOutput(
-                myProfile = SocialProfile.dummy(),
-                friends = listOf(SocialProfile.dummy()),
+                myProfile = SocialProfile.admin(),
+                friends = listOf(SocialProfile.admin()),
                 blocked = "No one"
             )
         }
