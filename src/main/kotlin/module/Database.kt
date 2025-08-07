@@ -4,7 +4,7 @@ import com.github.lamba92.kotlin.document.store.stores.leveldb.LevelDBStore
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import dev.deadzone.core.data.BigDBMongoImpl
 import dev.deadzone.core.data.DocumentStoreDB
-import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 import org.bson.Document
 import java.io.File
 
@@ -14,19 +14,29 @@ import java.io.File
 // Must be cmd in Windows not powershell
 suspend fun configureDatabase(mongoUrl: String, adminEnabled: Boolean) {
     Logger.info { "Configuring database..." }
-    try {
-        withTimeout(5000L) {
+
+    val success = withTimeoutOrNull(5000L) {
+        try {
             val mongoc = MongoClient.create(mongoUrl)
             val database = mongoc.getDatabase("admin")
             val commandResult = database.runCommand(Document("ping", 1))
             Logger.info { "MongoDB connection successful: $commandResult" }
+
             Dependency.database = BigDBMongoImpl(mongoc.getDatabase("tlsdz"), adminEnabled)
-            return@withTimeout
+            true
+        } catch (e: Exception) {
+            Logger.warn { "MongoDB connection failed inside timeout: ${e.message}" }
+            false
         }
-    } catch (e: Exception) {
-        Logger.warn { "MongoDB connection failed: ${e.message} (this is expected if you don't have MongoDB installed). We will fallback to embedded DB instead." }
+    }
+
+    if (success != true) {
+        Logger.warn { "MongoDB connection failed or timed out. Falling back to embedded DB." }
+
         File("data").mkdirs()
         val store = LevelDBStore.open("data/db")
-        Dependency.database = DocumentStoreDB(store, adminEnabled).also { it.setupUserDocument() }
+        Dependency.database = DocumentStoreDB(store, adminEnabled).also {
+            it.setupUserDocument()
+        }
     }
 }
