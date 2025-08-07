@@ -80,9 +80,17 @@ fun Application.configureRouting(context: ServerContext) {
         post("/api/{path}") {
             val path = call.parameters["path"] ?: return@post call.respond(HttpStatusCode.BadRequest)
 
+            val playerToken = if (path != "13") {
+                call.request.queryParameters["playertoken"]
+                    ?: call.request.headers["playertoken"]
+                    ?: return@post call.respond(HttpStatusCode.Unauthorized, "Missing playertoken")
+            } else {
+                null
+            }
+
             when (path) {
                 "13" -> authenticate(context)
-                "601" -> socialRefresh(context)
+                "601" -> socialRefresh(context, playerToken!!)
                 "27" -> createJoinRoom(context)
                 "50" -> writeError(context)
                 "85" -> loadObjects(context)
