@@ -1,0 +1,55 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '24'
+
+      - name: Grant execute permission to gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build shadowJar
+        run: ./gradlew shadowJar
+
+      - name: Copy static files into deploy
+        run: |
+          rm -rf deploy/static
+          cp -r static deploy/static
+
+      - name: Zip deploy folder
+        run: |
+          cd deploy
+          zip -r ../deploy.zip .
+          cd ..
+
+      - name: Read release notes
+        id: read_notes
+        run: |
+          NOTES=$(cat RELEASE_NOTES.md)
+          echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
+          echo "$NOTES" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release ${{ github.ref_name }}
+          tag_name: ${{ github.ref }}
+          body: ${{ env.RELEASE_NOTES }}
+          files: deploy.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

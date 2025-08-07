@@ -43,3 +43,4 @@ tlsdz_schema/sidebar.js
 logs/
 .kotlin
 data/db/
+deploy/

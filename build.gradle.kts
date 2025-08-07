@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
@@ -14,6 +15,19 @@ repositories {
 
 application {
     mainClass = "io.ktor.server.netty.EngineMain"
+}
+
+ktor {
+    fatJar {
+        archiveFileName.set("deadzone-server.jar")
+    }
+}
+
+tasks.withType<ShadowJar> {
+    destinationDirectory.set(file("deploy"))
+    manifest {
+        attributes["Main-Class"] = "io.ktor.server.netty.EngineMain"
+    }
 }
 
 dependencies {
