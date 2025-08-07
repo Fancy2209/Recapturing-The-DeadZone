@@ -1,6 +1,7 @@
 package dev.deadzone.core.auth
 
 import dev.deadzone.core.auth.model.PlayerSession
+import dev.deadzone.core.data.AdminData
 import io.ktor.util.date.getTimeMillis
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -41,7 +42,12 @@ class SessionManager {
 
     fun create(playerId: String): PlayerSession {
         val now = getTimeMillis()
-        val token = UUID.randomUUID().toString()
+
+        val token = if (playerId == AdminData.PLAYER_ID) {
+            AdminData.TOKEN
+        } else {
+            UUID.randomUUID().toString()
+        }
 
         val session = PlayerSession(
             playerId = playerId,
