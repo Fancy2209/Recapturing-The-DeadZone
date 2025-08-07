@@ -6,6 +6,7 @@ var mtPST = "00:00";
 
 let debounceTimeout;
 let usernameTimer;
+let TOKEN_REFRESH_INTERVAL = 50 * 60 * 1000; // 50 minutes
 let isUsernameValid = false;
 let isPasswordValid = false;
 
@@ -63,10 +64,14 @@ $(document).ready(function () {
     var password = $("#password").val();
     login(username, password).then((success) => {
       if (success) {
-        startGame();
+        startGame(window.token);
       }
     });
   });
+
+  if (window.token != null || window.token != "") {
+    setInterval(refreshSession, TOKEN_REFRESH_INTERVAL);
+  }
 });
 
 function updateSubmitButton() {
@@ -201,7 +206,7 @@ function login(username, password) {
     .then((data) => {
       if (!data || !data.token) return false;
 
-      const { playerId, token } = data;
+      window.token = data.token;
       loginDiv
         .text("Login success, now getting you in...")
         .css("color", "green");
@@ -216,6 +221,23 @@ function login(username, password) {
     });
 }
 
+function refreshSession() {
+  let ss = $(".server-status");
+
+  fetch(`/keepalive?token=${SESSION_TOKEN}`)
+    .then((response) => {
+      if (response.status === 200) {
+      } else if (response.status === 401) {
+        ss.text("Session expired, login again.").css("color", "red");
+      } else {
+        console.error("Unexpected error during keepalive.");
+      }
+    })
+    .catch((err) => {
+      console.error("Keepalive request failed:", err);
+    });
+}
+
 function showGameScreen() {
   var a = swfobject.getFlashPlayerVersion();
   $("#noflash-reqVersion").html(flashVersion);
@@ -225,7 +247,7 @@ function showGameScreen() {
   }
 }
 
-function startGame() {
+function startGame(token) {
   $("#loading").css("display", "block");
   const flashVars = {
     path: "/game/",
@@ -240,6 +262,7 @@ function startGame() {
     clientAPI: "javascript",
     playerInsightSegments: [],
     playCodes: [],
+    userToken: token,
     // local: 0,
     clientInfo: {
       platform: navigator.platform,
