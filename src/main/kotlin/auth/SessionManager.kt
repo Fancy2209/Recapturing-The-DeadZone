@@ -66,6 +66,14 @@ class SessionManager {
             return false
         }
 
+        return true
+    }
+
+    // refreshed every 50 minutes by client
+    fun refresh(token: String): Boolean {
+        val session = sessions[token] ?: return false
+        val now = getTimeMillis()
+
         // max lifetime exceeded
         val lifetime = now - session.issuedAt
         if (lifetime > SESSION_LIFETIME_MS) {
@@ -73,7 +81,6 @@ class SessionManager {
             return false
         }
 
-        // token is valid, refresh expiration
         session.expiresAt = now + 1 * 60 * 60 * 1000 // refresh to 1 hour
         return true
     }
