@@ -30,6 +30,15 @@ tasks.withType<ShadowJar> {
     }
 }
 
+tasks.register<Copy>("copyRunScripts") {
+    from("autorun.bat", "autorun.sh")
+    into("deploy")
+}
+
+tasks.named("shadowJar") {
+    finalizedBy("copyRunScripts")
+}
+
 dependencies {
     implementation(libs.ktor.network.tls)
     implementation(libs.ktor.server.core)
