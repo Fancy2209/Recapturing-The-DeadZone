@@ -68,6 +68,15 @@ fun Application.configureRouting(context: ServerContext) {
 
         authRoute(context)
 
+        get("/keepalive") {
+            val token = call.parameters["token"] ?: return@get call.respond(HttpStatusCode.BadRequest, "missing token")
+            if (context.sessionManager.verify(token)) {
+                return@get call.respond(HttpStatusCode.OK)
+            } else {
+                return@get call.respond(HttpStatusCode.Unauthorized, "Session expired, please login again")
+            }
+        }
+
         post("/api/{path}") {
             val path = call.parameters["path"] ?: return@post call.respond(HttpStatusCode.BadRequest)
 
