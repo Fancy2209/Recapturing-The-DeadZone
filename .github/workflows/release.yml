@@ -42,7 +42,7 @@ jobs:
       - name: Read release notes
         id: read_notes
         run: |
-          NOTES=$(cat RELEASE_NOTES.md)
+          NOTES=$(awk '/^# / { if (seen++) exit } seen { print }' RELEASE_NOTES.md)
           echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
           echo "$NOTES" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
