@@ -69,7 +69,7 @@ class JsonFileStoreDB(private val dbdir: File, private val json: Json, private v
             playerId = pid,
             hashedPassword = hashPw(password),
             profile = profile,
-            playerSave = PlayerSave.newgame(),
+            playerSave = PlayerSave.newgame(pid, username),
             metadata = ServerMetadata()
         )
 

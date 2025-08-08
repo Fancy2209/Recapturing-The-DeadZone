@@ -25,9 +25,9 @@ data class PlayerSave(
             )
         }
 
-        fun newgame(): PlayerSave {
+        fun newgame(pid: String, username: String): PlayerSave {
             return PlayerSave(
-                playerObjects = PlayerData.admin(),
+                playerObjects = PlayerData.newgame(pid, username),
                 inventory = Inventory.newgame(),
                 neighborHistory = emptyMap(),
                 loginState = PlayerLoginState.newgame()

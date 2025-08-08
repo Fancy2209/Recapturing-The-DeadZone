@@ -12,19 +12,19 @@ import dev.deadzone.core.model.game.data.skills.SkillState
 import dev.deadzone.core.model.network.RemotePlayerData
 import io.ktor.util.date.*
 import kotlinx.serialization.Serializable
-import kotlin.experimental.or
+import java.util.*
 
 @Serializable
 data class PlayerData(
-    val key: String,
-    val user: Map<String, AbstractUser> = mapOf(),
+    val key: String,                                  // unknown what key is used for
+    val user: Map<String, AbstractUser> = emptyMap(), // unknown what user is used for
     val admin: Boolean,
     val flags: ByteArray?,         // deserialized to flagset (see PlayerFlags), indicates tutorial stuff
     val nickname: String?,
     val playerSurvivor: String,
     val levelPts: UInt = 0u,
     val restXP: Int = 0,
-    val oneTimePurchases: List<String> = listOf(),
+    val oneTimePurchases: List<String> = emptyList(),
     val neighbors: Map<String, RemotePlayerData>?,
     val friends: Map<String, RemotePlayerData>?,
     val research: ResearchState?,
@@ -58,14 +58,13 @@ data class PlayerData(
 ) {
     companion object {
         fun admin(): PlayerData {
-            val exampleBools = IntRange(0, 8).map { false }
-            val exampleBools2 = listOf(true, false, true, true, true, true, true, true, true, true, true)
+            val mockFlags = IntRange(0, 8).map { false }.toByteArray()
 
             return PlayerData(
                 key = AdminData.PLAYER_DATA_KEY,
                 admin = true,
-                flags = boolsToByteArray(exampleBools2),
-                nickname = "dzplayer",
+                flags = PlayerFlags.skipTutorial(),
+                nickname = AdminData.DISPLAY_NAME,
                 playerSurvivor = AdminData.PLAYER_SRV_ID,
                 neighbors = null,
                 friends = null,
@@ -101,9 +100,9 @@ data class PlayerData(
                     AdminData.FIGHTER_SRV_ID to SurvivorLoadoutEntry.fighterLoadout(),
                     AdminData.RECON_SRV_ID to SurvivorLoadoutEntry.reconLoadout(),
                 ),
-                quests = boolsToByteArray(exampleBools),
-                questsCollected = boolsToByteArray(exampleBools),
-                achievements = boolsToByteArray(exampleBools),
+                quests = mockFlags,
+                questsCollected = mockFlags,
+                achievements = mockFlags,
                 dailyQuest = null,
                 questsTracked = null,
                 gQuestsV2 = null,
@@ -116,19 +115,70 @@ data class PlayerData(
             )
         }
 
-        private fun boolsToByteArray(bools: List<Boolean>): ByteArray? {
-            val byteCount = (bools.size + 7) / 8
-            val bytes = ByteArray(byteCount)
+        fun newgame(pid: String, nickname: String): PlayerData {
+            val mockFlags = IntRange(0, 8).map { false }.toByteArray()
+            val playerSrvId = UUID.randomUUID().toString()
+            val playerSrv = Survivor(
+                id = playerSrvId,
+                title = nickname,
+                firstName = nickname,
+                lastName = "",
+                gender = Gender_Constants.MALE.value,
+                portrait = null,
+                classId = SurvivorClassConstants_Constants.PLAYER.value,
+                morale = emptyMap(),
+                injuries = emptyList(),
+                level = 1,
+                xp = 0,
+                missionId = null,
+                assignmentId = null,
+                reassignTimer = null,
+                appearance = null,
+                voice = "asian-m",
+                accessories = emptyMap(),
+                maxClothingAccessories = 4
+            )
 
-            for (i in bools.indices) {
-                if (bools[i]) {
-                    val byteIndex = i / 8
-                    val bitIndex = i % 8
-                    bytes[byteIndex] = bytes[byteIndex] or (1 shl bitIndex).toByte()
-                }
-            }
-
-            return bytes
+            return PlayerData(
+                key = pid,
+                admin = false,
+                flags = PlayerFlags.skipTutorial(),
+                nickname = nickname,
+                playerSurvivor = playerSrvId,
+                neighbors = null,
+                friends = null,
+                research = ResearchState(active = emptyList(), levels = emptyMap()),
+                skills = null,
+                resources = GameResources(
+                    cash = 0, wood = 100, metal = 100,
+                    cloth = 100, food = 25, water = 25, ammunition = 100
+                ),
+                survivors = listOf(playerSrv),
+                playerAttributes = Attributes.dummy(),
+                buildings = BuildingCollection.starterBase(),
+                rally = emptyMap(),
+                tasks = TaskCollection().list,
+                missions = listOf(MissionData.dummy(AdminData.PLAYER_SRV_ID)),
+                assignments = null,
+                effects = listOf(Effect.halloweenTrickPumpkinZombie(), Effect.halloweenTrickPewPew()),
+                globalEffects = listOf(Effect.halloweenTrickPumpkinZombie(), Effect.halloweenTrickPewPew()),
+                cooldowns = null,
+                batchRecycles = null,
+                offenceLoadout = emptyMap(),
+                defenceLoadout = emptyMap(),
+                quests = mockFlags,
+                questsCollected = mockFlags,
+                achievements = mockFlags,
+                dailyQuest = null,
+                questsTracked = null,
+                gQuestsV2 = null,
+                bountyCap = 0,
+                lastLogout = getTimeMillis() - 100000,
+                dzBounty = null,
+                nextDZBountyIssue = 1230768000000,
+                highActivity = null,
+                notifications = null,
+            )
         }
     }
 

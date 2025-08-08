@@ -65,7 +65,7 @@ class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : Big
             playerId = pid,
             hashedPassword = hashPw(password),
             profile = profile,
-            playerSave = PlayerSave.newgame(),
+            playerSave = PlayerSave.newgame(pid, username),
             metadata = ServerMetadata()
         )
 
