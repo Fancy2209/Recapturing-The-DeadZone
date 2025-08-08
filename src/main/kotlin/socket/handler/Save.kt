@@ -1,10 +1,10 @@
 package dev.deadzone.socket.handler
 
+import dev.deadzone.core.factory.ItemFactory
 import dev.deadzone.core.mission.LootManager
 import dev.deadzone.core.mission.LootParameter
-import dev.deadzone.core.factory.ItemFactory
 import dev.deadzone.core.model.game.data.*
-import dev.deadzone.utils.PIOSerializer
+import dev.deadzone.core.survivor.SurvivorManager
 import dev.deadzone.module.Dependency
 import dev.deadzone.module.LogConfigSocketError
 import dev.deadzone.module.LogConfigSocketToClient
@@ -14,13 +14,21 @@ import dev.deadzone.socket.ServerContext
 import dev.deadzone.socket.handler.saveresponse.compound.BuildingMoveResponse
 import dev.deadzone.socket.handler.saveresponse.crate.CrateUnlockResponse
 import dev.deadzone.socket.handler.saveresponse.mission.GetZombieResponse
+import dev.deadzone.socket.handler.saveresponse.mission.InjuryData
 import dev.deadzone.socket.handler.saveresponse.mission.MissionEndResponse
 import dev.deadzone.socket.handler.saveresponse.mission.MissionStartResponse
+import dev.deadzone.socket.handler.saveresponse.mission.PlayerSurvivor
+import dev.deadzone.socket.handler.saveresponse.mission.SurvivorResult
+import dev.deadzone.socket.handler.saveresponse.mission.XpBreakdown
 import dev.deadzone.socket.handler.saveresponse.mission.resolveAndLoadScene
 import dev.deadzone.socket.utils.SocketMessage
 import dev.deadzone.socket.utils.SocketMessageHandler
+import dev.deadzone.utils.PIOSerializer
 import io.ktor.util.date.*
 import java.util.*
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.random.Random
 
 /**
  * Handle `save` message by:
@@ -48,6 +56,12 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
 
         // Note: the game typically send and expects JSON data for save message
         // encode JSON response to string before using PIO serialization
+
+        // use pdoc to get player's data
+        // to refactor: only query entire doc if needed, maybe create something like PlayerDataManager?
+        val pdoc = context.db.getUserDocByPlayerId(connection.playerId!!)!!
+        val srvManager = SurvivorManager(pdoc.playerSave.playerObjects.survivors)
+        val playerSrv = srvManager.getSurvivorById(pdoc.playerSave.playerObjects.playerSurvivor)
 
         when (type) {
             "get_offers" -> {
@@ -87,7 +101,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 val sceneXML = resolveAndLoadScene(areaType)
                 val lootParameter = LootParameter(
                     areaLevel = (data["areaLevel"] as Int),
-                    playerLevel = 30,
+                    playerLevel = playerSrv?.level ?: 1,
                     itemWeightOverrides = mapOf(),
                     specificItemBoost = mapOf(
                         "fuel-bottle" to 3.0,    // +300% find fuel chance (of the base chance)
@@ -108,20 +122,13 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 val sceneXMLWithLoot = lootManager.insertLoots()
 
                 val zombies = listOf(
-                    ZombieData.dogTank(101),
-                    ZombieData.dogTank(111),
-                    ZombieData.dogTank(112),
-                    ZombieData.fatWalkerStrongAttack(101),
-                    ZombieData.fatWalkerStrongAttack(102),
-                    ZombieData.fatWalkerStrongAttack(103),
-                    ZombieData.fatWalkerStrongAttack(104),
-                    ZombieData.fatWalkerStrongAttack(105),
-                    ZombieData.police20ZWeakAttack(113),
-                    ZombieData.police20ZWeakAttack(114),
-                    ZombieData.police20ZWeakAttack(115),
-                    ZombieData.riotWalker37MediumAttack(116),
-                    ZombieData.riotWalker37MediumAttack(117),
-                    ZombieData.riotWalker37MediumAttack(118),
+                    ZombieData.standardZombieWeakAttack(Random.nextInt()),
+                    ZombieData.standardZombieWeakAttack(Random.nextInt()),
+                    ZombieData.standardZombieWeakAttack(Random.nextInt()),
+                    ZombieData.standardZombieWeakAttack(Random.nextInt()),
+                    ZombieData.dogStandard(Random.nextInt()),
+                    ZombieData.dogStandard(Random.nextInt()),
+                    ZombieData.fatWalkerStrongAttack(Random.nextInt()),
                 ).flatMap { it.toFlatList() }
 
                 val timeSeconds = if (isCompoundZombieAttack == true) 30 else 240
@@ -131,7 +138,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                         id = saveId ?: "",
                         time = timeSeconds,
                         assignmentType = "None", // 'None' because not a raid or arena. see AssignmentType
-                        areaClass = "substreet", // supposedly depend on the area
+                        areaClass = (data["areaClass"] as String?) ?: "", // supposedly depend on the area
                         automated = false, // this depends on request data
                         sceneXML = sceneXMLWithLoot,
                         z = zombies,
@@ -160,18 +167,31 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
             }
 
             "mis_end" -> {
-                val responseJson = Dependency.json.encodeToString(MissionEndResponse())
-                val resourceResponseJson = Dependency.json.encodeToString(
-                    GameResources(
-                        cash = 102000,
-                        wood = (10000..100000).random(),
-                        metal = (10000..100000).random(),
-                        cloth = (10000..100000).random(),
-                        water = (10000..100000).random(),
-                        food = (10000..100000).random(),
-                        ammunition = (10000..100000).random()
+                // some of most important data
+                val responseJson = Dependency.json.encodeToString(
+                    MissionEndResponse(
+                        automated = false,
+                        xpEarned = 100,
+                        xp = null,
+                        returnTimer = null,
+                        lockTimer = null,
+                        loot = emptyList(),
+                        // item id to quantity
+                        itmCounters = emptyMap(),
+                        injuries = null,
+                        // the survivors that goes into the mission
+                        survivors = emptyList(),
+                        player = PlayerSurvivor(xp = 100, level = playerSrv?.level!!),
+                        levelPts = 0,
+                        // base64 encoded string
+                        cooldown = null
                     )
                 )
+
+                // change resource with obtained loot...
+                val currentResource = pdoc.playerSave.playerObjects.resources
+
+                val resourceResponseJson = Dependency.json.encodeToString(currentResource)
 
                 send(PIOSerializer.serialize(buildMsg(saveId, responseJson, resourceResponseJson)))
             }
@@ -181,14 +201,10 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 // there could be 'rush' flag somewhere, which means we need to send runner zombies
 
                 val zombies = listOf(
-                    ZombieData.strongRunner(101),
-                    ZombieData.strongRunner(101),
-                    ZombieData.strongRunner(101),
-                    ZombieData.strongRunner(101),
-                    ZombieData.strongRunner(101),
-                    ZombieData.fatWalkerStrongAttack(101),
-                    ZombieData.fatWalkerStrongAttack(102),
-                    ZombieData.fatWalkerStrongAttack(103),
+                    ZombieData.strongRunner(Random.nextInt()),
+                    ZombieData.strongRunner(Random.nextInt()),
+                    ZombieData.standardZombieWeakAttack(Random.nextInt()),
+                    ZombieData.standardZombieWeakAttack(Random.nextInt()),
                     ZombieData.fatWalkerStrongAttack(104),
                     ZombieData.fatWalkerStrongAttack(105),
                 ).flatMap { it.toFlatList() }

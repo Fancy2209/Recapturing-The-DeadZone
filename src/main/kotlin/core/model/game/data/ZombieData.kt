@@ -9,6 +9,14 @@ data class ZombieData(
     val weapon: String
 ) {
     companion object {
+        fun standardZombieWeakAttack(id: Int): ZombieData {
+            return ZombieData(id = id, type = "standard", weapon = "zStrike")
+        }
+
+        fun dogStandard(id: Int): ZombieData {
+            return ZombieData(id = id, type = "dog", weapon = "zDogBite")
+        }
+
         fun fatWalkerStrongAttack(id: Int): ZombieData {
             return ZombieData(id = id, type = "fat-walker", weapon = "zStrongStrike")
         }
