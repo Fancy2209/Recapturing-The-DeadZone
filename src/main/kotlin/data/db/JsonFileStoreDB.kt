@@ -128,6 +128,18 @@ class JsonFileStoreDB(private val dbdir: File, private val json: Json, private v
         }
     }
 
+    override suspend fun updatePlayerFlags(playerId: String, flags: ByteArray) {
+        udocs.update(playerId) { doc ->
+            doc.copy(
+                playerSave = doc.playerSave.copy(
+                    playerObjects = doc.playerSave.playerObjects.copy(
+                        flags = flags
+                    )
+                )
+            )
+        }
+    }
+
     suspend fun shutdown() {
         udocs.shutdown()
     }

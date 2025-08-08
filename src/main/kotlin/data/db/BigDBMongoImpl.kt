@@ -135,15 +135,24 @@ class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : Big
     override suspend fun saveSurvivorAppearance(playerId: String, srvId: String, newAppearance: HumanAppearance) {
         val udoc = requireNotNull(
             getUserDocByPlayerId(playerId),
-            { "couldn't find UserDoc for playerId: $playerId with srvId=$srvId" }
+            { "couldn't find UserDoc for playerId: $playerId with" }
         )
 
         val survivorIndex = udoc.playerSave.playerObjects.survivors.indexOfFirst { it.id == srvId }
 
-        Logger.debug { "Updating survivor appearance for playerId=$playerId srvId=$srvId" }
+        Logger.debug { "saveSurvivorAppearance: playerId=$playerId srvId=$srvId" }
 
         val path = "playerSave.playerObjects.survivors.$survivorIndex.appearance"
         val update = Updates.set(path, newAppearance)
+
+        udocs.updateOne(Filters.eq("playerId", playerId), update)
+    }
+
+    override suspend fun updatePlayerFlags(playerId: String, flags: ByteArray) {
+        Logger.debug { "updatePlayerFlags: playerId=$playerId flags=$flags" }
+
+        val path = "playerSave.playerObjects.flags"
+        val update = Updates.set(path, flags)
 
         udocs.updateOne(Filters.eq("playerId", playerId), update)
     }

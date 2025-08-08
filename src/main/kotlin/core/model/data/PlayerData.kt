@@ -20,6 +20,8 @@ data class PlayerData(
     val key: String,                                  // unknown what key is used for
     val user: Map<String, AbstractUser> = emptyMap(), // unknown what user is used for
     val admin: Boolean,
+
+    @Serializable(with = ByteArrayAsBinarySerializer::class)
     val flags: ByteArray?,         // deserialized to flagset (see PlayerFlags), indicates tutorial stuff
     val nickname: String?,
     val playerSurvivor: String?,

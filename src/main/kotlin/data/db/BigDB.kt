@@ -29,6 +29,8 @@ interface BigDB {
 
     suspend fun saveSurvivorAppearance(playerId: String, srvId: String, newAppearance: HumanAppearance)
 
+    suspend fun updatePlayerFlags(playerId: String, flags: ByteArray)
+
     /**
      * Verify credentials of the given username and password
      *

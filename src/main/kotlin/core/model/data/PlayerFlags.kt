@@ -1,5 +1,17 @@
 package dev.deadzone.core.model.data
 
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.builtins.ByteArraySerializer
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import org.bson.BsonBinary
+import org.bson.codecs.kotlinx.BsonDecoder
+import org.bson.codecs.kotlinx.BsonEncoder
 import kotlin.experimental.or
 
 object PlayerFlags {
@@ -56,6 +68,32 @@ fun List<Boolean>.toByteArray(): ByteArray {
 
     return bytes
 }
+
+@OptIn(ExperimentalSerializationApi::class)
+object ByteArrayAsBinarySerializer : KSerializer<ByteArray> {
+    override val descriptor: SerialDescriptor =
+        PrimitiveSerialDescriptor("ByteArrayAsBinary", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: ByteArray) {
+        if (encoder is BsonEncoder) {
+            encoder.encodeBsonValue(BsonBinary(value))
+        } else {
+            encoder.encodeSerializableValue(ByteArraySerializer(), value)
+        }
+    }
+
+    override fun deserialize(decoder: Decoder): ByteArray {
+        if (decoder is BsonDecoder) {
+            val bsonValue = decoder.decodeBsonValue()
+            if (bsonValue !is BsonBinary)
+                throw SerializationException("Expected BsonBinary but found ${bsonValue.bsonType}")
+            return bsonValue.data
+        } else {
+            return decoder.decodeSerializableValue(ByteArraySerializer())
+        }
+    }
+}
+
 
 object PlayerFlags_Constants {
     val NicknameVerified = 0u

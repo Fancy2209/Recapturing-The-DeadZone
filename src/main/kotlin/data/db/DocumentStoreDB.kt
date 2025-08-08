@@ -114,6 +114,8 @@ class DocumentStoreDB(store: DataStore, private val adminEnabled: Boolean) : Big
         newAppearance: HumanAppearance
     ) {}
 
+    override suspend fun updatePlayerFlags(playerId: String, flags: ByteArray) {}
+
     suspend fun shutdown() {
         db.close()
     }
