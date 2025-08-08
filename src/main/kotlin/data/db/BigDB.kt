@@ -20,6 +20,8 @@ interface BigDB {
 
     suspend fun getUserDocByUsername(username: String): UserDocument?
 
+    suspend fun getUserDocByPlayerId(playerId: String): UserDocument?
+
     suspend fun getPlayerIdOfUsername(username: String): String?
 
     suspend fun getProfileOfPlayerId(playerId: String): UserProfile?

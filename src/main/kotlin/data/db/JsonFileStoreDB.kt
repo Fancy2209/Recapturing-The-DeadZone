@@ -81,6 +81,10 @@ class JsonFileStoreDB(private val dbdir: File, private val json: Json, private v
         return udocs.find { it.profile.displayName == username }.firstOrNull()
     }
 
+    override suspend fun getUserDocByPlayerId(playerId: String): UserDocument? {
+        return udocs.find { it.playerId == playerId }.firstOrNull()
+    }
+
     override suspend fun getPlayerIdOfUsername(username: String): String? {
         return udocs.find { it.profile.displayName == username }.firstOrNull()?.playerId
     }

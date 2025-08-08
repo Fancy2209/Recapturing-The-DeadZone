@@ -3,11 +3,8 @@ package dev.deadzone.api.handler
 import dev.deadzone.api.message.db.BigDBObject
 import dev.deadzone.api.message.db.LoadObjectsArgs
 import dev.deadzone.api.message.db.LoadObjectsOutput
-import dev.deadzone.core.data.AdminData
-import dev.deadzone.module.LogConfigAPIError
-import dev.deadzone.module.Logger
-import dev.deadzone.module.logInput
-import dev.deadzone.module.pioFraming
+import dev.deadzone.core.model.network.RemotePlayerData
+import dev.deadzone.module.*
 import dev.deadzone.socket.ServerContext
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -17,6 +14,10 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
+
+data class NeighborHistory(
+    val map: Map<String, RemotePlayerData>? = emptyMap()
+)
 
 /**
  * LoadObjects (API 85)
@@ -37,12 +38,14 @@ suspend fun RoutingContext.loadObjects(context: ServerContext) {
 
     for (objId in loadObjectsArgs.objectIds) {
         val key = objId.keys.firstOrNull() ?: continue
-        if (key != AdminData.PLAYER_ID) continue
+        val udoc = context.db.getUserDocByPlayerId(key) ?: continue
+
+        Logger.debug(src = LogSource.API) { "Found object for playerId: $key" }
 
         val obj: BigDBObject? = when (objId.table) {
-            "PlayerObjects" -> LoadObjectsOutput.playerObjects()
-            "NeighborHistory" -> LoadObjectsOutput.neighborHistory()
-            "Inventory" -> LoadObjectsOutput.inventory()
+            "PlayerObjects" -> LoadObjectsOutput.fromData(udoc.playerSave.playerObjects)
+            "NeighborHistory" -> LoadObjectsOutput.fromData(NeighborHistory(udoc.playerSave.neighborHistory))
+            "Inventory" -> LoadObjectsOutput.fromData(udoc.playerSave.inventory)
             else -> {
                 Logger.error(LogConfigAPIError) { "UNIMPLEMENTED table for ${objId.table}" }
                 null

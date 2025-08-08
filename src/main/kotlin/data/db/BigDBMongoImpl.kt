@@ -84,6 +84,10 @@ class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : Big
         return udocs.find(Filters.eq("profile.displayName", username)).firstOrNull()
     }
 
+    override suspend fun getUserDocByPlayerId(playerId: String): UserDocument? {
+        return udocs.find(Filters.eq("playerId", playerId)).firstOrNull()
+    }
+
     override suspend fun getPlayerIdOfUsername(username: String): String? {
         return udocs
             .find(Filters.eq("profile.displayName", username))

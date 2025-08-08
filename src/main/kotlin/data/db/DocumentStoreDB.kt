@@ -10,6 +10,7 @@ import dev.deadzone.data.db.BigDB
 import dev.deadzone.module.Logger
 import kotlinx.coroutines.flow.firstOrNull
 import java.util.*
+import kotlin.collections.firstOrNull
 import kotlin.io.encoding.Base64
 
 /**
@@ -74,6 +75,10 @@ class DocumentStoreDB(store: DataStore, private val adminEnabled: Boolean) : Big
 
     override suspend fun getUserDocByUsername(username: String): UserDocument? {
         return udocs.find("profile.displayName", username).firstOrNull()
+    }
+
+    override suspend fun getUserDocByPlayerId(playerId: String): UserDocument? {
+        return udocs.find("playerId", playerId).firstOrNull()
     }
 
     override suspend fun getPlayerIdOfUsername(username: String): String? {
