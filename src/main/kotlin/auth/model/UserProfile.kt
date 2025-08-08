@@ -37,5 +37,14 @@ data class UserProfile(
                 countryCode = AdminData.COUNTRY_CODE,
             )
         }
+
+        fun default(username: String, pid: String): UserProfile {
+            return UserProfile(
+                playerId = pid,
+                email = "dummyemail@email.com",
+                displayName = username,
+                avatarUrl = "127.0.0.1:8080/game/data/images/ui/buy-package.jpg",
+            )
+        }
     }
 }

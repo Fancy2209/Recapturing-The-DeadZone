@@ -8,7 +8,7 @@ data class ServerEndpoint(
     val port: Int = 0,
 ) {
     companion object {
-        fun dummy(): ServerEndpoint {
+        fun socketServer(): ServerEndpoint {
             return ServerEndpoint(
                 address = "127.0.0.1",
                 port = 7777

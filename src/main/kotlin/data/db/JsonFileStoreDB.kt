@@ -63,12 +63,7 @@ class JsonFileStoreDB(private val dbdir: File, private val json: Json, private v
 
     override suspend fun createUser(username: String, password: String): String {
         val pid = UUID.randomUUID().toString()
-        val profile = UserProfile(
-            playerId = pid,
-            email = "",
-            displayName = username,
-            avatarUrl = "",
-        )
+        val profile = UserProfile.default(username = username, pid = pid)
 
         val doc = UserDocument(
             playerId = pid,

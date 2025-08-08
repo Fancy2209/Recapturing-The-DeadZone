@@ -10,11 +10,11 @@ data class CreateJoinRoomOutput(
     val endpoints: ServerEndpoint,
 ) {
     companion object {
-        fun dummy(): CreateJoinRoomOutput {
+        fun defaultRoom(): CreateJoinRoomOutput {
             return CreateJoinRoomOutput(
                 roomId = "defaultRoomId",
                 joinKey = "defaultJoinKey",
-                endpoints = ServerEndpoint.dummy()
+                endpoints = ServerEndpoint.socketServer()
             )
         }
     }

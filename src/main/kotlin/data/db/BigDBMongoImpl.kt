@@ -59,12 +59,7 @@ class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : Big
 
     override suspend fun createUser(username: String, password: String): String {
         val pid = UUID.randomUUID().toString()
-        val profile = UserProfile(
-            playerId = pid,
-            email = "",
-            displayName = username,
-            avatarUrl = "",
-        )
+        val profile = UserProfile.default(username = username, pid = pid)
 
         val doc = UserDocument(
             playerId = pid,

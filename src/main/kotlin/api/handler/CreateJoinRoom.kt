@@ -31,7 +31,7 @@ suspend fun RoutingContext.createJoinRoom(context: ServerContext) {
     logInput(createJoinRoomArgs)
 
     val createJoinRoomOutput = ProtoBuf.encodeToByteArray<CreateJoinRoomOutput>(
-        CreateJoinRoomOutput.dummy()
+        CreateJoinRoomOutput.defaultRoom()
     )
 
     logOutput(createJoinRoomOutput)
