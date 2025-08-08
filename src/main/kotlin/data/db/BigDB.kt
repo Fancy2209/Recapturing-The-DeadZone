@@ -2,6 +2,7 @@ package dev.deadzone.data.db
 
 import dev.deadzone.core.auth.model.UserDocument
 import dev.deadzone.core.auth.model.UserProfile
+import dev.deadzone.core.model.game.data.HumanAppearance
 
 /**
  * Representation of PlayerIO BigDB
@@ -25,6 +26,8 @@ interface BigDB {
     suspend fun getPlayerIdOfUsername(username: String): String?
 
     suspend fun getProfileOfPlayerId(playerId: String): UserProfile?
+
+    suspend fun saveSurvivorAppearance(playerId: String, srvId: String, newAppearance: HumanAppearance)
 
     /**
      * Verify credentials of the given username and password

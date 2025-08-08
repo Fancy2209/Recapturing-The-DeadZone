@@ -6,6 +6,7 @@ import dev.deadzone.core.auth.model.ServerMetadata
 import dev.deadzone.core.auth.model.UserDocument
 import dev.deadzone.core.auth.model.UserProfile
 import dev.deadzone.core.data.AdminData
+import dev.deadzone.core.model.game.data.HumanAppearance
 import dev.deadzone.module.LogConfigSocketToClient
 import dev.deadzone.module.Logger
 import kotlinx.coroutines.Dispatchers
@@ -104,6 +105,27 @@ class JsonFileStoreDB(private val dbdir: File, private val json: Json, private v
 
     private fun hashPw(password: String): String {
         return Base64.encode(Bcrypt.hash(password, 10))
+    }
+
+    override suspend fun saveSurvivorAppearance(playerId: String, srvId: String, newAppearance: HumanAppearance) {
+        udocs.update(playerId) { doc ->
+            val updatedSurvivors = doc.playerSave.playerObjects.survivors.map { survivor ->
+                if (survivor.id == srvId) {
+                    survivor.copy(appearance = newAppearance)
+                } else {
+                    Logger.warn { "JsonFileStoreDB: No survivor update on saveSurvivorAppearance" }
+                    survivor
+                }
+            }
+
+            doc.copy(
+                playerSave = doc.playerSave.copy(
+                    playerObjects = doc.playerSave.playerObjects.copy(
+                        survivors = updatedSurvivors
+                    )
+                )
+            )
+        }
     }
 
     suspend fun shutdown() {

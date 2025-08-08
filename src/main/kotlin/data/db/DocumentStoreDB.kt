@@ -6,6 +6,7 @@ import dev.deadzone.core.auth.model.PlayerSave
 import dev.deadzone.core.auth.model.ServerMetadata
 import dev.deadzone.core.auth.model.UserDocument
 import dev.deadzone.core.auth.model.UserProfile
+import dev.deadzone.core.model.game.data.HumanAppearance
 import dev.deadzone.data.db.BigDB
 import dev.deadzone.module.Logger
 import kotlinx.coroutines.flow.firstOrNull
@@ -106,6 +107,12 @@ class DocumentStoreDB(store: DataStore, private val adminEnabled: Boolean) : Big
     private fun hashPw(password: String): String {
         return Base64.encode(Bcrypt.hash(password, 10))
     }
+
+    override suspend fun saveSurvivorAppearance(
+        playerId: String,
+        srvId: String,
+        newAppearance: HumanAppearance
+    ) {}
 
     suspend fun shutdown() {
         db.close()

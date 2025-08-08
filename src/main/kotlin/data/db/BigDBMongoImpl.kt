@@ -3,12 +3,14 @@ package dev.deadzone.core.data
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Indexes
 import com.mongodb.client.model.Projections
+import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import com.toxicbakery.bcrypt.Bcrypt
 import dev.deadzone.core.auth.model.PlayerSave
 import dev.deadzone.core.auth.model.ServerMetadata
 import dev.deadzone.core.auth.model.UserDocument
 import dev.deadzone.core.auth.model.UserProfile
+import dev.deadzone.core.model.game.data.HumanAppearance
 import dev.deadzone.data.db.BigDB
 import dev.deadzone.module.Dependency
 import dev.deadzone.module.Logger
@@ -128,6 +130,22 @@ class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : Big
 
     private fun hashPw(password: String): String {
         return Base64.encode(Bcrypt.hash(password, 10))
+    }
+
+    override suspend fun saveSurvivorAppearance(playerId: String, srvId: String, newAppearance: HumanAppearance) {
+        val udoc = requireNotNull(
+            getUserDocByPlayerId(playerId),
+            { "couldn't find UserDoc for playerId: $playerId with srvId=$srvId" }
+        )
+
+        val survivorIndex = udoc.playerSave.playerObjects.survivors.indexOfFirst { it.id == srvId }
+
+        Logger.debug { "Updating survivor appearance for playerId=$playerId srvId=$srvId" }
+
+        val path = "playerSave.playerObjects.survivors.$survivorIndex.appearance"
+        val update = Updates.set(path, newAppearance)
+
+        udocs.updateOne(Filters.eq("playerId", playerId), update)
     }
 
     /**

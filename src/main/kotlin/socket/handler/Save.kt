@@ -13,21 +13,13 @@ import dev.deadzone.socket.Connection
 import dev.deadzone.socket.ServerContext
 import dev.deadzone.socket.handler.saveresponse.compound.BuildingMoveResponse
 import dev.deadzone.socket.handler.saveresponse.crate.CrateUnlockResponse
-import dev.deadzone.socket.handler.saveresponse.mission.GetZombieResponse
-import dev.deadzone.socket.handler.saveresponse.mission.InjuryData
-import dev.deadzone.socket.handler.saveresponse.mission.MissionEndResponse
-import dev.deadzone.socket.handler.saveresponse.mission.MissionStartResponse
-import dev.deadzone.socket.handler.saveresponse.mission.PlayerSurvivor
-import dev.deadzone.socket.handler.saveresponse.mission.SurvivorResult
-import dev.deadzone.socket.handler.saveresponse.mission.XpBreakdown
-import dev.deadzone.socket.handler.saveresponse.mission.resolveAndLoadScene
+import dev.deadzone.socket.handler.saveresponse.mission.*
+import dev.deadzone.socket.handler.saveresponse.survivor.PlayerCustomResponse
 import dev.deadzone.socket.utils.SocketMessage
 import dev.deadzone.socket.utils.SocketMessageHandler
 import dev.deadzone.utils.PIOSerializer
 import io.ktor.util.date.*
 import java.util.*
-import kotlin.Boolean
-import kotlin.Int
 import kotlin.random.Random
 
 /**
@@ -59,7 +51,8 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
 
         // use pdoc to get player's data
         // to refactor: only query entire doc if needed, maybe create something like PlayerDataManager?
-        val pdoc = context.db.getUserDocByPlayerId(connection.playerId!!)!!
+        val pid = connection.playerId!!
+        val pdoc = context.db.getUserDocByPlayerId(pid)!!
         val srvManager = SurvivorManager(pdoc.playerSave.playerObjects.survivors)
         val playerSrv = srvManager.getSurvivorById(pdoc.playerSave.playerObjects.playerSurvivor)
 
@@ -86,6 +79,37 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 )
 
                 Logger.info(LogConfigSocketToClient) { "Opening crateId=$crateId with keyId=$keyId" }
+
+                send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
+            }
+
+            "ply_custom" -> {
+                val ap = data?.get("ap") as? Map<*, *>
+
+                val appearance = requireNotNull(
+                    if (ap != null) {
+                        HumanAppearance(
+                            forceHair = ap["forceHair"] as? Boolean ?: false,
+                            hideGear = ap["hideGear"] as? Boolean ?: false,
+                            hairColor = ap["hairColor"] as? String ?: "black",
+                            skinColor = ap["skinColor"] as? String,
+                            hair = ap["hair"] as? String,
+                            facialHair = ap["facialHair"] as? String,
+                            clothing_upper = ap["upper"] as? String,
+                            clothing_lower = ap["lower"] as? String,
+                            accessories = (ap["accessories"] as? List<*>)?.mapNotNull { it as? String }
+                        )
+                    } else {
+                        null
+                    }, { "ply_custom response is null" })
+
+                context.db.saveSurvivorAppearance(
+                    playerId = pid,
+                    srvId = requireNotNull(playerSrv?.id, { "Weird, playerSrv is null during saveSurvivorAppearance" }),
+                    newAppearance = appearance
+                )
+
+                val responseJson = Dependency.json.encodeToString(PlayerCustomResponse())
 
                 send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
             }
