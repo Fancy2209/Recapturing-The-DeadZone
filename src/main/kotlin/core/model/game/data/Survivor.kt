@@ -22,7 +22,7 @@ data class Survivor(
     val missionId: String?,
     val assignmentId: String?,
     val reassignTimer: TimerData? = null,
-    val appearance: SurvivorAppearance? = null, // HumanAppearance > SurvivorAppearance
+    val appearance: HumanAppearance? = null, // HumanAppearance > SurvivorAppearance
     val scale: Double = 1.22,
     val voice: String,
     val accessories: Map<String, String>,  // key is parsed to int, string is accessory id

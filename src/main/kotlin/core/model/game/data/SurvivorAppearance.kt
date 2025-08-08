@@ -2,6 +2,7 @@ package dev.deadzone.core.model.game.data
 
 import kotlinx.serialization.Serializable
 
+// subclass of HumanAppearance though its deserialize don't work
 @Serializable
 data class SurvivorAppearance(
     val skinColor: String?,
@@ -14,40 +15,28 @@ data class SurvivorAppearance(
     val hideGear: Boolean = false
 ) {
     companion object {
+        fun SurvivorAppearance.toHumanAppearance(): HumanAppearance {
+            return HumanAppearance(
+                skinColor = this.skinColor,
+                hair = this.hair,
+                facialHair = this.facialHair,
+                clothing_upper = this.upper,
+                clothing_lower = this.lower,
+                hairColor = this.hairColor ?: "black",
+                forceHair = this.forceHair,
+                hideGear = this.hideGear,
+                accessories = emptyList()
+            )
+        }
+
         fun playerM(): SurvivorAppearance {
             return SurvivorAppearance(
-                skinColor = "body-1skin-light1M",
-                upper = "body-upper-tshirtM",
-                lower = "body-lower-pantsM",
-                hair = "hair-M-08",
-                facialHair = null,
-                hairColor = "hair-brown",
-                forceHair = false,
-                hideGear = false
-            )
-        }
-
-        fun fighterM(): SurvivorAppearance {
-            return SurvivorAppearance(
-                skinColor = "body-1skin-light1M",
-                upper = "body-upper-fighterM",
-                lower = "body-lower-fighterM",
-                hair = "hair-M-08",
-                facialHair = null,
-                hairColor = "hair-brown",
-                forceHair = false,
-                hideGear = false
-            )
-        }
-
-        fun reconF(): SurvivorAppearance {
-            return SurvivorAppearance(
-                skinColor = "body-1skin-light1M",
-                upper = "body-upper-reconF",
-                lower = "body-lower-reconF",
-                hair = "hair-M-08",
-                facialHair = null,
-                hairColor = "hair-brown",
+                skinColor = "light1",
+                upper = "hoodie",
+                lower = "pants",
+                hair = "hair1",
+                facialHair = "facialHair0",
+                hairColor = "darkBrown",
                 forceHair = false,
                 hideGear = false
             )

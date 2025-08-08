@@ -223,6 +223,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
 
             "stat_data" -> {
                 val stats = data["stats"]
+                Logger.debug(logFull = true) { data["stats"].toString() }
                 Logger.warn(LogConfigSocketToClient) { "Received 'stat_data' message [not implemented] with stats: $stats" }
             }
 

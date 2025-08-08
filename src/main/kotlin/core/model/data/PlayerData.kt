@@ -3,6 +3,7 @@ package dev.deadzone.core.model.data
 import dev.deadzone.core.data.AdminData
 import dev.deadzone.core.model.data.user.AbstractUser
 import dev.deadzone.core.model.game.data.*
+import dev.deadzone.core.model.game.data.SurvivorAppearance.Companion.toHumanAppearance
 import dev.deadzone.core.model.game.data.assignment.AssignmentData
 import dev.deadzone.core.model.game.data.bounty.InfectedBounty
 import dev.deadzone.core.model.game.data.effects.Effect
@@ -133,7 +134,7 @@ data class PlayerData(
                 missionId = null,
                 assignmentId = null,
                 reassignTimer = null,
-                appearance = null,
+                appearance = SurvivorAppearance.playerM().toHumanAppearance(),
                 voice = "asian-m",
                 accessories = emptyMap(),
                 maxClothingAccessories = 4
@@ -142,7 +143,7 @@ data class PlayerData(
             return PlayerData(
                 key = pid,
                 admin = false,
-                flags = PlayerFlags.skipTutorial(),
+                flags = PlayerFlags.create(nicknameVerified = false),
                 nickname = nickname,
                 playerSurvivor = playerSrvId,
                 neighbors = null,

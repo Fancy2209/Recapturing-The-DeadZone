@@ -3,6 +3,8 @@ package dev.deadzone.core.model.data
 import kotlin.experimental.or
 
 object PlayerFlags {
+    // if nicknameVerified = true, then skip character creation
+
     fun create(
         nicknameVerified: Boolean = false, refreshNeighbors: Boolean = false,
         tutorialComplete: Boolean = false, injurySustained: Boolean = false,
