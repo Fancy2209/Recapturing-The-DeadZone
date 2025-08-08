@@ -18,6 +18,15 @@ data class TimerData(
             )
         }
 
+        fun fiveMinutesFromNow(): TimerData {
+            val now = getTimeMillis()
+            return TimerData(
+                start = now,
+                length = now + (5 * 60 * 1000L),
+                data = emptyMap()
+            )
+        }
+
         fun hasEnded(): TimerData {
             return TimerData(
                 start = getTimeMillis() - (5 * 60 * 1000), // 5 mins ago

@@ -11,6 +11,8 @@ import dev.deadzone.module.LogConfigSocketToClient
 import dev.deadzone.module.Logger
 import dev.deadzone.socket.Connection
 import dev.deadzone.socket.ServerContext
+import dev.deadzone.socket.handler.saveresponse.compound.BuildingCreateBuyResponse
+import dev.deadzone.socket.handler.saveresponse.compound.BuildingCreateResponse
 import dev.deadzone.socket.handler.saveresponse.compound.BuildingMoveResponse
 import dev.deadzone.socket.handler.saveresponse.crate.CrateUnlockResponse
 import dev.deadzone.socket.handler.saveresponse.mission.*
@@ -340,6 +342,29 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
 
                 val response = Dependency.json.encodeToString(item)
                 send(PIOSerializer.serialize(buildMsg(saveId, response)))
+            }
+
+            "bld_create" -> {
+                val response = BuildingCreateResponse(
+                    // although client know user's resource,
+                    // server may revalidate (in-case user did client-side hacking)
+                    success = true,
+                    items = emptyMap(),
+                    timer = TimerData.fiveMinutesFromNow()
+                )
+
+                val responseJson = Dependency.json.encodeToString(response)
+                send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
+            }
+
+            "bld_create_buy" -> {
+                val response = BuildingCreateBuyResponse(
+                    success = true,
+                    levelPts = 100
+                )
+
+                val responseJson = Dependency.json.encodeToString(response)
+                send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
             }
 
             "bld_move" -> {
