@@ -4,6 +4,7 @@ import com.github.lamba92.kotlin.document.store.stores.leveldb.LevelDBStore
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import dev.deadzone.core.data.BigDBMongoImpl
 import dev.deadzone.core.data.DocumentStoreDB
+import dev.deadzone.data.db.JsonFileStoreDB
 import kotlinx.coroutines.withTimeoutOrNull
 import org.bson.Document
 import java.io.File
@@ -34,9 +35,15 @@ suspend fun configureDatabase(mongoUrl: String, adminEnabled: Boolean) {
         Logger.warn { "MongoDB connection failed or timed out. Falling back to embedded DB." }
 
         File("data").mkdirs()
-        val store = LevelDBStore.open("data/db")
-        Dependency.database = DocumentStoreDB(store, adminEnabled).also {
-            it.setupUserDocument()
-        }
+//        val store = LevelDBStore.open("data/db")
+//        Dependency.database = DocumentStoreDB(store, adminEnabled).also {
+//            it.setupUserDocument()
+//        }
+        Dependency.database =
+            JsonFileStoreDB(
+                dbdir = File("data/db"),
+                json = Dependency.jsonForDB,
+                adminEnabled = adminEnabled
+            ).also { it.setupUserDocument() }
     }
 }

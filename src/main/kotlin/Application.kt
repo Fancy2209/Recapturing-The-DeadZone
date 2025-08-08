@@ -21,6 +21,7 @@ suspend fun Application.module() {
             Dependency.wsManager.onResourceLoadComplete()
         }
     })
+    configureSerialization()
     val adminEnabled = environment.config.propertyOrNull("game.enableAdmin")?.getString()?.toBooleanStrictOrNull() ?: false
     val mongoUrl = environment.config.propertyOrNull("mongo.url")?.getString()!!
     configureDatabase(mongoUrl, adminEnabled)
@@ -36,6 +37,5 @@ suspend fun Application.module() {
     configureHTTP()
     configureLogging()
     Logger.level = LogLevel.DEBUG // use LogLevel.NOTHING to disable logging
-    configureSerialization()
     configureSocket(context = serverContext)
 }

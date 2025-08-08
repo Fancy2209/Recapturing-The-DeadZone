@@ -23,7 +23,7 @@ fun Application.configureSerialization() {
             }
         }
 
-        val json = Json {
+        val json1 = Json {
             serializersModule = module
             classDiscriminator = "_t"
             prettyPrint = true
@@ -31,8 +31,17 @@ fun Application.configureSerialization() {
             ignoreUnknownKeys = true
             encodeDefaults = true
         }
-        Dependency.json = json
-        json(json)
+        val json2 = Json {
+            serializersModule = module
+            classDiscriminator = "_t"
+            prettyPrint = false
+            isLenient = true
+            ignoreUnknownKeys = true
+            encodeDefaults = true
+        }
+        Dependency.json = json1
+        Dependency.jsonForDB = json2
+        json(json1)
         protobuf(ProtoBuf)
     }
 }
