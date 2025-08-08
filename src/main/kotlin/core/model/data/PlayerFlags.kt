@@ -3,7 +3,9 @@ package dev.deadzone.core.model.data
 import kotlin.experimental.or
 
 object PlayerFlags {
-    // if nicknameVerified = true, then skip character creation
+    // nicknameVerified is a flag sent by server if user's nickname is bad
+    // with nicknameVerified = true, this will prompt the game to edit the leader's nickname
+    // usually the prompt is on compound screen with title of "Leader Update"
 
     fun create(
         nicknameVerified: Boolean = false, refreshNeighbors: Boolean = false,

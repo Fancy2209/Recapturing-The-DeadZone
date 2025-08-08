@@ -22,7 +22,7 @@ data class PlayerData(
     val admin: Boolean,
     val flags: ByteArray?,         // deserialized to flagset (see PlayerFlags), indicates tutorial stuff
     val nickname: String?,
-    val playerSurvivor: String,
+    val playerSurvivor: String?,
     val levelPts: UInt = 0u,
     val restXP: Int = 0,
     val oneTimePurchases: List<String> = emptyList(),
@@ -144,7 +144,7 @@ data class PlayerData(
                 key = pid,
                 admin = false,
                 flags = PlayerFlags.create(nicknameVerified = false),
-                nickname = nickname,
+                nickname = null,
                 playerSurvivor = playerSrvId,
                 neighbors = null,
                 friends = null,
