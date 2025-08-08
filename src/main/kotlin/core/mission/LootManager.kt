@@ -68,7 +68,37 @@ class LootManager(
             val treeMap = TreeMap<Double, LootContent>()
             var cumulativeWeight = 0.0
 
-            for (item in lootableInLoc) {
+            loop@ for (item in lootableInLoc) {
+                val specialItemsKeyword = listOf(
+                    // Seasonal & Holidays
+                    "halloween", "spooky", "pumpkin", "ghost", "witch",
+                    "christmas", "winter", "snow", "xmas", "santa", "holiday",
+                    "easter", "bunny", "egg",
+                    "valentine", "love", "heart",
+                    "summer", "beach", "sun", "vacation",
+                    "autumn", "fall", "harvest",
+                    "spring", "blossom",
+
+                    // National Days & Special Events
+                    "4july", "july", "independence", "firework",
+                    "birthday", "anniversary", "celebration", "cake",
+                    "newyear", "ny", "countdown",
+                    "thanksgiving", "turkey", "feast",
+
+                    // Game-specific Events
+                    "event", "limited", "special", "exclusive", "festive",
+
+                    // Crate related
+                    "cache", "box", "gacha", "crate"
+                )
+
+                // discard special items
+                val isEventItem = specialItemsKeyword.any { keyword ->
+                    item.idInXML.contains(keyword, ignoreCase = true)
+                }
+
+                if (isEventItem) continue
+
                 // only pick items which level range contain areaLevel
                 val lvlMin = item.element.getElementsByTagName("lvl_min").item(0)?.textContent?.toIntOrNull() ?: 0
                 val lvlMax = item.element.getElementsByTagName("lvl_max").item(0)?.textContent?.toIntOrNull()
