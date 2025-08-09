@@ -1,4 +1,4 @@
-package dev.deadzone.core.mission.model
+package dev.deadzone.core.model
 
 // Loot system config, contains variables that affects loot
 data class LootParameter(

@@ -3,9 +3,10 @@ package dev.deadzone.socket.handler
 import dev.deadzone.core.PlayerServiceLocator
 import dev.deadzone.core.items.ItemFactory
 import dev.deadzone.core.mission.LootService
-import dev.deadzone.core.mission.model.LootParameter
+import dev.deadzone.core.model.LootParameter
 import dev.deadzone.core.model.game.data.*
 import dev.deadzone.core.survivor.SurvivorService
+import dev.deadzone.data.collection.PlayerAccount
 import dev.deadzone.module.Dependency
 import dev.deadzone.module.LogConfigSocketError
 import dev.deadzone.module.LogConfigSocketToClient
@@ -20,6 +21,7 @@ import dev.deadzone.socket.handler.saveresponse.mission.*
 import dev.deadzone.socket.handler.saveresponse.survivor.PlayerCustomResponse
 import dev.deadzone.socket.utils.SocketMessage
 import dev.deadzone.socket.utils.SocketMessageHandler
+import dev.deadzone.user.PlayerAccountService
 import dev.deadzone.utils.PIOSerializer
 import io.ktor.util.date.*
 import java.util.*
@@ -48,17 +50,15 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
         val data = body?.get("data") as? Map<*, *>
         val type = data?.get("_type") as? String
         val saveId = body?.get("id") as? String
+        val pid = requireNotNull(connection.playerId) { "Missing playerId on save message for connection=$connection" }
+
+        val survivorService = PlayerServiceLocator.get<SurvivorService>()
+        val playerAccountService = PlayerServiceLocator.get<PlayerAccountService>()
+        val doc = playerAccountService.getUserDocByPlayerId(pid)
+        val playerSrv = survivorService.getSurvivorById(doc?.playerMetadata?.playerSrvId)
 
         // Note: the game typically send and expects JSON data for save message
         // encode JSON response to string before using PIO serialization
-
-        // use pdoc to get player's data
-        // to refactor: only query entire doc if needed, maybe create something like PlayerDataManager?
-        val pid = connection.playerId!!
-        val pdoc = requireNotNull(context.db.getUserDocByPlayerId(pid)) { "Weird, pdoc is null while in save handler" }
-        val srvs = PlayerServiceLocator.get<SurvivorService>()
-        val playerSrv = srvs.getSurvivorById(pdoc.playerSave.playerObjects.playerSurvivor)
-
         when (type) {
             "get_offers" -> {
                 Logger.warn(LogConfigSocketToClient) { "Received 'get_offers' message [not implemented]" }
@@ -87,28 +87,16 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
             }
 
             "ply_custom" -> {
-                val ap = data?.get("ap") as? Map<*, *>
+                val ap = data["ap"] as? Map<*, *> ?: return
+                val appearance = HumanAppearance.parse(ap)
+                if (appearance == null) {
+                    Logger.error(LogConfigSocketToClient) { "Failed to parse rawappearance=$ap" }
+                    return
+                }
 
-                val appearance = requireNotNull(
-                    if (ap != null) {
-                        HumanAppearance(
-                            forceHair = ap["forceHair"] as? Boolean ?: false,
-                            hideGear = ap["hideGear"] as? Boolean ?: false,
-                            hairColor = ap["hairColor"] as? String ?: "black",
-                            skinColor = ap["skinColor"] as? String,
-                            hair = ap["hair"] as? String,
-                            facialHair = ap["facialHair"] as? String,
-                            clothing_upper = ap["upper"] as? String,
-                            clothing_lower = ap["lower"] as? String,
-                            accessories = (ap["accessories"] as? List<*>)?.mapNotNull { it as? String }
-                        )
-                    } else {
-                        null
-                    }, { "ply_custom response is null" })
-
-                context.db.saveSurvivorAppearance(
+                survivorService.saveSurvivorAppearance(
                     playerId = pid,
-                    srvId = requireNotNull(playerSrv?.id, { "Weird, playerSrv is null during saveSurvivorAppearance" }),
+                    srvId = doc?.playerMetadata?.playerSrvId ?: "",
                     newAppearance = appearance
                 )
 

@@ -1,4 +1,4 @@
-package dev.deadzone.core.auth.model
+package dev.deadzone.core.data
 
 import dev.deadzone.core.model.game.data.GameResources
 import dev.deadzone.core.model.game.data.Survivor

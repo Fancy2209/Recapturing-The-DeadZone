@@ -29,7 +29,5 @@ interface BigDB {
      */
     suspend fun createUser(username: String, password: String): String
 
-    suspend fun saveSurvivorAppearance(playerId: String, srvId: String, newAppearance: HumanAppearance)
-
     suspend fun updatePlayerFlags(playerId: String, flags: ByteArray)
 }

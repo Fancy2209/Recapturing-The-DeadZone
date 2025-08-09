@@ -1,7 +1,9 @@
 package dev.deadzone.core.survivor
 
 import dev.deadzone.core.PlayerService
+import dev.deadzone.core.model.game.data.HumanAppearance
 import dev.deadzone.core.model.game.data.Survivor
+import dev.deadzone.module.LogConfigSocketError
 import dev.deadzone.module.Logger
 
 /**
@@ -19,6 +21,16 @@ class SurvivorService(
             Logger.warn { "Couldn't find survivor of id=$srvId for player=$playerId" }
         }
         return result
+    }
+
+    suspend fun saveSurvivorAppearance(playerId: String, srvId: String, newAppearance: HumanAppearance) {
+        val result = survivorRepository.updateSurvivor(playerId, srvId) { srv ->
+            srv.copy(appearance = newAppearance)
+        }
+
+        result.onFailure {
+            Logger.error(LogConfigSocketError) { "Error on saveSurvivorAppearance: ${it.message}" }
+        }
     }
 
     override suspend fun init(playerId: String) {
