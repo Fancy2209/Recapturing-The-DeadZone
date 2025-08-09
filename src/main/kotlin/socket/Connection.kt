@@ -1,10 +1,13 @@
 package dev.deadzone.socket
 
-import dev.deadzone.utils.PIOSerializer
+import dev.deadzone.core.PlayerServiceLocator
+import dev.deadzone.data.collection.PlayerAccount
 import dev.deadzone.module.Logger
-import io.ktor.network.sockets.*
-import io.ktor.utils.io.*
-import java.util.*
+import dev.deadzone.utils.PIOSerializer
+import io.ktor.network.sockets.Socket
+import io.ktor.utils.io.ByteWriteChannel
+import io.ktor.utils.io.writeFully
+import java.util.UUID
 
 /**
  * Representation of a player connection.
@@ -14,8 +17,12 @@ class Connection(
     val connectionId: String = UUID.randomUUID().toString(),
     val socket: Socket,
     var playerId: String? = null,
+    val playerServiceLocator: PlayerServiceLocator = PlayerServiceLocator(),
     private val output: ByteWriteChannel,
 ) {
+    private lateinit var _playerAccount: PlayerAccount
+    val playerAccount: PlayerAccount
+        get() = _playerAccount
 
     /**
      * Send raw unserialized message (non-PIO) to client
@@ -42,6 +49,10 @@ class Connection(
 
         Logger.debug(logFull = logFull) { "Sending message of type '$type' | raw message: ${bytes.decodeToString()}" }
         output.writeFully(bytes)
+    }
+
+    fun updatePlayerAccount(account: PlayerAccount) {
+        _playerAccount = account
     }
 
     override fun toString(): String {
