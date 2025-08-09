@@ -1,0 +1,67 @@
+package dev.deadzone.user
+
+import com.mongodb.client.model.Filters
+import com.mongodb.client.model.Projections
+import com.mongodb.kotlin.client.coroutine.MongoCollection
+import com.toxicbakery.bcrypt.Bcrypt
+import dev.deadzone.core.auth.model.UserProfile
+import dev.deadzone.data.collection.PlayerAccount
+import dev.deadzone.module.Dependency
+import kotlinx.coroutines.flow.firstOrNull
+import org.bson.Document
+import kotlin.io.encoding.Base64
+
+class PlayerAccountRepositoryMongo(val userCollection: MongoCollection<PlayerAccount>) : PlayerAccountRepository {
+    override suspend fun doesUserExist(username: String): Boolean {
+        return userCollection
+            .find(Filters.eq("profile.displayName", username))
+            .projection(null)
+            .firstOrNull() != null
+    }
+
+    override suspend fun getUserDocByUsername(username: String): PlayerAccount? {
+        return userCollection.find(Filters.eq("profile.displayName", username)).firstOrNull()
+    }
+
+    override suspend fun getUserDocByPlayerId(playerId: String): PlayerAccount? {
+        return userCollection.find(Filters.eq("playerId", playerId)).firstOrNull()
+    }
+
+    override suspend fun getPlayerIdOfUsername(username: String): String? {
+        return userCollection
+            .find(Filters.eq("profile.displayName", username))
+            .projection(Projections.include("playerId"))
+            .firstOrNull()
+            ?.playerId
+    }
+
+    override suspend fun getProfileOfPlayerId(playerId: String): UserProfile? {
+        val doc = userCollection
+            .withDocumentClass<Document>()
+            .find(Filters.eq("playerId", playerId))
+            .projection(Projections.include("profile"))
+            .firstOrNull()
+
+        val profileDoc = doc?.get("profile") as? Document
+        return profileDoc?.let {
+            val jsonString = it.toJson()
+            Dependency.json.decodeFromString<UserProfile>(jsonString)
+        }
+    }
+
+    override suspend fun verifyCredentials(username: String, password: String): String? {
+        val doc = userCollection
+            .withDocumentClass<Document>()
+            .find(Filters.eq("profile.displayName", username))
+            .projection(Projections.include("hashedPassword", "playerId"))
+            .firstOrNull()
+
+        if (doc == null) return null
+
+        val hashed = doc.getString("hashedPassword")
+        val playerId = doc.getString("playerId")
+        val matches = Bcrypt.verify(password, Base64.decode(hashed))
+
+        return if (matches) playerId else null
+    }
+}
