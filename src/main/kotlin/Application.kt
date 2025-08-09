@@ -5,6 +5,7 @@ import dev.deadzone.auth.WebsiteAuthProvider
 import dev.deadzone.core.data.GameResourceRegistry
 import dev.deadzone.module.*
 import dev.deadzone.socket.PlayerRegistry
+import dev.deadzone.socket.ServerConfig
 import dev.deadzone.socket.ServerContext
 import io.ktor.server.application.*
 import io.ktor.server.netty.EngineMain
@@ -22,16 +23,23 @@ suspend fun Application.module() {
         }
     })
     configureSerialization()
-    val adminEnabled = environment.config.propertyOrNull("game.enableAdmin")?.getString()?.toBooleanStrictOrNull() ?: false
-    val mongoUrl = environment.config.propertyOrNull("mongo.url")?.getString()!!
-    configureDatabase(mongoUrl, adminEnabled)
+
+
+    val config = ServerConfig(
+        adminEnabled = environment.config.propertyOrNull("game.enableAdmin")?.getString()?.toBooleanStrictOrNull() ?: false,
+        useMongo = true,
+        mongoUrl = environment.config.propertyOrNull("mongo.url")?.getString() ?: "",
+        isProd = developmentMode,
+    )
+
+    configureDatabase(config.mongoUrl, config.adminEnabled)
     val sessionManager = SessionManager()
     val serverContext = ServerContext(
         db = Dependency.database,
         sessionManager = sessionManager,
         playerRegistry = PlayerRegistry(),
         authProvider = WebsiteAuthProvider(Dependency.database, sessionManager),
-        adminEnabled = adminEnabled
+        config = config,
     )
     configureRouting(context = serverContext)
     configureHTTP()

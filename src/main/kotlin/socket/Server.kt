@@ -1,40 +1,21 @@
 package dev.deadzone.socket
 
-import dev.deadzone.core.auth.AuthProvider
-import dev.deadzone.core.auth.SessionManager
-import dev.deadzone.data.db.BigDB
-import dev.deadzone.utils.PIODeserializer
 import dev.deadzone.module.Logger
-import dev.deadzone.socket.handler.InitCompleteHandler
-import dev.deadzone.socket.utils.SocketMessage
-import dev.deadzone.socket.utils.SocketMessageDispatcher
-import dev.deadzone.socket.handler.JoinHandler
-import dev.deadzone.socket.handler.QuestProgressHandler
-import dev.deadzone.socket.handler.SaveHandler
-import dev.deadzone.socket.handler.ZombieAttackHandler
+import dev.deadzone.socket.handler.*
 import dev.deadzone.socket.tasks.TimeUpdate
 import dev.deadzone.socket.utils.ServerPushTaskDispatcher
+import dev.deadzone.socket.utils.SocketMessage
+import dev.deadzone.socket.utils.SocketMessageDispatcher
+import dev.deadzone.utils.PIODeserializer
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.*
 
 const val POLICY_FILE_REQUEST = "<policy-file-request/>"
 const val POLICY_FILE_RESPONSE =
     "<cross-domain-policy><allow-access-from domain=\"*\" to-ports=\"7777\"/></cross-domain-policy>\u0000"
-
-data class ServerContext(
-    val db: BigDB,
-    val sessionManager: SessionManager,
-    val playerRegistry: PlayerRegistry,
-    val authProvider: AuthProvider,
-    val adminEnabled: Boolean = false,
-)
 
 class Server(
     private val host: String = "127.0.0.1",
