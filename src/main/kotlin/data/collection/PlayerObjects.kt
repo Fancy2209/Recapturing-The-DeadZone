@@ -142,9 +142,8 @@ data class PlayerObjects(
             )
         }
 
-        fun newgame(pid: String, nickname: String): PlayerObjects {
+        fun newgame(pid: String, nickname: String, playerSrvId: String): PlayerObjects {
             val mockFlags = IntRange(0, 8).map { false }.toByteArray()
-            val playerSrvId = UUID.randomUUID().toString()
             val playerSrv = Survivor(
                 id = playerSrvId,
                 title = nickname,

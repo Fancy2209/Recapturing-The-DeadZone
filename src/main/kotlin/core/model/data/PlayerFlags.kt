@@ -36,6 +36,23 @@ object PlayerFlags {
         return flags.toByteArray()
     }
 
+    fun newgame(
+        nicknameVerified: Boolean = false, refreshNeighbors: Boolean = false,
+        tutorialComplete: Boolean = false, injurySustained: Boolean = false,
+        injuryHelpComplete: Boolean = false, autoProtectionApplied: Boolean = false,
+        tutorialCrateFound: Boolean = false, tutorialCrateUnlocked: Boolean = false,
+        tutorialSchematicFound: Boolean = false, tutorialEffectFound: Boolean = false,
+        tutorialPvPPractice: Boolean = false,
+    ): ByteArray {
+        val flags = listOf(
+            nicknameVerified, refreshNeighbors, tutorialComplete,
+            injurySustained, injuryHelpComplete, autoProtectionApplied,
+            tutorialCrateFound, tutorialCrateUnlocked, tutorialSchematicFound,
+            tutorialEffectFound, tutorialPvPPractice,
+        )
+        return flags.toByteArray()
+    }
+
     fun skipTutorial(
         nicknameVerified: Boolean = true, refreshNeighbors: Boolean = false,
         tutorialComplete: Boolean = true, injurySustained: Boolean = true,

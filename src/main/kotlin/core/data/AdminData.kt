@@ -14,6 +14,9 @@ object AdminData {
     const val IS_ADMIN = true
     const val PLAYER_DATA_KEY = "admkey"
     const val PLAYER_SRV_ID = "srv-player"
+    const val PLAYER_LEADER_TITLE = "MercifulLeader"
+    const val PLAYER_LEVEL = 60
+    const val PLAYER_EXP = 100
     const val FIGHTER_SRV_ID = "srv-fighter-m"
     const val RECON_SRV_ID = "srv-recon-f"
     const val PLAYER_WEP_ID = "deagle-replica"

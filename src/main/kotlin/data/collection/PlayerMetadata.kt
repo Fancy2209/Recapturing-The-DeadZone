@@ -1,5 +1,7 @@
 package dev.deadzone.data.collection
 
+import dev.deadzone.core.data.AdminData
+import dev.deadzone.core.model.data.PlayerFlags
 import kotlinx.serialization.Serializable
 
 /**
@@ -16,6 +18,20 @@ data class PlayerMetadata(
     val level: Int,
     val xp: Int,
 ) {
+    companion object {
+        fun admin(): PlayerMetadata {
+            return PlayerMetadata(
+                playerId = AdminData.PLAYER_ID,
+                displayName = AdminData.DISPLAY_NAME,
+                playerFlags = PlayerFlags.skipTutorial(),
+                playerSrvId = AdminData.PLAYER_SRV_ID,
+                leaderTitle = AdminData.PLAYER_LEADER_TITLE,
+                level = AdminData.PLAYER_LEVEL,
+                xp = AdminData.PLAYER_EXP
+            )
+        }
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
