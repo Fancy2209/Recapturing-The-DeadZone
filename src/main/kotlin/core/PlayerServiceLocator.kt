@@ -8,9 +8,9 @@ import kotlin.reflect.KClass
  */
 object PlayerServiceLocator {
     private val services = mutableMapOf<KClass<*>, Any>()
-    private val factories = mutableMapOf<KClass<*>, ServiceFactory<*>>()
+    private val factories = mutableMapOf<KClass<*>, () -> Any>()
 
-    fun <T : Any> registerFactory(type: KClass<T>, factory: ServiceFactory<T>) {
+    fun <T : Any> registerFactory(type: KClass<T>, factory: () -> T) {
         factories[type] = factory
     }
 
@@ -23,11 +23,7 @@ object PlayerServiceLocator {
         @Suppress("UNCHECKED_CAST")
         return services.getOrPut(T::class) {
             val factory = factories[T::class] ?: error("No factory for ${T::class.simpleName}")
-            (factory as ServiceFactory<T>).create()
+            factory.invoke()
         } as T
     }
-}
-
-interface ServiceFactory<T : Any> {
-    fun create(): T
 }
