@@ -53,8 +53,6 @@ dependencies {
     implementation(libs.ktor.server.netty)
     implementation(libs.logback.classic)
     implementation(libs.ktor.server.config.yaml)
-    implementation(libs.classgraph)
-    implementation(libs.kotlin.document.store)
     implementation(libs.mongodb.driver.kotlin.coroutine)
     implementation(libs.mongodb.bson.kotlinx)
     implementation(libs.library.bcrypt)

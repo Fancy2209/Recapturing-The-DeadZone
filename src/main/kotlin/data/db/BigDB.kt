@@ -6,8 +6,6 @@ import dev.deadzone.core.model.game.data.HumanAppearance
 
 /**
  * Representation of PlayerIO BigDB
- *
- * Implement DB as you need. We have: [DocumentStoreDB].
  */
 interface BigDB {
     /**
