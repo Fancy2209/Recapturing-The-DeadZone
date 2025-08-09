@@ -1,4 +1,4 @@
-package dev.deadzone.data.collection
+package dev.deadzone.user.model
 
 import dev.deadzone.core.data.AdminData
 import dev.deadzone.core.model.data.PlayerFlags
@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 /**
  * Contains frequently accessed metadata of a player. This is useful to get important
- * player's data without the need of loading the giant [PlayerObjects] class.
+ * player's data without the need of loading the giant [dev.deadzone.data.collection.PlayerObjects] class.
  */
 @Serializable
 data class PlayerMetadata(

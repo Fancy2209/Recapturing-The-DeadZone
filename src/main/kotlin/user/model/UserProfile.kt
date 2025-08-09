@@ -5,7 +5,7 @@ import io.ktor.util.date.getTimeMillis
 import kotlinx.serialization.Serializable
 
 /**
- * @property playerId reference to `playerId` in [dev.deadzone.data.collection.UserDocument]
+ * @property playerId reference to `playerId` in [dev.deadzone.data.collection.PlayerAccount]
  * @property email unused
  * @property displayName nickname or display name in-game
  * @property avatarUrl in-game avatar display and website

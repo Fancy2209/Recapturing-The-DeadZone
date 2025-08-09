@@ -1,9 +1,9 @@
 package dev.deadzone.data.collection
 
-import dev.deadzone.core.auth.model.PlayerSave
 import dev.deadzone.core.auth.model.ServerMetadata
 import dev.deadzone.core.auth.model.UserProfile
 import dev.deadzone.core.data.AdminData
+import dev.deadzone.user.model.PlayerMetadata
 import kotlinx.serialization.Serializable
 
 /**
@@ -15,19 +15,21 @@ import kotlinx.serialization.Serializable
  * @property hashedPassword using particular hash system
  */
 @Serializable
-data class UserDocument(
+data class PlayerAccount(
     val playerId: String, // referenced by other collections
     val hashedPassword: String,
     val profile: UserProfile,
-    val metadata: ServerMetadata,
+    val playerMetadata: PlayerMetadata,
+    val serverMetadata: ServerMetadata,
 ) {
     companion object {
-        fun admin(): UserDocument {
-            return UserDocument(
+        fun admin(): PlayerAccount {
+            return PlayerAccount(
                 playerId = AdminData.PLAYER_ID,
                 hashedPassword = AdminData.PASSWORD,
                 profile = UserProfile.Companion.admin(),
-                metadata = ServerMetadata()
+                playerMetadata = PlayerMetadata.admin(),
+                serverMetadata = ServerMetadata()
             )
         }
     }
