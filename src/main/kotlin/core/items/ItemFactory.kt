@@ -1,4 +1,4 @@
-package dev.deadzone.core.factory
+package dev.deadzone.core.items
 
 import dev.deadzone.core.data.assets.ItemResource
 import dev.deadzone.core.model.game.data.Item
@@ -25,7 +25,7 @@ object ItemFactory {
         val baseItem = Item(
             id = itemId,
             type = res.idInXML,
-            quality = ItemQualityType.fromString(res.element.getAttribute("quality"))
+            quality = ItemQualityType.Companion.fromString(res.element.getAttribute("quality"))
         )
 
         when (res.type) {

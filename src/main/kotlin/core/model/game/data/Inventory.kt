@@ -1,7 +1,7 @@
 package dev.deadzone.core.model.game.data
 
 import dev.deadzone.core.data.AdminData
-import dev.deadzone.core.factory.ItemFactory
+import dev.deadzone.core.items.ItemFactory
 import kotlinx.serialization.Serializable
 
 @Serializable
