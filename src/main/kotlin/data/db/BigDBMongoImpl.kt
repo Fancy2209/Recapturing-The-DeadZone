@@ -4,6 +4,7 @@ import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Indexes
 import com.mongodb.client.model.Projections
 import com.mongodb.client.model.Updates
+import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import com.toxicbakery.bcrypt.Bcrypt
 import dev.deadzone.core.auth.model.PlayerSave
@@ -31,6 +32,10 @@ class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : Big
         CoroutineScope(Dispatchers.IO).launch {
             setupUserDocument()
         }
+    }
+
+    override suspend fun getUserDocumentCollection(): MongoCollection<UserDocument> {
+        return udocs
     }
 
     private suspend fun setupUserDocument() {

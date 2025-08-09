@@ -1,10 +1,11 @@
 package dev.deadzone.socket.handler
 
+import dev.deadzone.core.PlayerServiceLocator
 import dev.deadzone.core.factory.ItemFactory
-import dev.deadzone.core.mission.LootManager
+import dev.deadzone.core.mission.LootService
 import dev.deadzone.core.mission.LootParameter
 import dev.deadzone.core.model.game.data.*
-import dev.deadzone.core.survivor.SurvivorManager
+import dev.deadzone.core.survivor.SurvivorService
 import dev.deadzone.module.Dependency
 import dev.deadzone.module.LogConfigSocketError
 import dev.deadzone.module.LogConfigSocketToClient
@@ -54,9 +55,9 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
         // use pdoc to get player's data
         // to refactor: only query entire doc if needed, maybe create something like PlayerDataManager?
         val pid = connection.playerId!!
-        val pdoc = context.db.getUserDocByPlayerId(pid)!!
-        val srvManager = SurvivorManager(pdoc.playerSave.playerObjects.survivors)
-        val playerSrv = srvManager.getSurvivorById(pdoc.playerSave.playerObjects.playerSurvivor)
+        val pdoc = requireNotNull(context.db.getUserDocByPlayerId(pid)) { "Weird, pdoc is null while in save handler" }
+        val srvs = PlayerServiceLocator.get<SurvivorService>()
+        val playerSrv = srvs.getSurvivorById(pdoc.playerSave.playerObjects.playerSurvivor)
 
         when (type) {
             "get_offers" -> {
@@ -144,8 +145,8 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                     baseWeight = 1.0,
                     fuelLimit = 50
                 )
-                val lootManager = LootManager(Dependency.gameResourceRegistry, sceneXML, lootParameter)
-                val sceneXMLWithLoot = lootManager.insertLoots()
+                val lootService = LootService(Dependency.gameResourceRegistry, sceneXML, lootParameter)
+                val sceneXMLWithLoot = lootService.insertLoots()
 
                 val zombies = listOf(
                     ZombieData.standardZombieWeakAttack(Random.nextInt()),
