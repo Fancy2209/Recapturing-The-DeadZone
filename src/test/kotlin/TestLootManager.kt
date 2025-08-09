@@ -1,4 +1,4 @@
-import dev.deadzone.core.mission.LootManager
+import dev.deadzone.core.mission.LootService
 import dev.deadzone.core.mission.LootParameter
 import dev.deadzone.core.data.GameResourceRegistry
 import dev.deadzone.socket.handler.saveresponse.mission.loadSceneXML
@@ -44,7 +44,7 @@ class TestLootManager {
 
                 repeat(GENERATION_PER_SCENE) { i ->
                     val sceneXML = loadSceneXML(filename)
-                    val manager = LootManager(
+                    val manager = LootService(
                         gameResourceRegistry = TestDependency.gameResourceRegistry,
                         sceneXML = sceneXML,
                         parameter = PARAMETER1

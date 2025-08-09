@@ -46,7 +46,7 @@ data class LootParameter(
 )
 
 
-class LootManager(
+class LootService(
     private val gameResourceRegistry: GameResourceRegistry = Dependency.gameResourceRegistry,
     private val sceneXML: String,
     private val parameter: LootParameter
