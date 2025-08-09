@@ -1,9 +1,27 @@
-package dev.deadzone.core.model.data
+package dev.deadzone.data.collection
 
 import dev.deadzone.core.data.AdminData
+import dev.deadzone.core.model.data.ByteArrayAsBinarySerializer
+import dev.deadzone.core.model.data.HighActivity
+import dev.deadzone.core.model.data.Notification
+import dev.deadzone.core.model.data.PlayerFlags
+import dev.deadzone.core.model.data.toByteArray
 import dev.deadzone.core.model.data.user.AbstractUser
-import dev.deadzone.core.model.game.data.*
+import dev.deadzone.core.model.game.data.Attributes
+import dev.deadzone.core.model.game.data.BatchRecycleJob
+import dev.deadzone.core.model.game.data.BuildingCollection
+import dev.deadzone.core.model.game.data.BuildingLike
+import dev.deadzone.core.model.game.data.GameResources
+import dev.deadzone.core.model.game.data.Gender_Constants
+import dev.deadzone.core.model.game.data.MissionData
+import dev.deadzone.core.model.game.data.Survivor
+import dev.deadzone.core.model.game.data.SurvivorAppearance
 import dev.deadzone.core.model.game.data.SurvivorAppearance.Companion.toHumanAppearance
+import dev.deadzone.core.model.game.data.SurvivorClassConstants_Constants
+import dev.deadzone.core.model.game.data.SurvivorCollection
+import dev.deadzone.core.model.game.data.SurvivorLoadoutEntry
+import dev.deadzone.core.model.game.data.Task
+import dev.deadzone.core.model.game.data.TaskCollection
 import dev.deadzone.core.model.game.data.assignment.AssignmentData
 import dev.deadzone.core.model.game.data.bounty.InfectedBounty
 import dev.deadzone.core.model.game.data.effects.Effect
@@ -11,12 +29,17 @@ import dev.deadzone.core.model.game.data.quests.GQDataObj
 import dev.deadzone.core.model.game.data.research.ResearchState
 import dev.deadzone.core.model.game.data.skills.SkillState
 import dev.deadzone.core.model.network.RemotePlayerData
-import io.ktor.util.date.*
+import io.ktor.util.date.getTimeMillis
 import kotlinx.serialization.Serializable
-import java.util.*
+import java.util.UUID
 
+/**
+ * Also known as `PlayerData` in the client-side, it contains every game related data for a player.
+ */
 @Serializable
-data class PlayerData(
+data class PlayerObjects(
+    val playerId: String, // reference to UserDocument
+
     val key: String,                                  // unknown what key is used for
     val user: Map<String, AbstractUser> = emptyMap(), // unknown what user is used for
     val admin: Boolean,
@@ -60,10 +83,11 @@ data class PlayerData(
     val notifications: List<Notification?>?,
 ) {
     companion object {
-        fun admin(): PlayerData {
+        fun admin(): PlayerObjects {
             val mockFlags = IntRange(0, 8).map { false }.toByteArray()
 
-            return PlayerData(
+            return PlayerObjects(
+                playerId = AdminData.PLAYER_ID,
                 key = AdminData.PLAYER_DATA_KEY,
                 admin = true,
                 flags = PlayerFlags.skipTutorial(),
@@ -82,26 +106,26 @@ data class PlayerData(
                     water = 200,
                     ammunition = 99999
                 ),
-                survivors = SurvivorCollection.threeSurvivors(),
-                playerAttributes = Attributes.dummy(),
-                buildings = BuildingCollection.starterBase(),
+                survivors = SurvivorCollection.Companion.threeSurvivors(),
+                playerAttributes = Attributes.Companion.dummy(),
+                buildings = BuildingCollection.Companion.starterBase(),
                 rally = mapOf(),
                 tasks = TaskCollection().list,
-                missions = listOf(MissionData.dummy(AdminData.PLAYER_SRV_ID)),
+                missions = listOf(MissionData.Companion.dummy(AdminData.PLAYER_SRV_ID)),
                 assignments = null,
-                effects = listOf(Effect.halloweenTrickPumpkinZombie(), Effect.halloweenTrickPewPew()),
-                globalEffects = listOf(Effect.halloweenTrickPumpkinZombie(), Effect.halloweenTrickPewPew()),
+                effects = listOf(Effect.Companion.halloweenTrickPumpkinZombie(), Effect.Companion.halloweenTrickPewPew()),
+                globalEffects = listOf(Effect.Companion.halloweenTrickPumpkinZombie(), Effect.Companion.halloweenTrickPewPew()),
                 cooldowns = null,
                 batchRecycles = null,
                 offenceLoadout = mapOf(
-                    AdminData.PLAYER_SRV_ID to SurvivorLoadoutEntry.playerLoudout(),
-                    AdminData.FIGHTER_SRV_ID to SurvivorLoadoutEntry.fighterLoadout(),
-                    AdminData.RECON_SRV_ID to SurvivorLoadoutEntry.reconLoadout(),
+                    AdminData.PLAYER_SRV_ID to SurvivorLoadoutEntry.Companion.playerLoudout(),
+                    AdminData.FIGHTER_SRV_ID to SurvivorLoadoutEntry.Companion.fighterLoadout(),
+                    AdminData.RECON_SRV_ID to SurvivorLoadoutEntry.Companion.reconLoadout(),
                 ),
                 defenceLoadout = mapOf(
-                    AdminData.PLAYER_SRV_ID to SurvivorLoadoutEntry.playerLoudout(),
-                    AdminData.FIGHTER_SRV_ID to SurvivorLoadoutEntry.fighterLoadout(),
-                    AdminData.RECON_SRV_ID to SurvivorLoadoutEntry.reconLoadout(),
+                    AdminData.PLAYER_SRV_ID to SurvivorLoadoutEntry.Companion.playerLoudout(),
+                    AdminData.FIGHTER_SRV_ID to SurvivorLoadoutEntry.Companion.fighterLoadout(),
+                    AdminData.RECON_SRV_ID to SurvivorLoadoutEntry.Companion.reconLoadout(),
                 ),
                 quests = mockFlags,
                 questsCollected = mockFlags,
@@ -118,7 +142,7 @@ data class PlayerData(
             )
         }
 
-        fun newgame(pid: String, nickname: String): PlayerData {
+        fun newgame(pid: String, nickname: String): PlayerObjects {
             val mockFlags = IntRange(0, 8).map { false }.toByteArray()
             val playerSrvId = UUID.randomUUID().toString()
             val playerSrv = Survivor(
@@ -136,13 +160,14 @@ data class PlayerData(
                 missionId = null,
                 assignmentId = null,
                 reassignTimer = null,
-                appearance = SurvivorAppearance.playerM().toHumanAppearance(),
+                appearance = SurvivorAppearance.Companion.playerM().toHumanAppearance(),
                 voice = "asian-m",
                 accessories = emptyMap(),
                 maxClothingAccessories = 4
             )
 
-            return PlayerData(
+            return PlayerObjects(
+                playerId = pid,
                 key = pid,
                 admin = false,
                 flags = PlayerFlags.create(nicknameVerified = false),
@@ -157,14 +182,14 @@ data class PlayerData(
                     cloth = 100, food = 25, water = 25, ammunition = 100
                 ),
                 survivors = listOf(playerSrv),
-                playerAttributes = Attributes.dummy(),
-                buildings = BuildingCollection.starterBase(),
+                playerAttributes = Attributes.Companion.dummy(),
+                buildings = BuildingCollection.Companion.starterBase(),
                 rally = emptyMap(),
                 tasks = TaskCollection().list,
-                missions = listOf(MissionData.dummy(AdminData.PLAYER_SRV_ID)),
+                missions = listOf(MissionData.Companion.dummy(AdminData.PLAYER_SRV_ID)),
                 assignments = null,
-                effects = listOf(Effect.halloweenTrickPumpkinZombie(), Effect.halloweenTrickPewPew()),
-                globalEffects = listOf(Effect.halloweenTrickPumpkinZombie(), Effect.halloweenTrickPewPew()),
+                effects = listOf(Effect.Companion.halloweenTrickPumpkinZombie(), Effect.Companion.halloweenTrickPewPew()),
+                globalEffects = listOf(Effect.Companion.halloweenTrickPumpkinZombie(), Effect.Companion.halloweenTrickPewPew()),
                 cooldowns = null,
                 batchRecycles = null,
                 offenceLoadout = emptyMap(),
@@ -189,7 +214,7 @@ data class PlayerData(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as PlayerData
+        other as PlayerObjects
 
         if (admin != other.admin) return false
         if (restXP != other.restXP) return false

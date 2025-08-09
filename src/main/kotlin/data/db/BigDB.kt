@@ -1,7 +1,7 @@
 package dev.deadzone.data.db
 
 import com.mongodb.kotlin.client.coroutine.MongoCollection
-import dev.deadzone.core.auth.model.UserDocument
+import dev.deadzone.data.collection.UserDocument
 import dev.deadzone.core.auth.model.UserProfile
 import dev.deadzone.core.model.game.data.HumanAppearance
 

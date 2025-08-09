@@ -2,7 +2,7 @@ package dev.deadzone.core.survivor
 
 import com.mongodb.client.model.Filters
 import com.mongodb.kotlin.client.coroutine.MongoCollection
-import dev.deadzone.core.auth.model.UserDocument
+import dev.deadzone.data.collection.UserDocument
 import dev.deadzone.core.model.game.data.Survivor
 import kotlinx.coroutines.flow.firstOrNull
 import kotlin.collections.emptyList

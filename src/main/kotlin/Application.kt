@@ -1,7 +1,7 @@
 package dev.deadzone
 
 import dev.deadzone.core.auth.SessionManager
-import dev.deadzone.auth.WebsiteAuthProvider
+import dev.deadzone.user.auth.WebsiteAuthProvider
 import dev.deadzone.core.data.GameResourceRegistry
 import dev.deadzone.module.*
 import dev.deadzone.socket.PlayerRegistry

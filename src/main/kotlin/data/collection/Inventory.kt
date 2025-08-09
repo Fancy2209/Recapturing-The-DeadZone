@@ -1,16 +1,21 @@
-package dev.deadzone.core.model.game.data
+package dev.deadzone.data.collection
 
 import dev.deadzone.core.data.AdminData
 import dev.deadzone.core.items.ItemFactory
+import dev.deadzone.core.model.game.data.Item
 import kotlinx.serialization.Serializable
 
+/**
+ * Inventory table
+ */
 @Serializable
 data class Inventory(
+    val playerId: String, // reference to UserDocument
     val inventory: List<Item> = emptyList(),
     val schematics: ByteArray = byteArrayOf(),  // see line 643 of Inventory.as
 ) {
     companion object {
-        fun dummy(): Inventory {
+        fun admin(): Inventory {
             val items = listOf(
                 ItemFactory.createItemFromId(idInXML = "crate-tutorial"),
                 ItemFactory.createItemFromId(idInXML = "crate-tutorial"),
@@ -38,19 +43,39 @@ data class Inventory(
             )
 
             return Inventory(
+                playerId = AdminData.PLAYER_ID,
                 inventory = items,
                 schematics = byteArrayOf()
             )
         }
 
-        fun newgame(): Inventory {
+        fun newgame(pid: String): Inventory {
             val items = listOf(
                 Item(type = "pocketKnife")
             )
             return Inventory(
+                playerId = pid,
                 inventory = items,
                 schematics = byteArrayOf()
             )
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Inventory
+
+        if (inventory != other.inventory) return false
+        if (!schematics.contentEquals(other.schematics)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = inventory.hashCode()
+        result = 31 * result + schematics.contentHashCode()
+        return result
     }
 }

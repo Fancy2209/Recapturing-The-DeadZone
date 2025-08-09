@@ -9,7 +9,7 @@ import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import com.toxicbakery.bcrypt.Bcrypt
 import dev.deadzone.core.auth.model.PlayerSave
 import dev.deadzone.core.auth.model.ServerMetadata
-import dev.deadzone.core.auth.model.UserDocument
+import dev.deadzone.data.collection.UserDocument
 import dev.deadzone.core.auth.model.UserProfile
 import dev.deadzone.core.model.game.data.HumanAppearance
 import dev.deadzone.data.db.BigDB

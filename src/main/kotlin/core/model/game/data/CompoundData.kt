@@ -1,17 +1,11 @@
 package dev.deadzone.core.model.game.data
 
 import kotlinx.serialization.Serializable
-import dev.deadzone.core.model.game.data.BuildingCollection
-import dev.deadzone.core.model.game.data.EffectCollection
-import dev.deadzone.core.model.game.data.GameResources
-import dev.deadzone.core.model.game.data.Morale
-import dev.deadzone.core.model.data.PlayerData
-import dev.deadzone.core.model.game.data.SurvivorCollection
-import dev.deadzone.core.model.game.data.TaskCollection
+import dev.deadzone.data.collection.PlayerObjects
 
 @Serializable
 data class CompoundData(
-    val player: PlayerData?,
+    val player: PlayerObjects?,
     val buildings: BuildingCollection = BuildingCollection(),
     val resources: GameResources = GameResources(),
     val survivors: SurvivorCollection = SurvivorCollection(),

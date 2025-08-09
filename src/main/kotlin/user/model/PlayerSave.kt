@@ -1,7 +1,7 @@
 package dev.deadzone.core.auth.model
 
-import dev.deadzone.core.model.data.PlayerData
-import dev.deadzone.core.model.game.data.Inventory
+import dev.deadzone.data.collection.PlayerObjects
+import dev.deadzone.data.collection.Inventory
 import dev.deadzone.core.model.network.RemotePlayerData
 import kotlinx.serialization.Serializable
 
@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class PlayerSave(
-    val playerObjects: PlayerData,
+    val playerObjects: PlayerObjects,
     val inventory: Inventory,
     val neighborHistory: Map<String, RemotePlayerData>? = emptyMap(),
     val loginState: PlayerLoginState,
@@ -18,8 +18,8 @@ data class PlayerSave(
     companion object {
         fun admin(): PlayerSave {
             return PlayerSave(
-                playerObjects = PlayerData.admin(),
-                inventory = Inventory.dummy(),
+                playerObjects = PlayerObjects.admin(),
+                inventory = Inventory.admin(),
                 neighborHistory = emptyMap(),
                 loginState = PlayerLoginState.admin()
             )
@@ -27,7 +27,7 @@ data class PlayerSave(
 
         fun newgame(pid: String, username: String): PlayerSave {
             return PlayerSave(
-                playerObjects = PlayerData.newgame(pid, username),
+                playerObjects = PlayerObjects.newgame(pid, username),
                 inventory = Inventory.newgame(),
                 neighborHistory = emptyMap(),
                 loginState = PlayerLoginState.newgame()
