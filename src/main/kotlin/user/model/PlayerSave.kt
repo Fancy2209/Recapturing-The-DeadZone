@@ -1,5 +1,6 @@
 package dev.deadzone.core.auth.model
 
+import dev.deadzone.core.data.PlayerLoginState
 import dev.deadzone.data.collection.PlayerObjects
 import dev.deadzone.data.collection.Inventory
 import dev.deadzone.core.model.network.RemotePlayerData
