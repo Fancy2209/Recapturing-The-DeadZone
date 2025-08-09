@@ -16,6 +16,7 @@ import dev.deadzone.data.collection.NeighborHistory
 import dev.deadzone.user.model.PlayerMetadata
 import dev.deadzone.data.collection.PlayerObjects
 import dev.deadzone.data.db.BigDB
+import dev.deadzone.data.db.CollectionName
 import dev.deadzone.module.Logger
 import io.ktor.util.date.getTimeMillis
 import kotlinx.coroutines.CoroutineScope
@@ -24,6 +25,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.io.encoding.Base64
+import kotlin.reflect.KClass
 
 class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : BigDB {
     private val plyCollection = db.getCollection<PlayerAccount>("playeraccount")
@@ -73,7 +75,7 @@ class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : Big
         plyCollection.createIndex(Indexes.text("profile.displayName"))
     }
 
-    override suspend fun loadUserDocument(playerId: String): PlayerAccount? {
+    override suspend fun loadPlayerAccount(playerId: String): PlayerAccount? {
         return plyCollection.find(Filters.eq("playerId", playerId)).firstOrNull()
     }
 
@@ -89,8 +91,14 @@ class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : Big
         return inventoryCollection.find(Filters.eq("playerId", playerId)).firstOrNull()
     }
 
-    override suspend fun getUserDocumentCollection(): MongoCollection<PlayerAccount> {
-        return plyCollection
+    @Suppress("UNCHECKED_CAST")
+    override suspend fun <T> getCollection(name: CollectionName): T {
+        return when (name) {
+            CollectionName.PLAYER_ACCOUNT_COLLECTION -> plyCollection
+            CollectionName.PLAYER_OBJECTS_COLLECTION -> objCollection
+            CollectionName.NEIGHBOR_HISTORY_COLLECTION -> neighborCollection
+            CollectionName.INVENTORY_COLLECTION -> inventoryCollection
+        } as T
     }
 
     override suspend fun createUser(username: String, password: String): String {
