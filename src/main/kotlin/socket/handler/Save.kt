@@ -1,6 +1,7 @@
 package dev.deadzone.socket.handler
 
 import dev.deadzone.core.PlayerServiceLocator
+import dev.deadzone.core.compound.CompoundService
 import dev.deadzone.core.items.ItemFactory
 import dev.deadzone.core.mission.LootService
 import dev.deadzone.core.model.LootParameter
@@ -56,6 +57,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
         val playerAccountService = PlayerServiceLocator.get<PlayerAccountService>()
         val doc = playerAccountService.getUserDocByPlayerId(pid)
         val playerSrv = survivorService.getSurvivorById(doc?.playerMetadata?.playerSrvId)
+        val compoundService = PlayerServiceLocator.get<CompoundService>()
 
         // Note: the game typically send and expects JSON data for save message
         // encode JSON response to string before using PIO serialization
@@ -204,7 +206,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 )
 
                 // change resource with obtained loot...
-                val currentResource = pdoc.playerSave.playerObjects.resources
+                val currentResource = compoundService.resources
 
                 val resourceResponseJson = Dependency.json.encodeToString(currentResource)
 
