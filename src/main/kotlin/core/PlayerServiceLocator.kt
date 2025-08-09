@@ -6,7 +6,7 @@ import kotlin.reflect.KClass
 /**
  * Central registry for retrieving player-scoped game services (e.g., [SurvivorService], [InventoryService]).
  */
-object PlayerServiceLocator {
+class PlayerServiceLocator {
     private val services = mutableMapOf<KClass<*>, Any>()
     private val factories = mutableMapOf<KClass<*>, () -> Any>()
 

@@ -10,10 +10,16 @@ import dev.deadzone.module.Logger
  * Manages survivors.
  */
 class SurvivorService(
+    val survivorLeaderId: String,
     private val survivorRepository: SurvivorRepository
 ) : PlayerService {
     private val survivors = mutableListOf<Survivor>()
     private lateinit var playerId: String // for simple debug
+
+    fun getSurvivorLeader(): Survivor {
+        return survivors.find { it.id == survivorLeaderId }
+            ?: throw IllegalStateException("Survivor leader is missing for playerId=$playerId")
+    }
 
     fun getSurvivorById(srvId: String?): Survivor? {
         val result = survivors.find { it.id == srvId }

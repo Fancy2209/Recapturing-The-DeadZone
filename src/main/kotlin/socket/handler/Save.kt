@@ -53,12 +53,6 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
         val saveId = body?.get("id") as? String
         val pid = requireNotNull(connection.playerId) { "Missing playerId on save message for connection=$connection" }
 
-        val survivorService = PlayerServiceLocator.get<SurvivorService>()
-        val playerAccountService = PlayerServiceLocator.get<PlayerAccountService>()
-        val doc = playerAccountService.getUserDocByPlayerId(pid)
-        val playerSrv = survivorService.getSurvivorById(doc?.playerMetadata?.playerSrvId)
-        val compoundService = PlayerServiceLocator.get<CompoundService>()
-
         // Note: the game typically send and expects JSON data for save message
         // encode JSON response to string before using PIO serialization
         when (type) {
@@ -96,9 +90,10 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                     return
                 }
 
+                val survivorService = connection.playerServiceLocator.get<SurvivorService>()
                 survivorService.saveSurvivorAppearance(
                     playerId = pid,
-                    srvId = doc?.playerMetadata?.playerSrvId ?: "",
+                    srvId = survivorService.survivorLeaderId,
                     newAppearance = appearance
                 )
 
@@ -115,10 +110,13 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 val areaType = if (isCompoundZombieAttack == true) "compound" else data["areaType"] as String
                 Logger.info(LogConfigSocketToClient) { "Going to scene with areaType=$areaType" }
 
+                val survivorService = connection.playerServiceLocator.get<SurvivorService>()
+                val leader = survivorService.getSurvivorLeader()
+
                 val sceneXML = resolveAndLoadScene(areaType)
                 val lootParameter = LootParameter(
                     areaLevel = (data["areaLevel"] as Int),
-                    playerLevel = playerSrv?.level ?: 1,
+                    playerLevel = leader.level ?: 1,
                     itemWeightOverrides = mapOf(),
                     specificItemBoost = mapOf(
                         "fuel-bottle" to 3.0,    // +300% find fuel chance (of the base chance)
@@ -184,6 +182,9 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
             }
 
             "mis_end" -> {
+                val survivorService = connection.playerServiceLocator.get<SurvivorService>()
+                val leader = survivorService.getSurvivorLeader()
+
                 // some of most important data
                 val responseJson = Dependency.json.encodeToString(
                     MissionEndResponse(
@@ -198,13 +199,14 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                         injuries = null,
                         // the survivors that goes into the mission
                         survivors = emptyList(),
-                        player = PlayerSurvivor(xp = 100, level = playerSrv?.level!!),
+                        player = PlayerSurvivor(xp = 100, level = leader.level!!),
                         levelPts = 0,
                         // base64 encoded string
                         cooldown = null
                     )
                 )
 
+                val compoundService = connection.playerServiceLocator.get<CompoundService>()
                 // change resource with obtained loot...
                 val currentResource = compoundService.resources
 

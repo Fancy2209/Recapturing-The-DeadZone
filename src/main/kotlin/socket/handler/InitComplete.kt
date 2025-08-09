@@ -1,7 +1,6 @@
 package dev.deadzone.socket.handler
 
 import com.mongodb.kotlin.client.coroutine.MongoCollection
-import dev.deadzone.core.PlayerServiceLocator
 import dev.deadzone.core.compound.CompoundRepositoryMongo
 import dev.deadzone.core.compound.CompoundService
 import dev.deadzone.core.items.InventoryRepositoryMongo
@@ -10,7 +9,6 @@ import dev.deadzone.core.survivor.SurvivorRepositoryMongo
 import dev.deadzone.core.survivor.SurvivorService
 import dev.deadzone.data.collection.Inventory
 import dev.deadzone.data.collection.NeighborHistory
-import dev.deadzone.data.collection.PlayerAccount
 import dev.deadzone.data.collection.PlayerObjects
 import dev.deadzone.data.db.CollectionName
 import dev.deadzone.module.LogSource
@@ -58,8 +56,6 @@ class InitCompleteHandler(
         // register factory for game services
         if (context.config.useMongo) {
             // load all collections (second time after API 85)
-            val plyAcc =
-                context.db.getCollection<MongoCollection<PlayerAccount>>(CollectionName.PLAYER_ACCOUNT_COLLECTION)
             val plyObj =
                 context.db.getCollection<MongoCollection<PlayerObjects>>(CollectionName.PLAYER_OBJECTS_COLLECTION)
             val neighbor =
@@ -67,17 +63,21 @@ class InitCompleteHandler(
             val inv =
                 context.db.getCollection<MongoCollection<Inventory>>(CollectionName.INVENTORY_COLLECTION)
 
-            PlayerServiceLocator.registerFactory(SurvivorService::class) {
+            val account =
+                requireNotNull(context.db.loadPlayerAccount(pid)) { "Werid, PlayerAccount for playerId=$pid is null" }
+            connection.updatePlayerAccount(account)
+
+            connection.playerServiceLocator.registerFactory(SurvivorService::class) {
                 val repo = SurvivorRepositoryMongo(plyObj)
-                SurvivorService(repo)
+                SurvivorService(survivorLeaderId = account.playerMetadata.playerSrvId, repo)
             }
 
-            PlayerServiceLocator.registerFactory(InventoryService::class) {
+            connection.playerServiceLocator.registerFactory(InventoryService::class) {
                 val repo = InventoryRepositoryMongo()
                 InventoryService(repo)
             }
 
-            PlayerServiceLocator.registerFactory(CompoundService::class) {
+            connection.playerServiceLocator.registerFactory(CompoundService::class) {
                 val repo = CompoundRepositoryMongo(plyObj)
                 CompoundService(repo)
             }
