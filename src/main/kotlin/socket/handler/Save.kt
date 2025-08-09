@@ -3,7 +3,7 @@ package dev.deadzone.socket.handler
 import dev.deadzone.core.PlayerServiceLocator
 import dev.deadzone.core.items.ItemFactory
 import dev.deadzone.core.mission.LootService
-import dev.deadzone.core.mission.LootParameter
+import dev.deadzone.core.mission.model.LootParameter
 import dev.deadzone.core.model.game.data.*
 import dev.deadzone.core.survivor.SurvivorService
 import dev.deadzone.module.Dependency
