@@ -20,6 +20,8 @@ interface PlayerService {
      *
      * This method should be used to load or prepare all data related to the player
      * in this service's domain.
+     *
+     * @return An empty result just for denoting success or failure.
      */
-    suspend fun init(playerId: String)
+    suspend fun init(playerId: String): Result<Unit>
 }

@@ -11,7 +11,7 @@ import dev.deadzone.module.Logger
  */
 class SurvivorService(
     private val survivorRepository: SurvivorRepository
-): PlayerService {
+) : PlayerService {
     private val survivors = mutableListOf<Survivor>()
     private lateinit var playerId: String // for simple debug
 
@@ -33,9 +33,11 @@ class SurvivorService(
         }
     }
 
-    override suspend fun init(playerId: String) {
-        this.playerId = playerId
-        val srvs = survivorRepository.getSurvivorsOfPlayerId(playerId)
-        survivors.addAll(srvs)
+    override suspend fun init(playerId: String): Result<Unit> {
+        return runCatching {
+            this.playerId = playerId
+            val srvs = survivorRepository.getSurvivorsOfPlayerId(playerId)
+            survivors.addAll(srvs)
+        }
     }
 }
