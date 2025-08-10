@@ -13,6 +13,7 @@ data class ServerContext(
     val sessionManager: SessionManager,
     val onlinePlayerRegistry: OnlinePlayerRegistry,
     val authProvider: AuthProvider,
+    val playerContextTracker: PlayerContextTracker,
     val config: ServerConfig,
 )
 

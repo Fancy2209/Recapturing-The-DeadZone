@@ -9,6 +9,8 @@ import dev.deadzone.socket.Connection
 /**
  * A player-scoped data holder. This includes player's socket connection, metadata,
  * and the player's game data, which isn't directly, but found in various [PlayerService].
+ *
+ * A fully available PlayerContext is after INIT_COMPLETE socket message.
  */
 data class PlayerContext(
     val playerId: String,

@@ -1,27 +1,21 @@
 package dev.deadzone.socket
 
-import dev.deadzone.core.PlayerServiceLocator
-import dev.deadzone.data.collection.PlayerAccount
 import dev.deadzone.module.Logger
 import dev.deadzone.utils.PIOSerializer
-import io.ktor.network.sockets.Socket
-import io.ktor.utils.io.ByteWriteChannel
-import io.ktor.utils.io.writeFully
-import java.util.UUID
+import io.ktor.network.sockets.*
+import io.ktor.utils.io.*
+import java.util.*
 
 /**
  * Representation of a player connection.
  * @property playerId reference to which player does this socket belongs to. Only known after client send join message.
  */
 class Connection(
+    var playerId: String,
     val connectionId: String = UUID.randomUUID().toString(),
     val socket: Socket,
     private val output: ByteWriteChannel,
 ) {
-    private lateinit var _playerAccount: PlayerAccount
-    val playerAccount: PlayerAccount
-        get() = _playerAccount
-
     /**
      * Send raw unserialized message (non-PIO) to client
      *
@@ -49,11 +43,7 @@ class Connection(
         output.writeFully(bytes)
     }
 
-    fun updatePlayerAccount(account: PlayerAccount) {
-        _playerAccount = account
-    }
-
     override fun toString(): String {
-        return "[ADDR]: ${this.socket.remoteAddress} | playerId=$playerId | connectionId=$connectionId"
+        return "[ADDR]: ${this.socket.remoteAddress} | connectionId=$connectionId"
     }
 }
