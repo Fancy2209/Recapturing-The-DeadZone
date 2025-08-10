@@ -73,6 +73,11 @@ class PlayerContextTracker {
             playerObjectsMetadataRepository = PlayerObjectsMetadataRepositoryMongo(plyObj)
         )
 
+        survivor.init(playerId)
+        inventory.init(playerId)
+        compound.init(playerId)
+        playerObjectMetadata.init(playerId)
+
         return PlayerServices(
             survivor = survivor,
             compound = compound,
