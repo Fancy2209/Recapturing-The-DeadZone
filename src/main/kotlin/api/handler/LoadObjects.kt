@@ -38,6 +38,10 @@ suspend fun RoutingContext.loadObjects(serverContext: ServerContext) {
 
     for (objId in loadObjectsArgs.objectIds) {
         val playerId = objId.keys.firstOrNull() ?: continue
+        // the game for unknown reason keep requesting the same playerId infinitely
+        // this is to ensure the requested player does actually exists
+        serverContext.playerAccountRepository.getProfileOfPlayerId(playerId) ?: continue
+
         Logger.debug(src = LogSource.API) { "Found object for playerId: $playerId" }
 
         val playerObjects = serverContext.db.loadPlayerObjects(playerId)!!

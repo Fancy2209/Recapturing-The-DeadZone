@@ -154,7 +154,7 @@ data class PlayerObjects(
                 classId = SurvivorClassConstants_Constants.PLAYER.value,
                 morale = emptyMap(),
                 injuries = emptyList(),
-                level = 1,
+                level = 0,
                 xp = 0,
                 missionId = null,
                 assignmentId = null,
