@@ -1,12 +1,13 @@
 package dev.deadzone.socket.handler
 
-import dev.deadzone.core.data.InMemoryDataProvider
-import dev.deadzone.utils.PIOSerializer
-import dev.deadzone.module.Logger
-import dev.deadzone.socket.Connection
-import dev.deadzone.socket.ServerContext
-import dev.deadzone.socket.utils.SocketMessage
-import dev.deadzone.socket.utils.SocketMessageHandler
+import dev.deadzone.context.GlobalContext
+import dev.deadzone.context.ServerContext
+import dev.deadzone.core.data.PlayerLoginState
+import dev.deadzone.socket.core.Connection
+import dev.deadzone.socket.messaging.SocketMessage
+import dev.deadzone.socket.messaging.SocketMessageHandler
+import dev.deadzone.socket.protocol.PIOSerializer
+import dev.deadzone.utils.Logger
 import io.ktor.util.date.*
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -19,9 +20,8 @@ import java.util.zip.GZIPOutputStream
  *
  * 1. Sending `playerio.joinresult`
  * 2. Sending `gr` message
- *
  */
-class JoinHandler(private val context: ServerContext) : SocketMessageHandler {
+class JoinHandler(private val serverContext: ServerContext) : SocketMessageHandler {
     override fun match(message: SocketMessage): Boolean {
         return message.getString("join") != null
     }
@@ -38,14 +38,22 @@ class JoinHandler(private val context: ServerContext) : SocketMessageHandler {
         val joinResultMsg = listOf("playerio.joinresult", true)
         send(PIOSerializer.serialize(joinResultMsg))
 
+        // Create PlayerContext which initializes per-player services
+        serverContext.playerContextTracker.createContext(
+            playerId = connection.playerId,
+            connection = connection,
+            db = serverContext.db,
+            useMongo = serverContext.config.useMongo
+        )
+
         // Second message: game ready message
         val gameReadyMsg = listOf(
             "gr",
             getTimeMillis(),
             produceBinaries(),
-            loadCostTable(),
-            loadSrvTable(),
-            loadPlayerLoginState()
+            loadRawFile("static/data/cost_table.json"),
+            loadRawFile("static/data/srv_table.json"),
+            buildLoginState(connection.playerId)
         )
         send(PIOSerializer.serialize(gameReadyMsg))
     }
@@ -129,30 +137,75 @@ class JoinHandler(private val context: ServerContext) : SocketMessageHandler {
         return output.toByteArray()
     }
 
-    /**
-     * Load cost table which is based on CostTable.as (currently still mocked)
-     */
-    fun loadCostTable(): String {
-        return loadRawJson("cost_table.json")
+    fun loadRawFile(path: String): String {
+        return File(path).readText()
     }
 
-    /**
-     * Load survivor table which is based on Survivor.as (not exactly same)
-     */
-    fun loadSrvTable(): String {
-        return loadRawJson("srv_table.json")
-    }
 
     /**
-     * Load player login state which is based on Player's state from PlayerData.as
-     * (currently still mocked and hardcoded, not from player's database)
+     * Per-player dynamic updates.
+     *
+     * Assumption:
+     *   Some fields come from PlayerObjects and represent values that change over time.
+     *   When a player logs out, their data is stored in the database, but certain values
+     *   (e.g., resources) can change while they’re offline due to natural depletion or
+     *   external events such as PvP attacks.
+     *
+     *   Therefore, when the player logs in, we must recalculate these values to reflect
+     *   the time elapsed since their last session. The updated values should then be
+     *   written back to the database before proceeding, since API 85 (the load request)
+     *   will immediately send this data to the client.
      */
-    fun loadPlayerLoginState(): String {
-        return loadRawJson("login_state.json")
-    }
+    fun buildLoginState(pid: String): String {
+        // must not be null, just initialized in handle
+        val context = serverContext.playerContextTracker.getContext(playerId = pid)!!
 
-    fun loadRawJson(path: String): String {
-        return InMemoryDataProvider.loadRawJson(path) // use in memory data for now
+        // TODO: create service and repository methods
+        return GlobalContext.json.encodeToString(
+            PlayerLoginState(
+                // global game services
+                settings = emptyMap(),
+                news = emptyMap(),
+                sales = emptyList(),
+                allianceWinnings = emptyMap(),
+                recentPVPList = emptyList(),
+
+                // per-player update
+                invsize = 500, // the default inventory size
+                upgrades = "",
+
+                // per-player data
+                allianceId = null,
+                allianceTag = null,
+
+                // if true will prompt captcha
+                longSession = false,
+
+                // per-player update
+                leveledUp = false,
+
+                // global server update
+                promos = emptyList(),
+                promoSale = null,
+                dealItem = null,
+
+                // per-player update
+                leaderResets = 0,
+                unequipItemBinds = emptyList(),
+
+                // unsure
+                globalStats = emptyMap(),
+
+                // per-player update
+                resources = context.services.compound.resources,
+                survivors = context.services.survivor.getAllSurvivors(),
+                tasks = null,
+                missions = null,
+                bountyCap = null,
+                bountyCapTimestamp = null,
+                research = null
+            )
+        )
     }
 }
 

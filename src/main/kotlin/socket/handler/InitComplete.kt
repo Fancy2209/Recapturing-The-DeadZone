@@ -1,21 +1,20 @@
 package dev.deadzone.socket.handler
 
-import dev.deadzone.module.LogSource
-import dev.deadzone.module.Logger
-import dev.deadzone.socket.utils.SocketMessage
-import dev.deadzone.socket.utils.SocketMessageHandler
-import dev.deadzone.socket.Connection
-import dev.deadzone.socket.ServerContext
-import dev.deadzone.socket.TaskController
+import dev.deadzone.context.ServerContext
+import dev.deadzone.socket.core.Connection
+import dev.deadzone.socket.tasks.TaskController
+import dev.deadzone.socket.messaging.SocketMessage
+import dev.deadzone.socket.messaging.SocketMessageHandler
+import dev.deadzone.utils.LogSource
+import dev.deadzone.utils.Logger
 
 /**
  * Handle `ic` message by:
  *
- * 1. IC
- *
+ * 1. Do the necessary setup in server.
  */
 class InitCompleteHandler(
-    private val context: ServerContext,
+    private val serverContext: ServerContext,
     private val taskController: TaskController
 ) :
     SocketMessageHandler {
@@ -30,10 +29,12 @@ class InitCompleteHandler(
         send: suspend (ByteArray) -> Unit
     ) {
         // Client part sends network INIT_COMPLETE message, with no handler attached
-        // not sure the purpose of that or what it expects the server to do
+        // Likely only signal to server
 
-        // When game init is completed, mark player as active and periodically send time update to client
-        connection.playerId?.let { context.playerRegistry.markOnline(it) }
+        // When game init is completed, mark player as active
+        serverContext.onlinePlayerRegistry.markOnline(connection.playerId)
+
+        // periodically send time update to client
         taskController.runTask("tu")
         taskController.addTaskCompletionCallback("tu") {
             Logger.info(LogSource.SOCKET) { "tu completed from ic" }

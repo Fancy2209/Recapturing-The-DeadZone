@@ -1,10 +1,10 @@
 package dev.deadzone.socket.handler
 
-import dev.deadzone.utils.PIOSerializer
-import dev.deadzone.socket.Connection
-import dev.deadzone.socket.ServerContext
-import dev.deadzone.socket.utils.SocketMessage
-import dev.deadzone.socket.utils.SocketMessageHandler
+import dev.deadzone.context.ServerContext
+import dev.deadzone.socket.protocol.PIOSerializer
+import dev.deadzone.socket.core.Connection
+import dev.deadzone.socket.messaging.SocketMessage
+import dev.deadzone.socket.messaging.SocketMessageHandler
 
 /**
  * Handle `qp` message by:
@@ -12,7 +12,7 @@ import dev.deadzone.socket.utils.SocketMessageHandler
  * 1. Sending quest progress JSON
  *
  */
-class QuestProgressHandler(private val context: ServerContext) : SocketMessageHandler {
+class QuestProgressHandler(private val serverContext: ServerContext) : SocketMessageHandler {
     override fun match(message: SocketMessage): Boolean {
         return message.getString("qp") != null
     }

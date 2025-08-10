@@ -2,8 +2,8 @@ package dev.deadzone.api.handler
 
 import dev.deadzone.api.message.utils.WriteErrorArgs
 import dev.deadzone.api.message.utils.WriteErrorError
-import dev.deadzone.module.*
-import dev.deadzone.socket.ServerContext
+import dev.deadzone.api.utils.pioFraming
+import dev.deadzone.utils.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -21,7 +21,7 @@ import kotlinx.serialization.protobuf.ProtoBuf
  * Output: `WriteErrorError` (optional)
  */
 @OptIn(ExperimentalSerializationApi::class)
-suspend fun RoutingContext.writeError(context: ServerContext) {
+suspend fun RoutingContext.writeError() {
     val writeErrorArgs = ProtoBuf.decodeFromByteArray<WriteErrorArgs>(
         call.receiveChannel().toByteArray()
     )

@@ -4,6 +4,7 @@ package dev.deadzone.core.data
  * Dummy data ready to use, typically for admin account.
  */
 object AdminData {
+    const val ADMIN_RESERVED_NAME = "givemeadmin"
     const val PLAYER_ID = "adm-id-123456"
     const val DISPLAY_NAME = "AdminPlayer" // also known as username or nickname
     const val EMAIL = "admin@admin.com"
@@ -14,6 +15,9 @@ object AdminData {
     const val IS_ADMIN = true
     const val PLAYER_DATA_KEY = "admkey"
     const val PLAYER_SRV_ID = "srv-player"
+    const val PLAYER_LEADER_TITLE = "MercifulLeader"
+    const val PLAYER_LEVEL = 60
+    const val PLAYER_EXP = 100
     const val FIGHTER_SRV_ID = "srv-fighter-m"
     const val RECON_SRV_ID = "srv-recon-f"
     const val PLAYER_WEP_ID = "deagle-replica"

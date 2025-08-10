@@ -2,7 +2,7 @@ package dev.deadzone.core.model.game.data.arena
 
 import kotlinx.serialization.Serializable
 import dev.deadzone.core.model.game.data.CooldownCollection
-import dev.deadzone.core.model.game.data.Item
+import dev.deadzone.core.items.model.Item
 
 @Serializable
 data class ArenaSystem(

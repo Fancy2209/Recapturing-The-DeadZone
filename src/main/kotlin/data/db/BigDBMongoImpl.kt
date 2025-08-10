@@ -2,48 +2,58 @@ package dev.deadzone.core.data
 
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Indexes
-import com.mongodb.client.model.Projections
-import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import com.toxicbakery.bcrypt.Bcrypt
-import dev.deadzone.core.auth.model.PlayerSave
 import dev.deadzone.core.auth.model.ServerMetadata
-import dev.deadzone.core.auth.model.UserDocument
 import dev.deadzone.core.auth.model.UserProfile
-import dev.deadzone.core.model.game.data.HumanAppearance
+import dev.deadzone.data.collection.Inventory
+import dev.deadzone.data.collection.NeighborHistory
+import dev.deadzone.data.collection.PlayerAccount
+import dev.deadzone.data.collection.PlayerObjects
 import dev.deadzone.data.db.BigDB
-import dev.deadzone.module.Dependency
-import dev.deadzone.module.Logger
+import dev.deadzone.data.db.CollectionName
+import dev.deadzone.utils.Logger
+import io.ktor.util.date.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import org.bson.Document
 import java.util.*
 import kotlin.io.encoding.Base64
 
 class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : BigDB {
-    private val USER_DOCUMENT_NAME = "userdocument"
-    private val udocs = db.getCollection<UserDocument>(USER_DOCUMENT_NAME)
+    private val plyCollection = db.getCollection<PlayerAccount>("playeraccount")
+    private val objCollection = db.getCollection<PlayerObjects>("playerobjects")
+    private val neighborCollection = db.getCollection<NeighborHistory>("neighborhistory")
+    private val inventoryCollection = db.getCollection<Inventory>("inventory")
 
     init {
         Logger.info { "Initializing MongoDB..." }
         CoroutineScope(Dispatchers.IO).launch {
-            setupUserDocument()
+            setupCollections()
         }
     }
 
-    private suspend fun setupUserDocument() {
+    private suspend fun setupCollections() {
         try {
-            val count = udocs.estimatedDocumentCount()
+            val count = plyCollection.estimatedDocumentCount()
             Logger.info { "MongoDB: User collection ready, contains $count users." }
 
             if (adminEnabled) {
-                val adminDoc = udocs.find(Filters.eq("playerid", AdminData.PLAYER_ID)).firstOrNull()
+                val adminDoc = plyCollection.find(Filters.eq("playerId", AdminData.PLAYER_ID)).firstOrNull()
                 if (adminDoc == null) {
-                    val doc = UserDocument.admin().copy(playerId = AdminData.PLAYER_ID)
-                    udocs.insertOne(doc)
-                    Logger.info { "MongoDB: Admin account inserted with playerId=${doc.playerId}" }
+                    val start = getTimeMillis()
+                    val doc = PlayerAccount.admin()
+                    val obj = PlayerObjects.admin()
+                    val neighbor = NeighborHistory.empty(AdminData.PLAYER_ID)
+                    val inv = Inventory.admin()
+
+                    plyCollection.insertOne(doc)
+                    objCollection.insertOne(obj)
+                    neighborCollection.insertOne(neighbor)
+                    inventoryCollection.insertOne(inv)
+
+                    Logger.info { "MongoDB: Admin account inserted in ${getTimeMillis() - start}ms" }
                 } else {
                     Logger.info { "MongoDB: Admin account already exists." }
                 }
@@ -56,111 +66,67 @@ class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : Big
     }
 
     suspend fun setupIndexes() {
-        udocs.createIndex(Indexes.text("profile.displayName"))
+        plyCollection.createIndex(Indexes.text("profile.displayName"))
+    }
+
+    override suspend fun loadPlayerAccount(playerId: String): PlayerAccount? {
+        return plyCollection.find(Filters.eq("playerId", playerId)).firstOrNull()
+    }
+
+    override suspend fun loadPlayerObjects(playerId: String): PlayerObjects? {
+        return objCollection.find(Filters.eq("playerId", playerId)).firstOrNull()
+    }
+
+    override suspend fun loadNeighborHistory(playerId: String): NeighborHistory? {
+        return neighborCollection.find(Filters.eq("playerId", playerId)).firstOrNull()
+    }
+
+    override suspend fun loadInventory(playerId: String): Inventory? {
+        return inventoryCollection.find(Filters.eq("playerId", playerId)).firstOrNull()
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override suspend fun <T> getCollection(name: CollectionName): T {
+        return when (name) {
+            CollectionName.PLAYER_ACCOUNT_COLLECTION -> plyCollection
+            CollectionName.PLAYER_OBJECTS_COLLECTION -> objCollection
+            CollectionName.NEIGHBOR_HISTORY_COLLECTION -> neighborCollection
+            CollectionName.INVENTORY_COLLECTION -> inventoryCollection
+        } as T
     }
 
     override suspend fun createUser(username: String, password: String): String {
         val pid = UUID.randomUUID().toString()
         val profile = UserProfile.default(username = username, pid = pid)
+        val playerSrvId = UUID.randomUUID().toString()
 
-        val doc = UserDocument(
+        val doc = PlayerAccount(
             playerId = pid,
             hashedPassword = hashPw(password),
             profile = profile,
-            playerSave = PlayerSave.newgame(pid, username),
-            metadata = ServerMetadata()
+            serverMetadata = ServerMetadata()
         )
 
-        udocs.insertOne(doc)
+        val obj = PlayerObjects.newgame(pid, username, playerSrvId)
+        val neighbor = NeighborHistory.empty(pid)
+        val inv = Inventory.newgame(pid)
+
+        plyCollection.insertOne(doc)
+        objCollection.insertOne(obj)
+        neighborCollection.insertOne(neighbor)
+        inventoryCollection.insertOne(inv)
+
         return pid
-    }
-
-    override suspend fun doesUserExist(username: String): Boolean {
-        return udocs
-            .find(Filters.eq("profile.displayName", username))
-            .projection(null)
-            .firstOrNull() != null
-    }
-
-    override suspend fun getUserDocByUsername(username: String): UserDocument? {
-        return udocs.find(Filters.eq("profile.displayName", username)).firstOrNull()
-    }
-
-    override suspend fun getUserDocByPlayerId(playerId: String): UserDocument? {
-        return udocs.find(Filters.eq("playerId", playerId)).firstOrNull()
-    }
-
-    override suspend fun getPlayerIdOfUsername(username: String): String? {
-        return udocs
-            .find(Filters.eq("profile.displayName", username))
-            .projection(Projections.include("playerId"))
-            .firstOrNull()
-            ?.playerId
-    }
-
-    override suspend fun getProfileOfPlayerId(playerId: String): UserProfile? {
-        val doc = udocs
-            .withDocumentClass<Document>()
-            .find(Filters.eq("playerId", playerId))
-            .projection(Projections.include("profile"))
-            .firstOrNull()
-
-        val profileDoc = doc?.get("profile") as? Document
-        return profileDoc?.let {
-            val jsonString = it.toJson()
-            Dependency.json.decodeFromString<UserProfile>(jsonString)
-        }
-    }
-
-    override suspend fun verifyCredentials(username: String, password: String): String? {
-        val doc = udocs
-            .withDocumentClass<Document>()
-            .find(Filters.eq("profile.displayName", username))
-            .projection(Projections.include("hashedPassword", "playerId"))
-            .firstOrNull()
-
-        if (doc == null) return null
-
-        val hashed = doc.getString("hashedPassword")
-        val playerId = doc.getString("playerId")
-        val matches = Bcrypt.verify(password, Base64.decode(hashed))
-
-        return if (matches) playerId else null
     }
 
     private fun hashPw(password: String): String {
         return Base64.encode(Bcrypt.hash(password, 10))
     }
 
-    override suspend fun saveSurvivorAppearance(playerId: String, srvId: String, newAppearance: HumanAppearance) {
-        val udoc = requireNotNull(
-            getUserDocByPlayerId(playerId),
-            { "couldn't find UserDoc for playerId: $playerId with" }
-        )
-
-        val survivorIndex = udoc.playerSave.playerObjects.survivors.indexOfFirst { it.id == srvId }
-
-        Logger.debug { "saveSurvivorAppearance: playerId=$playerId srvId=$srvId" }
-
-        val path = "playerSave.playerObjects.survivors.$survivorIndex.appearance"
-        val update = Updates.set(path, newAppearance)
-
-        udocs.updateOne(Filters.eq("playerId", playerId), update)
-    }
-
-    override suspend fun updatePlayerFlags(playerId: String, flags: ByteArray) {
-        Logger.debug { "updatePlayerFlags: playerId=$playerId flags=$flags" }
-
-        val path = "playerSave.playerObjects.flags"
-        val update = Updates.set(path, flags)
-
-        udocs.updateOne(Filters.eq("playerId", playerId), update)
-    }
-
     /**
      * Reset an entire UserDocument collection.
      */
     suspend fun resetUserCollection() {
-        udocs.drop()
+        plyCollection.drop()
     }
 }
