@@ -3,7 +3,7 @@ package dev.deadzone.context
 import dev.deadzone.core.auth.AuthProvider
 import dev.deadzone.core.auth.SessionManager
 import dev.deadzone.data.db.BigDB
-import dev.deadzone.socket.OnlinePlayerRegistry
+import dev.deadzone.socket.core.OnlinePlayerRegistry
 
 /**
  * Holds the global server components. Only single instance of this class is needed in the server.

@@ -3,10 +3,10 @@ package dev.deadzone.socket.handler
 import dev.deadzone.context.ServerContext
 import dev.deadzone.module.LogSource
 import dev.deadzone.module.Logger
-import dev.deadzone.socket.Connection
-import dev.deadzone.socket.TaskController
-import dev.deadzone.socket.utils.SocketMessage
-import dev.deadzone.socket.utils.SocketMessageHandler
+import dev.deadzone.socket.core.Connection
+import dev.deadzone.socket.tasks.TaskController
+import dev.deadzone.socket.messaging.SocketMessage
+import dev.deadzone.socket.messaging.SocketMessageHandler
 
 /**
  * Handle `ic` message by:

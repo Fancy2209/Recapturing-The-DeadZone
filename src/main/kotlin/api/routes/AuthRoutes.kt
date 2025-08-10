@@ -1,13 +1,14 @@
-package dev.deadzone.api.handler
+package dev.deadzone.api.routes
 
-import dev.deadzone.module.Logger
 import dev.deadzone.context.ServerContext
+import dev.deadzone.core.data.AdminData
+import dev.deadzone.utils.Logger
 import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Route.authRoute(context: ServerContext) {
+fun Route.authRoutes(context: ServerContext) {
     post("/api/login") {
         val data = call.receive<Map<String, String>>()
         val username = data["username"]
@@ -18,7 +19,7 @@ fun Route.authRoute(context: ServerContext) {
             return@post
         }
 
-        if (username == "givemeadmin") {
+        if (username == AdminData.ADMIN_RESERVED_NAME) {
             if (context.config.adminEnabled) {
                 val session = context.authProvider.adminLogin()
                 if (session != null) {
@@ -63,7 +64,7 @@ fun Route.authRoute(context: ServerContext) {
             return@get
         }
 
-        if (username == "givemeadmin") {
+        if (username == AdminData.ADMIN_RESERVED_NAME) {
             if (context.config.adminEnabled) {
                 call.respondText("granted")
             } else {
@@ -78,6 +79,15 @@ fun Route.authRoute(context: ServerContext) {
         } catch (e: Exception) {
             Logger.error { "Failed to check if user exists: $username, e.message:${e.message}" }
             call.respond(HttpStatusCode.InternalServerError, mapOf("reason" to "Database error"))
+        }
+    }
+
+    get("/keepalive") {
+        val token = call.parameters["token"] ?: return@get call.respond(HttpStatusCode.BadRequest, "missing token")
+        if (context.sessionManager.refresh(token)) {
+            return@get call.respond(HttpStatusCode.OK)
+        } else {
+            return@get call.respond(HttpStatusCode.Unauthorized, "Session expired, please login again")
         }
     }
 }

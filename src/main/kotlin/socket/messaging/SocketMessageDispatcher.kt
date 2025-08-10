@@ -1,4 +1,4 @@
-package dev.deadzone.socket.utils
+package dev.deadzone.socket.messaging
 
 import dev.deadzone.module.Logger
 import dev.deadzone.socket.handler.DefaultHandler

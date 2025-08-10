@@ -13,12 +13,12 @@ import dev.deadzone.data.collection.PlayerAccount
 import dev.deadzone.data.collection.PlayerObjects
 import dev.deadzone.data.db.BigDB
 import dev.deadzone.data.db.CollectionName
-import dev.deadzone.socket.Connection
+import dev.deadzone.socket.core.Connection
 import io.ktor.util.date.getTimeMillis
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * Tracks each player context, which is the player's in-memory data.
+ * Tracks each active player context, which is the player's in-memory data.
  */
 class PlayerContextTracker {
     val players = ConcurrentHashMap<String, PlayerContext>()

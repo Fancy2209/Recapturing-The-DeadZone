@@ -4,7 +4,7 @@ import dev.deadzone.core.compound.CompoundService
 import dev.deadzone.core.items.InventoryService
 import dev.deadzone.core.survivor.SurvivorService
 import dev.deadzone.data.collection.PlayerAccount
-import dev.deadzone.socket.Connection
+import dev.deadzone.socket.core.Connection
 
 /**
  * A player-scoped data holder. This includes player's socket connection, metadata,

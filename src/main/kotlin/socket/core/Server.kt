@@ -1,13 +1,15 @@
-package dev.deadzone.socket
+package dev.deadzone.socket.core
 
 import dev.deadzone.context.ServerContext
 import dev.deadzone.module.Logger
+import dev.deadzone.socket.core.Connection
 import dev.deadzone.socket.handler.*
 import dev.deadzone.socket.tasks.TimeUpdate
-import dev.deadzone.socket.utils.ServerPushTaskDispatcher
-import dev.deadzone.socket.utils.SocketMessage
-import dev.deadzone.socket.utils.SocketMessageDispatcher
-import dev.deadzone.utils.PIODeserializer
+import dev.deadzone.socket.tasks.ServerPushTaskDispatcher
+import dev.deadzone.socket.messaging.SocketMessage
+import dev.deadzone.socket.messaging.SocketMessageDispatcher
+import dev.deadzone.socket.protocol.PIODeserializer
+import dev.deadzone.socket.tasks.TaskController
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*

@@ -1,12 +1,12 @@
 package dev.deadzone.socket.handler
 
 import dev.deadzone.core.data.InMemoryDataProvider
-import dev.deadzone.utils.PIOSerializer
+import dev.deadzone.socket.protocol.PIOSerializer
 import dev.deadzone.module.Logger
-import dev.deadzone.socket.Connection
+import dev.deadzone.socket.core.Connection
 import dev.deadzone.context.ServerContext
-import dev.deadzone.socket.utils.SocketMessage
-import dev.deadzone.socket.utils.SocketMessageHandler
+import dev.deadzone.socket.messaging.SocketMessage
+import dev.deadzone.socket.messaging.SocketMessageHandler
 import io.ktor.util.date.*
 import java.io.ByteArrayOutputStream
 import java.io.File

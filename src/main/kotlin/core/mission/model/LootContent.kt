@@ -1,4 +1,4 @@
-package dev.deadzone.core.model
+package dev.deadzone.core.mission.model
 
 data class LootContent(
     val itemId: String,

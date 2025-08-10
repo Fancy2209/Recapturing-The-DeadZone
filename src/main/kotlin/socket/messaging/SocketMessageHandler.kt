@@ -1,6 +1,6 @@
-package dev.deadzone.socket.utils
+package dev.deadzone.socket.messaging
 
-import dev.deadzone.socket.Connection
+import dev.deadzone.socket.core.Connection
 
 /**
  * A template for socket message handler

@@ -1,4 +1,4 @@
-package dev.deadzone.socket
+package dev.deadzone.socket.tasks
 
 interface TaskController {
     fun runTask(key: String)

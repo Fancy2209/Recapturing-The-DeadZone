@@ -1,6 +1,6 @@
 package dev.deadzone.api.message.db
 
-import dev.deadzone.utils.Converter
+import dev.deadzone.api.utils.BigDBConverter
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -9,7 +9,7 @@ data class LoadObjectsOutput(
 ) {
     companion object {
         inline fun <reified T : Any> fromData(obj: T): BigDBObject {
-            return Converter.toBigDBObject(obj = obj)
+            return BigDBConverter.toBigDBObject(obj = obj)
         }
     }
 }

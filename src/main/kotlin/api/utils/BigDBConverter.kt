@@ -1,4 +1,4 @@
-package dev.deadzone.utils
+package dev.deadzone.api.utils
 
 import dev.deadzone.api.message.db.ArrayProperty
 import dev.deadzone.api.message.db.BigDBObject
@@ -8,7 +8,7 @@ import dev.deadzone.api.message.db.ValueType
 import kotlin.reflect.KProperty1
 import kotlin.reflect.KVisibility
 
-object Converter {
+object BigDBConverter {
     inline fun <reified T : Any> toBigDBObject(key: String = "", obj: T, creator: UInt = 0u): BigDBObject {
         val props = toObjectProperties(obj)
         return BigDBObject(

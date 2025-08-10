@@ -1,24 +1,14 @@
-package dev.deadzone.module
+package dev.deadzone.utils
 
-import dev.deadzone.context.GlobalContext
-import dev.deadzone.module.Logger.info
-import io.ktor.server.application.*
-import io.ktor.server.plugins.calllogging.*
+import dev.deadzone.utils.Logger.info
 import io.ktor.server.routing.*
 import io.ktor.util.date.*
-import io.ktor.websocket.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.encodeToJsonElement
 import java.io.File
 import java.text.SimpleDateFormat
-
-fun Application.configureLogging() {
-    install(CallLogging)
-}
 
 fun RoutingContext.logInput(txt: Any?, logFull: Boolean = false) {
     info(LogSource.API, logFull = logFull) { "Received [API ${call.parameters["path"]}]: $txt" }
@@ -88,8 +78,7 @@ fun RoutingContext.logOutput(txt: ByteArray?, logFull: Boolean = false) {
  * ```
  */
 object Logger {
-    var level: LogLevel = LogLevel.DEBUG
-
+    // Log files
     private val logDir = File("logs").apply { mkdirs() }
     private val clientWriteError = File(logDir, "client_write_error-1.log")
     private val assetsError = File(logDir, "assets_error-1.log")
@@ -103,10 +92,21 @@ object Logger {
         LogFile.SOCKET_SERVER_ERROR to socketServerError,
     )
 
+    // Log configs
+    var level: LogLevel = LogLevel.DEBUG
     private const val MAX_LOG_LENGTH = 500
     private const val MAX_LOG_FILE_SIZE = 1024 * 5 // 5 mb
     private const val MAX_LOG_ROTATES = 5
     private val dateFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+
+    // Websocket broadcast function
+    private var broadcast: (suspend (logMsg: LogMessage) -> Unit)? = null
+    fun init(broadcastFunc: suspend (LogMessage) -> Unit) {
+        broadcast = broadcastFunc
+    }
+    suspend fun wslog(logMsg: LogMessage) {
+        broadcast?.invoke(logMsg)
+    }
 
     private fun log(
         src: LogSource = LogSource.SOCKET,
@@ -153,24 +153,7 @@ object Logger {
                     val logMsg = LogMessage(level, logMessage)
 
                     CoroutineScope(Dispatchers.IO).launch {
-                        for ((clientId, session) in GlobalContext.wsManager.getAllClients()) {
-                            try {
-                                val logJson = Json.encodeToJsonElement(logMsg)
-                                session.send(
-                                    Frame.Text(
-                                        Json.encodeToString(
-                                            WsMessage(
-                                                type = "log",
-                                                payload = logJson
-                                            )
-                                        )
-                                    )
-                                )
-                            } catch (e: Exception) {
-                                println("Failed to send log to client $session: $e")
-                                GlobalContext.wsManager.removeClient(clientId)
-                            }
-                        }
+                        wslog(logMsg)
                     }
                 }
             }
