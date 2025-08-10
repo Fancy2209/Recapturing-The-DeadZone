@@ -34,13 +34,31 @@ class SurvivorService(
     }
 
     suspend fun saveSurvivorAppearance(srvId: String, newAppearance: HumanAppearance) {
+        var newSurvivor: Survivor? = null
         val result = survivorRepository.updateSurvivor(playerId, srvId) { srv ->
+            newSurvivor = srv
             srv.copy(appearance = newAppearance)
         }
-
         result.onFailure {
             Logger.error(LogConfigSocketError) { "Error on saveSurvivorAppearance: ${it.message}" }
         }
+
+        // update the in-memory data
+        newSurvivor?.let {
+            survivors.removeIf { it.id == srvId }
+            survivors.add(newSurvivor)
+        }
+    }
+
+    suspend fun updateSurvivor(srvId: String, newSurvivor: Survivor) {
+        val result = survivorRepository.updateSurvivor(playerId, srvId) { newSurvivor }
+        result.onFailure {
+            Logger.error(LogConfigSocketError) { "Error on updateSurvivor: ${it.message}" }
+        }
+
+        // update the in-memory data
+        survivors.removeIf { it.id == srvId }
+        survivors.add(newSurvivor)
     }
 
     override suspend fun init(playerId: String): Result<Unit> {
