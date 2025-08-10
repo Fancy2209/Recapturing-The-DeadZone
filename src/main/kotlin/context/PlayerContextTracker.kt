@@ -5,6 +5,8 @@ import dev.deadzone.core.compound.CompoundRepositoryMongo
 import dev.deadzone.core.compound.CompoundService
 import dev.deadzone.core.items.InventoryRepositoryMongo
 import dev.deadzone.core.items.InventoryService
+import dev.deadzone.core.metadata.PlayerObjectsMetadataRepositoryMongo
+import dev.deadzone.core.metadata.PlayerObjectsMetadataService
 import dev.deadzone.core.survivor.SurvivorRepositoryMongo
 import dev.deadzone.core.survivor.SurvivorService
 import dev.deadzone.data.collection.Inventory
@@ -67,11 +69,15 @@ class PlayerContextTracker {
         )
         val inventory = InventoryService(inventoryRepository = InventoryRepositoryMongo())
         val compound = CompoundService(compoundRepository = CompoundRepositoryMongo(plyObj))
+        val playerObjectMetadata = PlayerObjectsMetadataService(
+            playerObjectsMetadataRepository = PlayerObjectsMetadataRepositoryMongo(plyObj)
+        )
 
         return PlayerServices(
             survivor = survivor,
             compound = compound,
-            inventory = inventory
+            inventory = inventory,
+            playerObjectMetadata = playerObjectMetadata
         )
     }
 

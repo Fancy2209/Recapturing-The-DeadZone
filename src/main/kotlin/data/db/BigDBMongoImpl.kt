@@ -2,12 +2,10 @@ package dev.deadzone.core.data
 
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Indexes
-import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import com.toxicbakery.bcrypt.Bcrypt
 import dev.deadzone.core.auth.model.ServerMetadata
 import dev.deadzone.core.auth.model.UserProfile
-import dev.deadzone.core.model.data.PlayerFlags
 import dev.deadzone.data.collection.Inventory
 import dev.deadzone.data.collection.NeighborHistory
 import dev.deadzone.data.collection.PlayerAccount
@@ -130,15 +128,6 @@ class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : Big
         inventoryCollection.insertOne(inv)
 
         return pid
-    }
-
-    override suspend fun updatePlayerFlags(playerId: String, flags: ByteArray) {
-        Logger.debug { "updatePlayerFlags: playerId=$playerId flags=$flags" }
-
-        val path = "playerSave.playerObjects.flags"
-        val update = Updates.set(path, flags)
-
-        plyCollection.updateOne(Filters.eq("playerId", playerId), update)
     }
 
     private fun hashPw(password: String): String {

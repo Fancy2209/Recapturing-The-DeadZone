@@ -18,6 +18,7 @@ object PlayerFlags {
     // nicknameVerified is a flag sent by server if user's nickname is bad
     // with nicknameVerified = true, this will prompt the game to edit the leader's nickname
     // usually the prompt is on compound screen with title of "Leader Update"
+    // nicknameVerified is initially false when player registers.
 
     fun create(
         nicknameVerified: Boolean = false, refreshNeighbors: Boolean = false,

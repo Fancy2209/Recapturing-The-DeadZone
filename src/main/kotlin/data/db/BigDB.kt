@@ -37,6 +37,4 @@ interface BigDB {
      * @return playerId (UUID) of the newly created user.
      */
     suspend fun createUser(username: String, password: String): String
-
-    suspend fun updatePlayerFlags(playerId: String, flags: ByteArray)
 }

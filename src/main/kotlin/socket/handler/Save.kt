@@ -6,6 +6,7 @@ import dev.deadzone.context.requirePlayerContext
 import dev.deadzone.core.items.ItemFactory
 import dev.deadzone.core.mission.LootService
 import dev.deadzone.core.mission.model.LootParameter
+import dev.deadzone.core.model.data.PlayerFlags
 import dev.deadzone.core.model.game.data.*
 import dev.deadzone.socket.core.Connection
 import dev.deadzone.socket.handler.saveresponse.compound.BuildingCreateBuyResponse
@@ -87,9 +88,12 @@ class SaveHandler(private val serverContext: ServerContext) : SocketMessageHandl
 
                 val svc = serverContext.requirePlayerContext(pid).services
                 svc.survivor.saveSurvivorAppearance(
-                    playerId = pid,
                     srvId = svc.survivor.survivorLeaderId,
                     newAppearance = appearance
+                )
+
+                svc.playerObjectMetadata.updatePlayerFlags(
+                    flags = PlayerFlags.create(nicknameVerified = true)
                 )
 
                 val responseJson = GlobalContext.json.encodeToString(PlayerCustomResponse())

@@ -34,3 +34,15 @@ data class PlayerAccount(
         }
     }
 }
+
+/*
+List of common field in PlayerAccount and PlayerObjects
+- UserProfile:
+    - displayName -> nickname
+- PlayerMetadata:
+    - playerSrvId -> playerSurvivor
+    - displayName -> nickname
+    - leaderTitle -> survivors.title
+    - level -> survivors.level
+    - xp -> survivors.xp
+*/

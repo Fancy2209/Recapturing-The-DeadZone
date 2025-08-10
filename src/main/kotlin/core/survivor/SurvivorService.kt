@@ -29,7 +29,7 @@ class SurvivorService(
         return result
     }
 
-    suspend fun saveSurvivorAppearance(playerId: String, srvId: String, newAppearance: HumanAppearance) {
+    suspend fun saveSurvivorAppearance(srvId: String, newAppearance: HumanAppearance) {
         val result = survivorRepository.updateSurvivor(playerId, srvId) { srv ->
             srv.copy(appearance = newAppearance)
         }
