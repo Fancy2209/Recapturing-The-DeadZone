@@ -1,6 +1,7 @@
 package dev.deadzone.module
 
 import dev.deadzone.api.handler.*
+import dev.deadzone.context.GlobalContext
 import dev.deadzone.context.ServerContext
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -43,7 +44,7 @@ fun Application.configureRouting(context: ServerContext) {
                 return@webSocket
             }
 
-            Dependency.wsManager.addClient(clientId, this)
+            GlobalContext.wsManager.addClient(clientId, this)
 
             try {
                 for (frame in incoming) {
@@ -52,7 +53,7 @@ fun Application.configureRouting(context: ServerContext) {
                         try {
                             val wsMessage = Json.decodeFromString<WsMessage>(msg)
                             if (wsMessage.type == "close") break
-                            Dependency.wsManager.handleMessage(this, wsMessage)
+                            GlobalContext.wsManager.handleMessage(this, wsMessage)
                         } catch (e: Exception) {
                             Logger.error { "Failed to parse WS message: $msg\n$e" }
                         }
@@ -61,7 +62,7 @@ fun Application.configureRouting(context: ServerContext) {
             } catch (e: Exception) {
                 Logger.error { "Error in websocket for client $this: $e" }
             } finally {
-                Dependency.wsManager.removeClient(clientId)
+                GlobalContext.wsManager.removeClient(clientId)
                 Logger.info { "Client $this disconnected from websocket debug." }
             }
         }

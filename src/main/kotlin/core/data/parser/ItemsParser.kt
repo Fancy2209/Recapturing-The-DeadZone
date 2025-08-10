@@ -1,6 +1,6 @@
 package dev.deadzone.core.data.assets
 
-import dev.deadzone.core.data.GameResourceRegistry
+import dev.deadzone.core.data.GameDefinitions
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 
@@ -15,7 +15,7 @@ data class ItemResource(
 }
 
 class ItemsParser() : GameResourcesParser {
-    override fun parse(doc: Document, gameResourceRegistry: GameResourceRegistry) {
+    override fun parse(doc: Document, gameDefinitions: GameDefinitions) {
         val items = doc.getElementsByTagName("item")
 
         for (i in 0 until items.length) {
@@ -26,12 +26,12 @@ class ItemsParser() : GameResourcesParser {
 
             val res = ItemResource(itemId, itemType, itemNode)
 
-            gameResourceRegistry.itemsById.putIfAbsent(itemId, res)
-            gameResourceRegistry.itemsByType.computeIfAbsent(itemId) { mutableListOf() }.add(res)
+            gameDefinitions.itemsById.putIfAbsent(itemId, res)
+            gameDefinitions.itemsByType.computeIfAbsent(itemId) { mutableListOf() }.add(res)
             if (itemLocs?.isNotEmpty() ?: false) {
                 val locList = itemLocs.split(',').map { it.trim() }
                 for (loc in locList) {
-                    gameResourceRegistry.itemsByLootable.computeIfAbsent(loc) { mutableListOf() }.add(res)
+                    gameDefinitions.itemsByLootable.computeIfAbsent(loc) { mutableListOf() }.add(res)
                 }
             }
         }

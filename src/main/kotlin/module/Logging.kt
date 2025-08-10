@@ -1,5 +1,6 @@
 package dev.deadzone.module
 
+import dev.deadzone.context.GlobalContext
 import dev.deadzone.module.Logger.info
 import io.ktor.server.application.*
 import io.ktor.server.plugins.calllogging.*
@@ -152,7 +153,7 @@ object Logger {
                     val logMsg = LogMessage(level, logMessage)
 
                     CoroutineScope(Dispatchers.IO).launch {
-                        for ((clientId, session) in Dependency.wsManager.getAllClients()) {
+                        for ((clientId, session) in GlobalContext.wsManager.getAllClients()) {
                             try {
                                 val logJson = Json.encodeToJsonElement(logMsg)
                                 session.send(
@@ -167,7 +168,7 @@ object Logger {
                                 )
                             } catch (e: Exception) {
                                 println("Failed to send log to client $session: $e")
-                                Dependency.wsManager.removeClient(clientId)
+                                GlobalContext.wsManager.removeClient(clientId)
                             }
                         }
                     }

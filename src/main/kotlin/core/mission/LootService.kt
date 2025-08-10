@@ -1,8 +1,8 @@
 package dev.deadzone.core.mission
 
 import dev.deadzone.core.data.assets.ItemResource
-import dev.deadzone.module.Dependency
-import dev.deadzone.core.data.GameResourceRegistry
+import dev.deadzone.context.GlobalContext
+import dev.deadzone.core.data.GameDefinitions
 import dev.deadzone.core.mission.model.LootContent
 import dev.deadzone.core.mission.model.LootParameter
 import org.w3c.dom.Document
@@ -18,7 +18,6 @@ import javax.xml.parsers.DocumentBuilder
 import org.xml.sax.InputSource
 import java.util.TreeMap
 import java.util.UUID
-import kotlin.collections.emptyMap
 import kotlin.random.Random
 
 val ALL_LOCS = listOf(
@@ -30,7 +29,7 @@ val ALL_LOCS = listOf(
 ) // + the tutorial convenience store (tutorialfuel)
 
 class LootService(
-    private val gameResourceRegistry: GameResourceRegistry = Dependency.gameResourceRegistry,
+    private val gameDefinitions: GameDefinitions = GlobalContext.gameDefinitions,
     private val sceneXML: String,
     private val parameter: LootParameter
 ) {
@@ -45,7 +44,7 @@ class LootService(
 
     private fun buildIndexOfLootableItems() {
         ALL_LOCS.forEach { loc ->
-            val lootableInLoc = gameResourceRegistry.itemsByLootable[loc] ?: emptyList()
+            val lootableInLoc = gameDefinitions.itemsByLootable[loc] ?: emptyList()
             // create a binary search tree whose key is cumulative weight and value is the loot
             // this will allow us to quickly search for an item based on a rolled double value just by seeing the cumulative weight
             val treeMap = TreeMap<Double, LootContent>()

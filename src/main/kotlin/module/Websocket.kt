@@ -1,5 +1,6 @@
 package dev.deadzone.module
 
+import dev.deadzone.context.GlobalContext
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.websocket.DefaultWebSocketServerSession
@@ -7,9 +8,7 @@ import io.ktor.server.websocket.WebSockets
 import io.ktor.server.websocket.pingPeriod
 import io.ktor.server.websocket.timeout
 import io.ktor.websocket.Frame
-import io.ktor.websocket.send
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import java.util.concurrent.ConcurrentHashMap
@@ -21,7 +20,7 @@ fun Application.configureWebsocket() {
         timeout = 15.seconds
         masking = true
     }
-    Dependency.wsManager = WebsocketManager()
+    GlobalContext.wsManager = WebsocketManager()
 }
 
 @Serializable

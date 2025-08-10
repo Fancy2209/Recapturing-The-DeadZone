@@ -1,6 +1,7 @@
 package dev.deadzone.module
 
 import com.mongodb.kotlin.client.coroutine.MongoClient
+import dev.deadzone.context.GlobalContext
 import dev.deadzone.core.data.BigDBMongoImpl
 import org.bson.Document
 
@@ -17,7 +18,7 @@ suspend fun configureDatabase(mongoUrl: String, adminEnabled: Boolean) {
         val commandResult = database.runCommand(Document("ping", 1))
         Logger.info { "MongoDB connection successful: $commandResult" }
 
-        Dependency.database = BigDBMongoImpl(mongoc.getDatabase("tlsdz"), adminEnabled)
+        GlobalContext.database = BigDBMongoImpl(mongoc.getDatabase("tlsdz"), adminEnabled)
         true
     } catch (e: Exception) {
         Logger.warn { "MongoDB connection failed inside timeout: ${e.message}" }

@@ -6,7 +6,7 @@ import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.toxicbakery.bcrypt.Bcrypt
 import dev.deadzone.core.auth.model.UserProfile
 import dev.deadzone.data.collection.PlayerAccount
-import dev.deadzone.module.Dependency
+import dev.deadzone.context.GlobalContext
 import kotlinx.coroutines.flow.firstOrNull
 import org.bson.Document
 import kotlin.io.encoding.Base64
@@ -45,7 +45,7 @@ class PlayerAccountRepositoryMongo(val userCollection: MongoCollection<PlayerAcc
         val profileDoc = doc?.get("profile") as? Document
         return profileDoc?.let {
             val jsonString = it.toJson()
-            Dependency.json.decodeFromString<UserProfile>(jsonString)
+            GlobalContext.json.decodeFromString<UserProfile>(jsonString)
         }
     }
 

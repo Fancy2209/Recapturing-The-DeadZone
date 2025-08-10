@@ -12,7 +12,7 @@ import kotlin.time.Duration.Companion.milliseconds
 /**
  * Global registry that holds game data and config from parsing the game XML resources.
  */
-class GameResourceRegistry(onResourceLoadComplete: () -> Unit) {
+class GameDefinitions(onResourceLoadComplete: () -> Unit) {
     val itemsById = mutableMapOf<String, ItemResource>()
     val itemsByType = mutableMapOf<String, MutableList<ItemResource>>()
     val itemsByLootable = mutableMapOf<String, MutableList<ItemResource>>()

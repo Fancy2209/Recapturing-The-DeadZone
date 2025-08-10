@@ -1,5 +1,6 @@
 package dev.deadzone.module
 
+import dev.deadzone.context.GlobalContext
 import dev.deadzone.core.model.game.data.Building
 import dev.deadzone.core.model.game.data.BuildingLike
 import dev.deadzone.core.model.game.data.JunkBuilding
@@ -39,8 +40,8 @@ fun Application.configureSerialization() {
             ignoreUnknownKeys = true
             encodeDefaults = true
         }
-        Dependency.json = json1
-        Dependency.jsonForDB = json2
+        GlobalContext.json = json1
+        GlobalContext.jsonForDB = json2
         json(json1)
         protobuf(ProtoBuf)
     }

@@ -6,7 +6,7 @@ import dev.deadzone.core.mission.LootService
 import dev.deadzone.core.model.LootParameter
 import dev.deadzone.core.model.game.data.*
 import dev.deadzone.core.survivor.SurvivorService
-import dev.deadzone.module.Dependency
+import dev.deadzone.context.GlobalContext
 import dev.deadzone.module.LogConfigSocketError
 import dev.deadzone.module.LogConfigSocketToClient
 import dev.deadzone.module.Logger
@@ -65,7 +65,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 val keyId = data["keyId"] as String?
                 val crateId = (data["crateId"] ?: "") as String?
 
-                val responseJson = Dependency.json.encodeToString(
+                val responseJson = GlobalContext.json.encodeToString(
                     CrateUnlockResponse(
                         success = true,
                         item = ItemFactory.getRandomItem(),
@@ -94,7 +94,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                     newAppearance = appearance
                 )
 
-                val responseJson = Dependency.json.encodeToString(PlayerCustomResponse())
+                val responseJson = GlobalContext.json.encodeToString(PlayerCustomResponse())
 
                 send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
             }
@@ -130,7 +130,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                     baseWeight = 1.0,
                     fuelLimit = 50
                 )
-                val lootService = LootService(Dependency.gameResourceRegistry, sceneXML, lootParameter)
+                val lootService = LootService(GlobalContext.gameDefinitions, sceneXML, lootParameter)
                 val sceneXMLWithLoot = lootService.insertLoots()
 
                 val zombies = listOf(
@@ -145,7 +145,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
 
                 val timeSeconds = if (isCompoundZombieAttack == true) 30 else 240
 
-                val responseJson = Dependency.json.encodeToString(
+                val responseJson = GlobalContext.json.encodeToString(
                     MissionStartResponse(
                         id = saveId ?: "",
                         time = timeSeconds,
@@ -183,7 +183,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 val leader = survivorService.getSurvivorLeader()
 
                 // some of most important data
-                val responseJson = Dependency.json.encodeToString(
+                val responseJson = GlobalContext.json.encodeToString(
                     MissionEndResponse(
                         automated = false,
                         xpEarned = 100,
@@ -207,7 +207,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 // change resource with obtained loot...
                 val currentResource = compoundService.resources
 
-                val resourceResponseJson = Dependency.json.encodeToString(currentResource)
+                val resourceResponseJson = GlobalContext.json.encodeToString(currentResource)
 
                 send(PIOSerializer.serialize(buildMsg(saveId, responseJson, resourceResponseJson)))
             }
@@ -225,7 +225,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                     ZombieData.fatWalkerStrongAttack(105),
                 ).flatMap { it.toFlatList() }
 
-                val responseJson = Dependency.json.encodeToString(
+                val responseJson = GlobalContext.json.encodeToString(
                     GetZombieResponse(
                         max = false,
                         z = zombies
@@ -257,7 +257,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                         // not tested
                         val schem = data["schem"] as? String ?: return
                         val item = SchematicItem(type = type, schem = schem, new = true)
-                        val response = Dependency.json.encodeToString(item)
+                        val response = GlobalContext.json.encodeToString(item)
                         send(PIOSerializer.serialize(buildMsg(saveId, response)))
                     }
 
@@ -267,7 +267,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                         val repeat = (data["repeat"] as? Int) ?: 1
                         repeat(repeat) {
                             val item = CrateItem(type = type, series = series, new = true)
-                            val response = Dependency.json.encodeToString(item)
+                            val response = GlobalContext.json.encodeToString(item)
                             send(PIOSerializer.serialize(buildMsg(saveId, response)))
                         }
                     }
@@ -291,7 +291,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                             mod2 = mod2,
                             new = true,
                         )
-                        val response = Dependency.json.encodeToString(item)
+                        val response = GlobalContext.json.encodeToString(item)
                         send(PIOSerializer.serialize(buildMsg(saveId, response)))
                     }
                 }
@@ -312,7 +312,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
 
                 Logger.info(LogConfigSocketToClient) { "Received 'giveRare' command with type=$type | level=$level" }
 
-                val response = Dependency.json.encodeToString(item)
+                val response = GlobalContext.json.encodeToString(item)
                 send(PIOSerializer.serialize(buildMsg(saveId, response)))
             }
 
@@ -330,7 +330,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
 
                 Logger.info(LogConfigSocketToClient) { "Received 'giveUnique' command with type=$type | level=$level" }
 
-                val response = Dependency.json.encodeToString(item)
+                val response = GlobalContext.json.encodeToString(item)
                 send(PIOSerializer.serialize(buildMsg(saveId, response)))
             }
 
@@ -343,7 +343,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                     timer = TimerData.fiveMinutesFromNow()
                 )
 
-                val responseJson = Dependency.json.encodeToString(response)
+                val responseJson = GlobalContext.json.encodeToString(response)
                 send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
             }
 
@@ -353,7 +353,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                     levelPts = 100
                 )
 
-                val responseJson = Dependency.json.encodeToString(response)
+                val responseJson = GlobalContext.json.encodeToString(response)
                 send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
             }
 
@@ -365,7 +365,7 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
 
                 Logger.debug(LogConfigSocketToClient) { "'bld_move' message for $saveId and $buildingId to tx=$x, ty=$y, rotation=$r" }
 
-                val responseJson = Dependency.json.encodeToString(
+                val responseJson = GlobalContext.json.encodeToString(
                     BuildingMoveResponse(
                         success = true, x = x, y = y, r = r
                     )

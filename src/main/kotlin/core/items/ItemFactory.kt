@@ -3,12 +3,12 @@ package dev.deadzone.core.items
 import dev.deadzone.core.data.assets.ItemResource
 import dev.deadzone.core.model.game.data.Item
 import dev.deadzone.core.model.game.data.ItemQualityType
-import dev.deadzone.module.Dependency
+import dev.deadzone.context.GlobalContext
 import org.w3c.dom.Element
 import java.util.UUID
 
 object ItemFactory {
-    private val gameResourceRegistry get() = Dependency.gameResourceRegistry
+    private val gameResourceRegistry get() = GlobalContext.gameDefinitions
 
     fun getRandomItem(): Item {
         return createItemFromResource(res = gameResourceRegistry.itemsById.values.random())

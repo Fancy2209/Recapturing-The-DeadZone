@@ -1,10 +1,11 @@
 package dev.deadzone
 
+import dev.deadzone.context.GlobalContext
 import dev.deadzone.context.ServerConfig
 import dev.deadzone.context.ServerContext
 import dev.deadzone.core.auth.SessionManager
 import dev.deadzone.user.auth.WebsiteAuthProvider
-import dev.deadzone.core.data.GameResourceRegistry
+import dev.deadzone.core.data.GameDefinitions
 import dev.deadzone.module.*
 import dev.deadzone.socket.OnlinePlayerRegistry
 import io.ktor.server.application.*
@@ -17,9 +18,9 @@ fun main(args: Array<String>) {
 
 suspend fun Application.module() {
     configureWebsocket()
-    Dependency.gameResourceRegistry = GameResourceRegistry(onResourceLoadComplete = {
+    GlobalContext.gameDefinitions = GameDefinitions(onResourceLoadComplete = {
         launch {
-            Dependency.wsManager.onResourceLoadComplete()
+            GlobalContext.wsManager.onResourceLoadComplete()
         }
     })
     configureSerialization()
@@ -36,10 +37,10 @@ suspend fun Application.module() {
     configureDatabase(config.mongoUrl, config.adminEnabled)
     val sessionManager = SessionManager()
     val serverContext = ServerContext(
-        db = Dependency.database,
+        db = GlobalContext.database,
         sessionManager = sessionManager,
         onlinePlayerRegistry = OnlinePlayerRegistry(),
-        authProvider = WebsiteAuthProvider(Dependency.database, sessionManager),
+        authProvider = WebsiteAuthProvider(GlobalContext.database, sessionManager),
         config = config,
     )
     configureRouting(context = serverContext)
