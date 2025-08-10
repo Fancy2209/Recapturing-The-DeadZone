@@ -111,12 +111,12 @@ class Server(
             } catch (e: Exception) {
                 Logger.error { "Error in socket for ${connection.socket.remoteAddress}: $e" }
                 connection.playerId?.let {
-                    context.playerRegistry.markOffline(it)
+                    context.onlinePlayerRegistry.markOffline(it)
                 }
             } finally {
                 Logger.info { "Client ${connection.socket.remoteAddress} disconnected" }
                 connection.playerId?.let {
-                    context.playerRegistry.markOffline(it)
+                    context.onlinePlayerRegistry.markOffline(it)
                 }
                 taskDispatcher.stopAllPushTasks()
                 pushJob.cancelAndJoin()
@@ -131,7 +131,7 @@ class Server(
         clients.forEach {
             it.socket.close()
         }
-        context.playerRegistry.shutdown()
+        context.onlinePlayerRegistry.shutdown()
         Logger.info { "Server closed." }
     }
 

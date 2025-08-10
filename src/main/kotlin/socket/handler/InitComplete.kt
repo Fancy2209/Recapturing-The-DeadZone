@@ -45,7 +45,7 @@ class InitCompleteHandler(
         val pid = connection.playerId!!
 
         // When game init is completed, mark player as active
-        context.playerRegistry.markOnline(pid)
+        context.onlinePlayerRegistry.markOnline(pid)
 
         // periodically send time update to client
         taskController.runTask("tu")

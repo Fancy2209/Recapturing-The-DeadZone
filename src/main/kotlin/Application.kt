@@ -4,7 +4,7 @@ import dev.deadzone.core.auth.SessionManager
 import dev.deadzone.user.auth.WebsiteAuthProvider
 import dev.deadzone.core.data.GameResourceRegistry
 import dev.deadzone.module.*
-import dev.deadzone.socket.PlayerRegistry
+import dev.deadzone.socket.OnlinePlayerRegistry
 import io.ktor.server.application.*
 import io.ktor.server.netty.EngineMain
 import kotlinx.coroutines.launch
@@ -35,7 +35,7 @@ suspend fun Application.module() {
     val serverContext = ServerContext(
         db = Dependency.database,
         sessionManager = sessionManager,
-        playerRegistry = PlayerRegistry(),
+        onlinePlayerRegistry = OnlinePlayerRegistry(),
         authProvider = WebsiteAuthProvider(Dependency.database, sessionManager),
         config = config,
     )

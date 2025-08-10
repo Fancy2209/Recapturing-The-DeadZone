@@ -3,12 +3,12 @@ package dev.deadzone
 import dev.deadzone.core.auth.AuthProvider
 import dev.deadzone.core.auth.SessionManager
 import dev.deadzone.data.db.BigDB
-import dev.deadzone.socket.PlayerRegistry
+import dev.deadzone.socket.OnlinePlayerRegistry
 
 data class ServerContext(
     val db: BigDB,
     val sessionManager: SessionManager,
-    val playerRegistry: PlayerRegistry,
+    val onlinePlayerRegistry: OnlinePlayerRegistry,
     val authProvider: AuthProvider,
     val config: ServerConfig,
 )

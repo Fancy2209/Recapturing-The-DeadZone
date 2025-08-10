@@ -11,7 +11,7 @@ data class PlayerStatus(
 /**
  * Keeps track online players
  */
-class PlayerRegistry {
+class OnlinePlayerRegistry {
     private val players = ConcurrentHashMap<String, PlayerStatus>()
 
     /**
