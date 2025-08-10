@@ -83,20 +83,38 @@ class SaveHandler(private val serverContext: ServerContext) : SocketMessageHandl
 
             "ply_custom" -> {
                 val ap = data["ap"] as? Map<*, *> ?: return
+                val title = data["name"] as? String ?: return
+                val voice = data["v"] as? String ?: return
+                val gender = data["g"] as? String ?: return
                 val appearance = HumanAppearance.parse(ap)
                 if (appearance == null) {
                     Logger.error(LogConfigSocketToClient) { "Failed to parse rawappearance=$ap" }
                     return
                 }
 
+                val bannedNicknames = listOf("dick")
+                bannedNicknames.any { bannedWord ->
+                    title.contains(bannedWord)
+                }
+
                 val svc = serverContext.requirePlayerContext(pid).services
-                svc.survivor.saveSurvivorAppearance(
-                    srvId = svc.survivor.survivorLeaderId,
-                    newAppearance = appearance
-                )
 
                 svc.playerObjectMetadata.updatePlayerFlags(
                     flags = PlayerFlags.create(nicknameVerified = true)
+                )
+
+                svc.playerObjectMetadata.updatePlayerNickname(nickname = title)
+
+                svc.survivor.updateSurvivor(
+                    srvId = svc.survivor.survivorLeaderId,
+                    newSurvivor = svc.survivor.getSurvivorLeader().copy(
+                        title = title,
+                        firstName = title.split(" ").firstOrNull() ?: "",
+                        lastName = title.split(" ").getOrNull(1) ?: "",
+                        voice = voice,
+                        gender = gender,
+                        appearance = appearance
+                    )
                 )
 
                 val responseJson = GlobalContext.json.encodeToString(PlayerCustomResponse())

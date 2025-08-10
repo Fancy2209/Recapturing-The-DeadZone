@@ -20,7 +20,17 @@ class PlayerObjectsMetadataRepositoryMongo(
 
         val path = "flags"
         val update = Updates.set(path, flags)
+        plyObj.updateOne(Filters.eq("playerId", playerId), update)
+    }
 
+    override suspend fun getPlayerNickname(playerId: String): String? {
+        val playerObj = plyObj.find(Filters.eq("playerId", playerId)).firstOrNull()
+        return playerObj?.nickname
+    }
+
+    override suspend fun updatePlayerNickname(playerId: String, nickname: String) {
+        val path = "nickname"
+        val update = Updates.set(path, nickname)
         plyObj.updateOne(Filters.eq("playerId", playerId), update)
     }
 }
