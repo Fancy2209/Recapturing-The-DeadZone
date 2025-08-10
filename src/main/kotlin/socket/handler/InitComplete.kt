@@ -34,14 +34,6 @@ class InitCompleteHandler(
         // When game init is completed, mark player as active
         serverContext.onlinePlayerRegistry.markOnline(connection.playerId)
 
-        // Create serverContext for the player
-        serverContext.playerContextTracker.createContext(
-            playerId = connection.playerId,
-            connection = connection,
-            db = serverContext.db,
-            useMongo = serverContext.config.useMongo
-        )
-
         // periodically send time update to client
         taskController.runTask("tu")
         taskController.addTaskCompletionCallback("tu") {

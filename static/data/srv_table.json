@@ -1,32 +1,12 @@
-package dev.deadzone.core.data
-
-/**
- * In memory data provider
- *
- * Used to replace retrieving data directly from DB
- */
-object InMemoryDataProvider : DataProvider {
-    private val mockData = mapOf(
-        "login_state.json" to loginState.trimIndent(),
-        "cost_table.json" to costTable.trimIndent(),
-        "srv_table.json" to SrvTable.trimIndent()
-    )
-
-    override fun loadRawJson(path: String): String {
-        return mockData[path] ?: error("Missing mock data for: $path")
-    }
-}
-
-const val SrvTable = """
 {
   "fighter": {
     "id": "fighter",
     "maleUpper": "class_fighter",
     "maleLower": "class_fighter",
-	"maleSkinOverlay": null,
+    "maleSkinOverlay": null,
     "femaleUpper": "class_fighter",
     "femaleLower": "class_fighter",
-	"femaleSkinOverlay": null,
+    "femaleSkinOverlay": null,
     "baseAttributes": {
       "health": 1.0,
       "combatProjectile": 1.0,
@@ -53,8 +33,8 @@ const val SrvTable = """
       "classes": [
         "assault_rifle",
         "lmg",
-		"melee",
-		"heavy"
+        "melee",
+        "heavy"
       ],
       "types": []
     },
@@ -64,10 +44,10 @@ const val SrvTable = """
     "id": "medic",
     "maleUpper": "class_medic",
     "maleLower": "class_medic",
-	"maleSkinOverlay": null,
+    "maleSkinOverlay": null,
     "femaleUpper": "class_medic",
     "femaleLower": "class_medic",
-	"femaleSkinOverlay": null,
+    "femaleSkinOverlay": null,
     "baseAttributes": {
       "health": 1.0,
       "combatProjectile": 0.6,
@@ -105,10 +85,10 @@ const val SrvTable = """
     "id": "scavenger",
     "maleUpper": "class_scavenger",
     "maleLower": "class_scavenger",
-	"maleSkinOverlay": null,
+    "maleSkinOverlay": null,
     "femaleUpper": "class_scavenger",
     "femaleLower": "class_scavenger",
-	"femaleSkinOverlay": null,
+    "femaleSkinOverlay": null,
     "baseAttributes": {
       "health": 0.9,
       "combatProjectile": 0.5,
@@ -135,7 +115,7 @@ const val SrvTable = """
       "classes": [
         "pistol",
         "shotgun",
-		"bow"
+        "bow"
       ],
       "types": [
         "BLUNT"
@@ -147,10 +127,10 @@ const val SrvTable = """
     "id": "engineer",
     "maleUpper": "class_engineer",
     "maleLower": "class_engineer",
-	"maleSkinOverlay": null,
+    "maleSkinOverlay": null,
     "femaleUpper": "class_engineer",
     "femaleLower": "class_engineer",
-	"femaleSkinOverlay": null,
+    "femaleSkinOverlay": null,
     "baseAttributes": {
       "health": 1.0,
       "combatProjectile": 0.6,
@@ -185,10 +165,10 @@ const val SrvTable = """
     "id": "recon",
     "maleUpper": "class_recon",
     "maleLower": "class_recon",
-	"maleSkinOverlay": null,
+    "maleSkinOverlay": null,
     "femaleUpper": "class_recon",
     "femaleLower": "class_recon",
-	"femaleSkinOverlay": null,
+    "femaleSkinOverlay": null,
     "baseAttributes": {
       "health": 1.0,
       "combatProjectile": 1.4,
@@ -226,10 +206,10 @@ const val SrvTable = """
     "id": "player",
     "maleUpper": "body-upper-tshirtm",
     "maleLower": "body-lower-pantsm",
-	"maleSkinOverlay": null,
+    "maleSkinOverlay": null,
     "femaleUpper": "body-upper-tshirtf",
     "femaleLower": "body-lower-skirtf",
-	"femaleSkinOverlay": null,
+    "femaleSkinOverlay": null,
     "baseAttributes": {
       "health": 1.0,
       "combatProjectile": 1.0,
@@ -255,16 +235,16 @@ const val SrvTable = """
     "weapons": {
       "classes": [
         "assault_rifle",
-		"bow",
-		"launcher",
-		"long_rifle",
-		"melee",
-		"pistol",
-		"shotgun",
-		"smg",
-		"lmg",
-		"thrown",
-		"heavy"
+        "bow",
+        "launcher",
+        "long_rifle",
+        "melee",
+        "pistol",
+        "shotgun",
+        "smg",
+        "lmg",
+        "thrown",
+        "heavy"
       ],
       "types": []
     },
@@ -274,10 +254,10 @@ const val SrvTable = """
     "id": "unassigned",
     "maleUpper": "body-upper-tshirtm",
     "maleLower": "body-lower-pantsm",
-	"maleSkinOverlay": null,
+    "maleSkinOverlay": null,
     "femaleUpper": "body-upper-tshirtf",
     "femaleLower": "body-lower-skirtf",
-	"femaleSkinOverlay": null,
+    "femaleSkinOverlay": null,
     "baseAttributes": {
       "health": 0,
       "combatProjectile": 0,
@@ -313,62 +293,3 @@ const val SrvTable = """
     "hideHair": false
   }
 }
-    
-"""
-
-const val costTable = """
-{
-  "BatchDisposal": {},
-  "BatchRecycle": {},
-  "constructionCosts": {},
-  "CraftUpgradeItem": {},
-  "CraftItem": {},
-  "SurvivorReassign": {},
-  "ArenaLaunch_<name>": {},
-  "ResearchTask": {},
-  "AllianceCreation": {},
-  "SpeedUpInfectedBounty": {},
-  "AllianceBannerEdit": {},
-  "buy_coins_<service>": {},
-  "InventoryUpgrade1": {},
-  "InventoryUpgrade2": {},
-  "InventoryUpgrade3": {},
-  "AttributeReset": {},
-  "TradeSlotUpgrade": {},
-  "DeathMobileUpgrade": {},
-  "TradeSlotUpgrade": {},
-  "InventoryUpgrade1_UNUSED": {}
-}
-"""
-
-
-const val loginState = """
-{
-  "settings": {},
-  "news": {},
-  "sales": [],
-  "allianceWinnings": {},
-  "recentPVPList": [],
-  "invsize": 50,
-  "upgrades": "",
-  "allianceId": null,
-  "allianceTag": null,
-  "longSession": false,
-  "leveledUp": false,
-  "promos": [],
-  "promoSale": null,
-  "dealItem": null,
-  "leaderResets": 0,
-  "unequipItemBinds": [],
-  "globalStats": {
-    "idList": []
-  },
-  "inventory": [],
-  "neighborHistory": {},
-  "zombieAttack": false,
-  "zombieAttackLogins": 0,
-  "offersEnabled": false,
-  "lastLogout": null,
-  "prevLogin": null
-}
-"""

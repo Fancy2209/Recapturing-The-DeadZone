@@ -21,6 +21,10 @@ class SurvivorService(
             ?: throw IllegalStateException("Survivor leader is missing for playerId=$playerId")
     }
 
+    fun getAllSurvivors(): List<Survivor> {
+        return survivors
+    }
+
     fun getSurvivorById(srvId: String?): Survivor? {
         val result = survivors.find { it.id == srvId }
         if (result == null) {
