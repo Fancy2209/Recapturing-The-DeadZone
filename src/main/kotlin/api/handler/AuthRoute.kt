@@ -1,7 +1,7 @@
 package dev.deadzone.api.handler
 
 import dev.deadzone.module.Logger
-import dev.deadzone.ServerContext
+import dev.deadzone.context.ServerContext
 import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*

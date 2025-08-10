@@ -1,5 +1,7 @@
 package dev.deadzone
 
+import dev.deadzone.context.ServerConfig
+import dev.deadzone.context.ServerContext
 import dev.deadzone.core.auth.SessionManager
 import dev.deadzone.user.auth.WebsiteAuthProvider
 import dev.deadzone.core.data.GameResourceRegistry
@@ -24,7 +26,8 @@ suspend fun Application.module() {
 
 
     val config = ServerConfig(
-        adminEnabled = environment.config.propertyOrNull("game.enableAdmin")?.getString()?.toBooleanStrictOrNull() ?: false,
+        adminEnabled = environment.config.propertyOrNull("game.enableAdmin")?.getString()?.toBooleanStrictOrNull()
+            ?: false,
         useMongo = true,
         mongoUrl = environment.config.propertyOrNull("mongo.url")?.getString() ?: "",
         isProd = developmentMode,

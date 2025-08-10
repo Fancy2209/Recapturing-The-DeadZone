@@ -16,8 +16,6 @@ import java.util.UUID
 class Connection(
     val connectionId: String = UUID.randomUUID().toString(),
     val socket: Socket,
-    var playerId: String? = null,
-    val playerServiceLocator: PlayerServiceLocator = PlayerServiceLocator(),
     private val output: ByteWriteChannel,
 ) {
     private lateinit var _playerAccount: PlayerAccount

@@ -14,7 +14,7 @@ import dev.deadzone.data.db.CollectionName
 import dev.deadzone.module.LogSource
 import dev.deadzone.module.Logger
 import dev.deadzone.socket.Connection
-import dev.deadzone.ServerContext
+import dev.deadzone.context.ServerContext
 import dev.deadzone.socket.TaskController
 import dev.deadzone.socket.utils.SocketMessage
 import dev.deadzone.socket.utils.SocketMessageHandler

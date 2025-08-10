@@ -1,7 +1,7 @@
 package dev.deadzone.module
 
 import dev.deadzone.api.handler.*
-import dev.deadzone.ServerContext
+import dev.deadzone.context.ServerContext
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*

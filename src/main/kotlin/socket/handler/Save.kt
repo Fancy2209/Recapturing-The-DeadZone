@@ -11,7 +11,7 @@ import dev.deadzone.module.LogConfigSocketError
 import dev.deadzone.module.LogConfigSocketToClient
 import dev.deadzone.module.Logger
 import dev.deadzone.socket.Connection
-import dev.deadzone.ServerContext
+import dev.deadzone.context.ServerContext
 import dev.deadzone.socket.handler.saveresponse.compound.BuildingCreateBuyResponse
 import dev.deadzone.socket.handler.saveresponse.compound.BuildingCreateResponse
 import dev.deadzone.socket.handler.saveresponse.compound.BuildingMoveResponse

@@ -1,4 +1,4 @@
-package dev.deadzone
+package dev.deadzone.context
 
 import dev.deadzone.core.auth.AuthProvider
 import dev.deadzone.core.auth.SessionManager

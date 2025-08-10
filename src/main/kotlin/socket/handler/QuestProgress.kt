@@ -2,7 +2,7 @@ package dev.deadzone.socket.handler
 
 import dev.deadzone.utils.PIOSerializer
 import dev.deadzone.socket.Connection
-import dev.deadzone.ServerContext
+import dev.deadzone.context.ServerContext
 import dev.deadzone.socket.utils.SocketMessage
 import dev.deadzone.socket.utils.SocketMessageHandler
 
