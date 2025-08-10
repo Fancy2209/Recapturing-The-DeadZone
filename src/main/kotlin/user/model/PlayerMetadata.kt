@@ -1,7 +1,6 @@
 package dev.deadzone.user.model
 
 import dev.deadzone.core.data.AdminData
-import dev.deadzone.core.model.data.PlayerFlags
 import kotlinx.serialization.Serializable
 
 /**
@@ -12,7 +11,6 @@ import kotlinx.serialization.Serializable
 data class PlayerMetadata(
     val playerId: String, // reference to UserDocument
     val displayName: String,
-    val playerFlags: ByteArray,
     val playerSrvId: String,
     val leaderTitle: String,
     val level: Int,
@@ -23,40 +21,11 @@ data class PlayerMetadata(
             return PlayerMetadata(
                 playerId = AdminData.PLAYER_ID,
                 displayName = AdminData.DISPLAY_NAME,
-                playerFlags = PlayerFlags.skipTutorial(),
                 playerSrvId = AdminData.PLAYER_SRV_ID,
                 leaderTitle = AdminData.PLAYER_LEADER_TITLE,
                 level = AdminData.PLAYER_LEVEL,
                 xp = AdminData.PLAYER_EXP
             )
         }
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as PlayerMetadata
-
-        if (level != other.level) return false
-        if (xp != other.xp) return false
-        if (playerId != other.playerId) return false
-        if (displayName != other.displayName) return false
-        if (!playerFlags.contentEquals(other.playerFlags)) return false
-        if (playerSrvId != other.playerSrvId) return false
-        if (leaderTitle != other.leaderTitle) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = level
-        result = 31 * result + xp
-        result = 31 * result + playerId.hashCode()
-        result = 31 * result + displayName.hashCode()
-        result = 31 * result + playerFlags.contentHashCode()
-        result = 31 * result + playerSrvId.hashCode()
-        result = 31 * result + leaderTitle.hashCode()
-        return result
     }
 }
