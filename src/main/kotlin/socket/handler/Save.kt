@@ -1,17 +1,13 @@
 package dev.deadzone.socket.handler
 
-import dev.deadzone.core.compound.CompoundService
+import dev.deadzone.context.GlobalContext
+import dev.deadzone.context.ServerContext
+import dev.deadzone.context.requirePlayerContext
 import dev.deadzone.core.items.ItemFactory
 import dev.deadzone.core.mission.LootService
 import dev.deadzone.core.mission.model.LootParameter
 import dev.deadzone.core.model.game.data.*
-import dev.deadzone.core.survivor.SurvivorService
-import dev.deadzone.context.GlobalContext
-import dev.deadzone.module.LogConfigSocketError
-import dev.deadzone.module.LogConfigSocketToClient
-import dev.deadzone.module.Logger
 import dev.deadzone.socket.core.Connection
-import dev.deadzone.context.ServerContext
 import dev.deadzone.socket.handler.saveresponse.compound.BuildingCreateBuyResponse
 import dev.deadzone.socket.handler.saveresponse.compound.BuildingCreateResponse
 import dev.deadzone.socket.handler.saveresponse.compound.BuildingMoveResponse
@@ -21,6 +17,9 @@ import dev.deadzone.socket.handler.saveresponse.survivor.PlayerCustomResponse
 import dev.deadzone.socket.messaging.SocketMessage
 import dev.deadzone.socket.messaging.SocketMessageHandler
 import dev.deadzone.socket.protocol.PIOSerializer
+import dev.deadzone.utils.LogConfigSocketError
+import dev.deadzone.utils.LogConfigSocketToClient
+import dev.deadzone.utils.Logger
 import io.ktor.util.date.*
 import java.util.*
 import kotlin.random.Random
@@ -32,9 +31,8 @@ import kotlin.random.Random
  * 2. Route the save into the corresponding handler based on `_type`.
  * 3. Handlers determine what to do based on the given `data`.
  * 4. Optionally, response back a message of type 'r' with the expected JSON payload.
- *
  */
-class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
+class SaveHandler(private val serverContext: ServerContext) : SocketMessageHandler {
     override fun match(message: SocketMessage): Boolean {
         return message.contains("s") or (message.type?.equals("s") == true)
     }
@@ -87,10 +85,10 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                     return
                 }
 
-                val survivorService = connection.playerServiceLocator.get<SurvivorService>()
-                survivorService.saveSurvivorAppearance(
+                val svc = serverContext.requirePlayerContext(pid).services
+                svc.survivor.saveSurvivorAppearance(
                     playerId = pid,
-                    srvId = survivorService.survivorLeaderId,
+                    srvId = svc.survivor.survivorLeaderId,
                     newAppearance = appearance
                 )
 
@@ -107,13 +105,13 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                 val areaType = if (isCompoundZombieAttack == true) "compound" else data["areaType"] as String
                 Logger.info(LogConfigSocketToClient) { "Going to scene with areaType=$areaType" }
 
-                val survivorService = connection.playerServiceLocator.get<SurvivorService>()
-                val leader = survivorService.getSurvivorLeader()
+                val svc = serverContext.requirePlayerContext(pid).services
+                val leader = svc.survivor.getSurvivorLeader()
 
                 val sceneXML = resolveAndLoadScene(areaType)
                 val lootParameter = LootParameter(
                     areaLevel = (data["areaLevel"] as Int),
-                    playerLevel = leader.level ?: 1,
+                    playerLevel = leader.level,
                     itemWeightOverrides = mapOf(),
                     specificItemBoost = mapOf(
                         "fuel-bottle" to 3.0,    // +300% find fuel chance (of the base chance)
@@ -179,8 +177,8 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
             }
 
             "mis_end" -> {
-                val survivorService = connection.playerServiceLocator.get<SurvivorService>()
-                val leader = survivorService.getSurvivorLeader()
+                val svc = serverContext.requirePlayerContext(pid).services
+                val leader = svc.survivor.getSurvivorLeader()
 
                 // some of most important data
                 val responseJson = GlobalContext.json.encodeToString(
@@ -203,9 +201,8 @@ class SaveHandler(private val context: ServerContext) : SocketMessageHandler {
                     )
                 )
 
-                val compoundService = connection.playerServiceLocator.get<CompoundService>()
                 // change resource with obtained loot...
-                val currentResource = compoundService.resources
+                val currentResource = svc.compound.resources
 
                 val resourceResponseJson = GlobalContext.json.encodeToString(currentResource)
 

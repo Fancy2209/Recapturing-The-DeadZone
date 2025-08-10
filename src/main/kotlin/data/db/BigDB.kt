@@ -31,7 +31,8 @@ interface BigDB {
     /**
      * Create a user with the provided username and password.
      *
-     * This method is defined in BigDB because it require access to all 5 collections.
+     * This method is defined in BigDB because it require access to all 5 collections,
+     * in which a focused repository do not own.
      *
      * @return playerId (UUID) of the newly created user.
      */

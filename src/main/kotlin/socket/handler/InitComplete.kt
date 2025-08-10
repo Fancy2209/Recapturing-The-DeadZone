@@ -1,12 +1,12 @@
 package dev.deadzone.socket.handler
 
 import dev.deadzone.context.ServerContext
-import dev.deadzone.module.LogSource
-import dev.deadzone.module.Logger
 import dev.deadzone.socket.core.Connection
 import dev.deadzone.socket.tasks.TaskController
 import dev.deadzone.socket.messaging.SocketMessage
 import dev.deadzone.socket.messaging.SocketMessageHandler
+import dev.deadzone.utils.LogSource
+import dev.deadzone.utils.Logger
 
 /**
  * Handle `ic` message by:
@@ -14,7 +14,7 @@ import dev.deadzone.socket.messaging.SocketMessageHandler
  * 1. Do the necessary setup in server.
  */
 class InitCompleteHandler(
-    private val context: ServerContext,
+    private val serverContext: ServerContext,
     private val taskController: TaskController
 ) :
     SocketMessageHandler {
@@ -32,14 +32,14 @@ class InitCompleteHandler(
         // Likely only signal to server
 
         // When game init is completed, mark player as active
-        context.onlinePlayerRegistry.markOnline(connection.playerId)
+        serverContext.onlinePlayerRegistry.markOnline(connection.playerId)
 
-        // Create context for the player
-        context.playerContextTracker.createContext(
+        // Create serverContext for the player
+        serverContext.playerContextTracker.createContext(
             playerId = connection.playerId,
             connection = connection,
-            db = context.db,
-            useMongo = context.config.useMongo
+            db = serverContext.db,
+            useMongo = serverContext.config.useMongo
         )
 
         // periodically send time update to client

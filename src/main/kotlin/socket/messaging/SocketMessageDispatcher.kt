@@ -1,7 +1,7 @@
 package dev.deadzone.socket.messaging
 
-import dev.deadzone.module.Logger
 import dev.deadzone.socket.handler.DefaultHandler
+import dev.deadzone.utils.Logger
 
 /**
  * Dispatch [SocketMessage] to a registered handler

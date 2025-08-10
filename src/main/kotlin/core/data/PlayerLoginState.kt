@@ -53,7 +53,7 @@ data class PlayerLoginState(
 
         fun newgame(): PlayerLoginState {
             return PlayerLoginState(
-                invsize = 20
+                invsize = 500
             )
         }
     }

@@ -1,12 +1,12 @@
 package dev.deadzone.socket.handler
 
+import dev.deadzone.context.ServerContext
 import dev.deadzone.core.data.InMemoryDataProvider
 import dev.deadzone.socket.protocol.PIOSerializer
-import dev.deadzone.module.Logger
 import dev.deadzone.socket.core.Connection
-import dev.deadzone.context.ServerContext
 import dev.deadzone.socket.messaging.SocketMessage
 import dev.deadzone.socket.messaging.SocketMessageHandler
+import dev.deadzone.utils.Logger
 import io.ktor.util.date.*
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -21,7 +21,7 @@ import java.util.zip.GZIPOutputStream
  * 2. Sending `gr` message
  *
  */
-class JoinHandler(private val context: ServerContext) : SocketMessageHandler {
+class JoinHandler(private val serverContext: ServerContext) : SocketMessageHandler {
     override fun match(message: SocketMessage): Boolean {
         return message.getString("join") != null
     }

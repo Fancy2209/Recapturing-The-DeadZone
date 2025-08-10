@@ -1,11 +1,11 @@
 package dev.deadzone.socket.handler
 
-import dev.deadzone.socket.protocol.PIOSerializer
-import dev.deadzone.module.LogConfigSocketError
+import dev.deadzone.socket.core.Connection
 import dev.deadzone.socket.messaging.SocketMessage
 import dev.deadzone.socket.messaging.SocketMessageHandler
-import dev.deadzone.module.Logger
-import dev.deadzone.socket.core.Connection
+import dev.deadzone.socket.protocol.PIOSerializer
+import dev.deadzone.utils.LogConfigSocketError
+import dev.deadzone.utils.Logger
 
 class DefaultHandler() : SocketMessageHandler {
     override fun match(message: SocketMessage): Boolean {

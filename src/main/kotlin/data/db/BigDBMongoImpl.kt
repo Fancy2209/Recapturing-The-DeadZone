@@ -3,29 +3,26 @@ package dev.deadzone.core.data
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Indexes
 import com.mongodb.client.model.Updates
-import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import com.toxicbakery.bcrypt.Bcrypt
 import dev.deadzone.core.auth.model.ServerMetadata
-import dev.deadzone.data.collection.PlayerAccount
 import dev.deadzone.core.auth.model.UserProfile
 import dev.deadzone.core.model.data.PlayerFlags
-import dev.deadzone.core.model.game.data.HumanAppearance
 import dev.deadzone.data.collection.Inventory
 import dev.deadzone.data.collection.NeighborHistory
-import dev.deadzone.user.model.PlayerMetadata
+import dev.deadzone.data.collection.PlayerAccount
 import dev.deadzone.data.collection.PlayerObjects
 import dev.deadzone.data.db.BigDB
 import dev.deadzone.data.db.CollectionName
-import dev.deadzone.module.Logger
-import io.ktor.util.date.getTimeMillis
+import dev.deadzone.user.model.PlayerMetadata
+import dev.deadzone.utils.Logger
+import io.ktor.util.date.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.io.encoding.Base64
-import kotlin.reflect.KClass
 
 class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : BigDB {
     private val plyCollection = db.getCollection<PlayerAccount>("playeraccount")
@@ -109,7 +106,6 @@ class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : Big
         val meta = PlayerMetadata(
             playerId = pid,
             displayName = username,
-            playerFlags = PlayerFlags.newgame(),
             playerSrvId = playerSrvId,
             leaderTitle = username,
             level = 1,

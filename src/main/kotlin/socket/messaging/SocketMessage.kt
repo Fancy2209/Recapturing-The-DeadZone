@@ -1,6 +1,6 @@
 package dev.deadzone.socket.messaging
 
-import dev.deadzone.socket.protocol.parseJsonToMap
+import dev.deadzone.utils.parseJsonToMap
 
 /**
  * A higher-level representation of game message sent to the socket server.

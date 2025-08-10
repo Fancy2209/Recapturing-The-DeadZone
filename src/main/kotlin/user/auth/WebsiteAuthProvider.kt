@@ -5,9 +5,11 @@ import dev.deadzone.core.auth.SessionManager
 import dev.deadzone.core.auth.model.PlayerSession
 import dev.deadzone.core.data.AdminData
 import dev.deadzone.data.db.BigDB
+import dev.deadzone.user.PlayerAccountRepository
 
 class WebsiteAuthProvider(
     private val db: BigDB,
+    private val playerAccountRepository: PlayerAccountRepository,
     private val sessionManager: SessionManager
 ) : AuthProvider {
     override suspend fun register(username: String, password: String): PlayerSession {
@@ -16,7 +18,7 @@ class WebsiteAuthProvider(
     }
 
     override suspend fun login(username: String, password: String): PlayerSession? {
-        val pid = db.verifyCredentials(username, password) ?: return null
+        val pid = playerAccountRepository.verifyCredentials(username, password) ?: return null
         return sessionManager.create(pid)
     }
 
@@ -25,6 +27,6 @@ class WebsiteAuthProvider(
     }
 
     override suspend fun doesUserExist(username: String): Boolean {
-        return db.doesUserExist(username)
+        return playerAccountRepository.doesUserExist(username)
     }
 }

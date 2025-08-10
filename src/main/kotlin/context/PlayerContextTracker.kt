@@ -9,7 +9,6 @@ import dev.deadzone.core.survivor.SurvivorRepositoryMongo
 import dev.deadzone.core.survivor.SurvivorService
 import dev.deadzone.data.collection.Inventory
 import dev.deadzone.data.collection.NeighborHistory
-import dev.deadzone.data.collection.PlayerAccount
 import dev.deadzone.data.collection.PlayerObjects
 import dev.deadzone.data.db.BigDB
 import dev.deadzone.data.db.CollectionName
@@ -23,6 +22,9 @@ import java.util.concurrent.ConcurrentHashMap
 class PlayerContextTracker {
     val players = ConcurrentHashMap<String, PlayerContext>()
 
+    /**
+     * Create context for a player
+     */
     suspend fun createContext(
         playerId: String,
         connection: Connection,
@@ -32,13 +34,14 @@ class PlayerContextTracker {
         val playerAccount =
             requireNotNull(db.loadPlayerAccount(playerId)) { "Missing PlayerAccount for playerid=$playerId" }
 
-        players[playerId] = PlayerContext(
+        val context = PlayerContext(
             playerId = playerId,
             connection = connection,
             onlineSince = getTimeMillis(),
             playerAccount = playerAccount,
             services = initializeServices(playerId, db, useMongo)
         )
+        players[playerId] = context
     }
 
     private suspend fun initializeServices(
@@ -70,6 +73,10 @@ class PlayerContextTracker {
             compound = compound,
             inventory = inventory
         )
+    }
+
+    fun getContext(playerId: String): PlayerContext? {
+        return players[playerId]
     }
 
     /**

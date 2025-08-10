@@ -1,6 +1,7 @@
 package dev.deadzone.socket.core
 
 import dev.deadzone.socket.protocol.PIOSerializer
+import dev.deadzone.utils.Logger
 import io.ktor.network.sockets.Socket
 import io.ktor.utils.io.ByteWriteChannel
 import io.ktor.utils.io.writeFully
@@ -11,7 +12,7 @@ import java.util.UUID
  * @property playerId reference to which player does this socket belongs to. Only known after client send join message.
  */
 class Connection(
-    var playerId: String,
+    var playerId: String = "",
     val connectionId: String = UUID.randomUUID().toString(),
     val socket: Socket,
     private val output: ByteWriteChannel,

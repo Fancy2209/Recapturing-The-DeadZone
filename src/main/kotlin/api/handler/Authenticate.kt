@@ -2,13 +2,13 @@ package dev.deadzone.api.handler
 
 import dev.deadzone.api.message.auth.AuthenticateArgs
 import dev.deadzone.api.message.auth.AuthenticateOutput
-import dev.deadzone.core.data.AdminData
-import dev.deadzone.module.Logger
-import dev.deadzone.module.logInput
-import dev.deadzone.module.logOutput
-import dev.deadzone.module.pioFraming
+import dev.deadzone.api.utils.pioFraming
 import dev.deadzone.context.ServerContext
-import io.ktor.http.HttpStatusCode
+import dev.deadzone.core.data.AdminData
+import dev.deadzone.utils.Logger
+import dev.deadzone.utils.logInput
+import dev.deadzone.utils.logOutput
+import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -26,7 +26,7 @@ import kotlinx.serialization.protobuf.ProtoBuf
  * Output: `AuthenticateOutput`
  */
 @OptIn(ExperimentalSerializationApi::class)
-suspend fun RoutingContext.authenticate(context: ServerContext) {
+suspend fun RoutingContext.authenticate(serverContext: ServerContext) {
     val authenticateArgs = ProtoBuf.decodeFromByteArray<AuthenticateArgs>(
         call.receiveChannel().toByteArray()
     )
@@ -47,11 +47,11 @@ suspend fun RoutingContext.authenticate(context: ServerContext) {
         Logger.info { "auth by admin" }
         AuthenticateOutput.admin()
     } else {
-        val isValidToken = context.sessionManager.verify(userToken)
+        val isValidToken = serverContext.sessionManager.verify(userToken)
         if (isValidToken) {
             AuthenticateOutput(
                 token = userToken,
-                userId = context.sessionManager.getPlayerId(userToken)!!,
+                userId = serverContext.sessionManager.getPlayerId(userToken)!!,
                 apiServerHosts = listOf("127.0.0.1:8080")
             )
         } else {

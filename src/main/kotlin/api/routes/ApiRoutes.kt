@@ -5,6 +5,7 @@ import dev.deadzone.api.handler.createJoinRoom
 import dev.deadzone.api.handler.loadObjects
 import dev.deadzone.api.handler.socialRefresh
 import dev.deadzone.api.handler.writeError
+import dev.deadzone.context.ServerContext
 import dev.deadzone.utils.LogConfigAPIError
 import dev.deadzone.utils.Logger
 import io.ktor.http.HttpStatusCode
@@ -12,7 +13,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 
-fun Route.apiRoutes() {
+fun Route.apiRoutes(serverContext: ServerContext) {
     post("/api/{path}") {
         val path = call.parameters["path"] ?: return@post call.respond(HttpStatusCode.BadRequest)
 
@@ -25,11 +26,11 @@ fun Route.apiRoutes() {
         }
 
         when (path) {
-            "13" -> authenticate(context)
-            "601" -> socialRefresh(context, playerToken!!)
-            "27" -> createJoinRoom(context)
-            "50" -> writeError(context)
-            "85" -> loadObjects(context)
+            "13" -> authenticate(serverContext)
+            "601" -> socialRefresh(serverContext, playerToken!!)
+            "27" -> createJoinRoom()
+            "50" -> writeError()
+            "85" -> loadObjects(serverContext)
             else -> {
                 Logger.error(LogConfigAPIError) { "Unimplemented API route: $path" }
                 call.respond(HttpStatusCode.NotFound, "Unimplemented API: $path")

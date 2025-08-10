@@ -13,8 +13,11 @@ import dev.deadzone.core.model.game.data.Building
 import dev.deadzone.core.model.game.data.BuildingLike
 import dev.deadzone.core.model.game.data.JunkBuilding
 import dev.deadzone.data.db.BigDB
+import dev.deadzone.data.db.CollectionName
 import dev.deadzone.socket.core.OnlinePlayerRegistry
 import dev.deadzone.socket.core.Server
+import dev.deadzone.user.PlayerAccountRepository
+import dev.deadzone.user.PlayerAccountRepositoryMongo
 import dev.deadzone.user.auth.WebsiteAuthProvider
 import dev.deadzone.utils.LogLevel
 import dev.deadzone.utils.Logger
@@ -124,13 +127,24 @@ suspend fun Application.module() {
 
     // 6. Initialize ServerContext components
     val sessionManager = SessionManager()
+    val playerAccountRepository: PlayerAccountRepository = if (config.useMongo) {
+        PlayerAccountRepositoryMongo(
+            userCollection = database.getCollection(CollectionName.PLAYER_ACCOUNT_COLLECTION)
+        )
+    } else {
+        // substitute with something else
+        PlayerAccountRepositoryMongo(
+            userCollection = database.getCollection(CollectionName.PLAYER_ACCOUNT_COLLECTION)
+        )
+    }
     val onlinePlayerRegistry = OnlinePlayerRegistry()
-    val authProvider = WebsiteAuthProvider(database, sessionManager)
+    val authProvider = WebsiteAuthProvider(database, playerAccountRepository, sessionManager)
     val playerContextTracker = PlayerContextTracker()
 
     // 7. Create ServerContext
     val serverContext = ServerContext(
         db = database,
+        playerAccountRepository = playerAccountRepository,
         sessionManager = sessionManager,
         onlinePlayerRegistry = onlinePlayerRegistry,
         authProvider = authProvider,
@@ -180,7 +194,7 @@ suspend fun Application.module() {
         fileRoutes()
         caseInsensitiveStaticResources("/game/data", File("static"))
         authRoutes(serverContext)
-        apiRoutes()
+        apiRoutes(serverContext)
         debugLogRoutes(wsManager)
     }
 

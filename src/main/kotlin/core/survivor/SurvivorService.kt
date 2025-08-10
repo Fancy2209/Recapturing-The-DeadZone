@@ -3,8 +3,8 @@ package dev.deadzone.core.survivor
 import dev.deadzone.core.PlayerService
 import dev.deadzone.core.model.game.data.HumanAppearance
 import dev.deadzone.core.model.game.data.Survivor
-import dev.deadzone.module.LogConfigSocketError
-import dev.deadzone.module.Logger
+import dev.deadzone.utils.LogConfigSocketError
+import dev.deadzone.utils.Logger
 
 /**
  * Manages survivors.

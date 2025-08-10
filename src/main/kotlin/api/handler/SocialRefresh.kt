@@ -2,11 +2,11 @@ package dev.deadzone.api.handler
 
 import dev.deadzone.api.message.social.SocialProfile
 import dev.deadzone.api.message.social.SocialRefreshOutput
-import dev.deadzone.core.data.AdminData
-import dev.deadzone.module.logInput
-import dev.deadzone.module.logOutput
-import dev.deadzone.module.pioFraming
+import dev.deadzone.api.utils.pioFraming
 import dev.deadzone.context.ServerContext
+import dev.deadzone.core.data.AdminData
+import dev.deadzone.utils.logInput
+import dev.deadzone.utils.logOutput
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -24,15 +24,15 @@ import kotlinx.serialization.protobuf.ProtoBuf
  * Output: `SocialRefreshOutput`
  */
 @OptIn(ExperimentalSerializationApi::class)
-suspend fun RoutingContext.socialRefresh(context: ServerContext, token: String) {
+suspend fun RoutingContext.socialRefresh(serverContext: ServerContext, token: String) {
     val socialRefreshArgs = call.receiveChannel().toByteArray() // Actually no input is given
 
     logInput(socialRefreshArgs.decodeToString())
 
     // social features not implemented yet
     // likely we shouldn't bother with PIO publishing network and instead implement ourselves
-    val pid = context.sessionManager.getPlayerId(token)!!
-    val userProfile = context.db.getProfileOfPlayerId(pid)
+    val pid = serverContext.sessionManager.getPlayerId(token)!!
+    val userProfile = serverContext.playerAccountRepository.getProfileOfPlayerId(pid)
 
     if (userProfile == null) {
         call.respond(HttpStatusCode.NotFound, "profile is not found")

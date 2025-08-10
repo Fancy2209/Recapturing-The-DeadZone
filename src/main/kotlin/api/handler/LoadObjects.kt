@@ -3,9 +3,13 @@ package dev.deadzone.api.handler
 import dev.deadzone.api.message.db.BigDBObject
 import dev.deadzone.api.message.db.LoadObjectsArgs
 import dev.deadzone.api.message.db.LoadObjectsOutput
-import dev.deadzone.data.collection.NeighborHistory
-import dev.deadzone.module.*
+import dev.deadzone.api.utils.pioFraming
 import dev.deadzone.context.ServerContext
+import dev.deadzone.data.collection.NeighborHistory
+import dev.deadzone.utils.LogConfigAPIError
+import dev.deadzone.utils.LogSource
+import dev.deadzone.utils.Logger
+import dev.deadzone.utils.logInput
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -15,8 +19,6 @@ import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
 
-
-
 /**
  * LoadObjects (API 85)
  *
@@ -25,7 +27,7 @@ import kotlinx.serialization.protobuf.ProtoBuf
  * Output: `[LoadObjectsOutput]`
  */
 @OptIn(ExperimentalSerializationApi::class)
-suspend fun RoutingContext.loadObjects(context: ServerContext) {
+suspend fun RoutingContext.loadObjects(serverContext: ServerContext) {
     val loadObjectsArgs = ProtoBuf.decodeFromByteArray<LoadObjectsArgs>(
         call.receiveChannel().toByteArray()
     )
@@ -36,14 +38,22 @@ suspend fun RoutingContext.loadObjects(context: ServerContext) {
 
     for (objId in loadObjectsArgs.objectIds) {
         val playerId = objId.keys.firstOrNull() ?: continue
-        val udoc = context.db.getUserDocByPlayerId(playerId) ?: continue
-
         Logger.debug(src = LogSource.API) { "Found object for playerId: $playerId" }
 
+        val playerObjects = serverContext.db.loadPlayerObjects(playerId)!!
+        val neighborHistory = serverContext.db.loadNeighborHistory(playerId)!!
+        val inventory = serverContext.db.loadInventory(playerId)!!
+
         val obj: BigDBObject? = when (objId.table) {
-            "PlayerObjects" -> LoadObjectsOutput.fromData(udoc.playerObjects)
-            "NeighborHistory" -> LoadObjectsOutput.fromData(NeighborHistory(playerId = playerId, udoc.playerSave.neighborHistory))
-            "Inventory" -> LoadObjectsOutput.fromData(udoc.playerSave.inventory)
+            "PlayerObjects" -> LoadObjectsOutput.fromData(playerObjects)
+            "NeighborHistory" -> LoadObjectsOutput.fromData(
+                NeighborHistory(
+                    playerId = playerId,
+                    map = neighborHistory.map
+                )
+            )
+
+            "Inventory" -> LoadObjectsOutput.fromData(inventory)
             else -> {
                 Logger.error(LogConfigAPIError) { "UNIMPLEMENTED table for ${objId.table}" }
                 null

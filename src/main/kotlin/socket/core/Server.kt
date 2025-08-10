@@ -1,8 +1,6 @@
 package dev.deadzone.socket.core
 
 import dev.deadzone.context.ServerContext
-import dev.deadzone.module.Logger
-import dev.deadzone.socket.core.Connection
 import dev.deadzone.socket.handler.*
 import dev.deadzone.socket.tasks.TimeUpdate
 import dev.deadzone.socket.tasks.ServerPushTaskDispatcher
@@ -10,6 +8,7 @@ import dev.deadzone.socket.messaging.SocketMessage
 import dev.deadzone.socket.messaging.SocketMessageDispatcher
 import dev.deadzone.socket.protocol.PIODeserializer
 import dev.deadzone.socket.tasks.TaskController
+import dev.deadzone.utils.Logger
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
@@ -54,7 +53,7 @@ class Server(
                     val connection = Connection(
                         connectionId = UUID.randomUUID().toString(),
                         socket = socket,
-                        output = socket.openWriteChannel(autoFlush = true)
+                        output = socket.openWriteChannel(autoFlush = true),
                     )
                     clients.add(connection)
                     Logger.info { "New client: ${connection.socket.remoteAddress}" }
