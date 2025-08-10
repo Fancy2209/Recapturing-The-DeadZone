@@ -1,9 +1,7 @@
 package dev.deadzone.core.model.game.data
 
 import kotlinx.serialization.Serializable
-import dev.deadzone.core.model.game.data.Building
-import dev.deadzone.core.model.game.data.Item
-import kotlinx.serialization.SerialName
+import dev.deadzone.core.items.model.Item
 import java.util.UUID
 
 @Serializable

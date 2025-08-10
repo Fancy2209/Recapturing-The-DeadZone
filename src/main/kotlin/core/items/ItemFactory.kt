@@ -1,8 +1,8 @@
 package dev.deadzone.core.items
 
 import dev.deadzone.core.data.assets.ItemResource
-import dev.deadzone.core.model.game.data.Item
-import dev.deadzone.core.model.game.data.ItemQualityType
+import dev.deadzone.core.items.model.Item
+import dev.deadzone.core.items.model.ItemQualityType
 import dev.deadzone.context.GlobalContext
 import org.w3c.dom.Element
 import java.util.UUID

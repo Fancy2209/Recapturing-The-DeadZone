@@ -1,4 +1,4 @@
-package dev.deadzone.core.model.game.data
+package dev.deadzone.core.items.model
 
 import kotlinx.serialization.Serializable
 import dev.deadzone.socket.handler.saveresponse.crate.gachaPoolExample

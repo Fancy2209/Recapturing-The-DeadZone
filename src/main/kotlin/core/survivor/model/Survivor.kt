@@ -1,8 +1,8 @@
 package dev.deadzone.core.model.game.data
 
 import dev.deadzone.core.data.AdminData
-import dev.deadzone.core.model.game.data.injury.Injury
-import dev.deadzone.core.model.game.data.injury.InjuryList
+import dev.deadzone.core.survivor.model.injury.Injury
+import dev.deadzone.core.survivor.model.injury.InjuryList
 import kotlinx.serialization.Serializable
 import java.util.UUID
 

@@ -1,7 +1,6 @@
-package dev.deadzone.core.model.game.data.injury
+package dev.deadzone.core.survivor.model.injury
 
 import kotlinx.serialization.Serializable
-import dev.deadzone.core.model.game.data.injury.Injury
 
 @Serializable
 data class InjuryList(

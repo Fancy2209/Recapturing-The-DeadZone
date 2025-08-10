@@ -1,5 +1,6 @@
-package dev.deadzone.core.model.game.data
+package dev.deadzone.core.items.model
 
+import dev.deadzone.core.model.game.data.AttireData
 import kotlinx.serialization.Serializable
 
 @Serializable

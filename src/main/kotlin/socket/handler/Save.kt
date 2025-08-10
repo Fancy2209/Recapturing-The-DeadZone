@@ -4,6 +4,9 @@ import dev.deadzone.context.GlobalContext
 import dev.deadzone.context.ServerContext
 import dev.deadzone.context.requirePlayerContext
 import dev.deadzone.core.items.ItemFactory
+import dev.deadzone.core.items.model.CrateItem
+import dev.deadzone.core.items.model.Item
+import dev.deadzone.core.items.model.SchematicItem
 import dev.deadzone.core.mission.LootService
 import dev.deadzone.core.mission.model.LootParameter
 import dev.deadzone.core.model.data.PlayerFlags
