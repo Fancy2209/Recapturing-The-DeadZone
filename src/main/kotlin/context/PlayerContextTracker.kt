@@ -62,9 +62,11 @@ class PlayerContextTracker {
 
         val account =
             requireNotNull(db.loadPlayerAccount(playerId)) { "Weird, PlayerAccount for playerId=$playerId is null" }
+        val playerObjects =
+            requireNotNull(db.loadPlayerObjects(playerId)) { "Weird, PlayerObjects for playerId=$playerId is null" }
 
         val survivor = SurvivorService(
-            survivorLeaderId = account.playerMetadata.playerSrvId,
+            survivorLeaderId = playerObjects.playerSurvivor!!,
             survivorRepository = SurvivorRepositoryMongo(plyObj)
         )
         val inventory = InventoryService(inventoryRepository = InventoryRepositoryMongo())

@@ -12,7 +12,6 @@ import dev.deadzone.data.collection.PlayerAccount
 import dev.deadzone.data.collection.PlayerObjects
 import dev.deadzone.data.db.BigDB
 import dev.deadzone.data.db.CollectionName
-import dev.deadzone.user.model.PlayerMetadata
 import dev.deadzone.utils.Logger
 import io.ktor.util.date.*
 import kotlinx.coroutines.CoroutineScope
@@ -101,20 +100,10 @@ class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : Big
         val profile = UserProfile.default(username = username, pid = pid)
         val playerSrvId = UUID.randomUUID().toString()
 
-        val meta = PlayerMetadata(
-            playerId = pid,
-            displayName = username,
-            playerSrvId = playerSrvId,
-            leaderTitle = username,
-            level = 1,
-            xp = 0
-        )
-
         val doc = PlayerAccount(
             playerId = pid,
             hashedPassword = hashPw(password),
             profile = profile,
-            playerMetadata = meta,
             serverMetadata = ServerMetadata()
         )
 

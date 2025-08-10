@@ -18,7 +18,7 @@ class PlayerObjectsMetadataRepositoryMongo(
     override suspend fun updatePlayerFlags(playerId: String, flags: ByteArray) {
         Logger.debug { "updatePlayerFlags: playerId=$playerId flags=$flags" }
 
-        val path = "playerSave.playerObjects.flags"
+        val path = "flags"
         val update = Updates.set(path, flags)
 
         plyObj.updateOne(Filters.eq("playerId", playerId), update)
