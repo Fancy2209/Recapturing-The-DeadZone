@@ -3,7 +3,6 @@ package dev.deadzone.data.collection
 import dev.deadzone.core.auth.model.ServerMetadata
 import dev.deadzone.core.auth.model.UserProfile
 import dev.deadzone.core.data.AdminData
-import dev.deadzone.user.model.PlayerMetadata
 import kotlinx.serialization.Serializable
 
 /**
@@ -19,7 +18,6 @@ data class PlayerAccount(
     val playerId: String, // referenced by other collections
     val hashedPassword: String,
     val profile: UserProfile,
-    val playerMetadata: PlayerMetadata,
     val serverMetadata: ServerMetadata,
 ) {
     companion object {
@@ -28,7 +26,6 @@ data class PlayerAccount(
                 playerId = AdminData.PLAYER_ID,
                 hashedPassword = AdminData.PASSWORD,
                 profile = UserProfile.Companion.admin(),
-                playerMetadata = PlayerMetadata.admin(),
                 serverMetadata = ServerMetadata()
             )
         }
@@ -39,10 +36,4 @@ data class PlayerAccount(
 List of common field in PlayerAccount and PlayerObjects
 - UserProfile:
     - displayName -> nickname
-- PlayerMetadata:
-    - playerSrvId -> playerSurvivor
-    - displayName -> nickname
-    - leaderTitle -> survivors.title
-    - level -> survivors.level
-    - xp -> survivors.xp
 */
