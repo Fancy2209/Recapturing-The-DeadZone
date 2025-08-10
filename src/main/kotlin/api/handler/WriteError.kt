@@ -3,7 +3,7 @@ package dev.deadzone.api.handler
 import dev.deadzone.api.message.utils.WriteErrorArgs
 import dev.deadzone.api.message.utils.WriteErrorError
 import dev.deadzone.module.*
-import dev.deadzone.socket.ServerContext
+import dev.deadzone.ServerContext
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*

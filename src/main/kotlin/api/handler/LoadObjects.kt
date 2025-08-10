@@ -5,7 +5,7 @@ import dev.deadzone.api.message.db.LoadObjectsArgs
 import dev.deadzone.api.message.db.LoadObjectsOutput
 import dev.deadzone.data.collection.NeighborHistory
 import dev.deadzone.module.*
-import dev.deadzone.socket.ServerContext
+import dev.deadzone.ServerContext
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*

@@ -5,8 +5,6 @@ import dev.deadzone.user.auth.WebsiteAuthProvider
 import dev.deadzone.core.data.GameResourceRegistry
 import dev.deadzone.module.*
 import dev.deadzone.socket.PlayerRegistry
-import dev.deadzone.socket.ServerConfig
-import dev.deadzone.socket.ServerContext
 import io.ktor.server.application.*
 import io.ktor.server.netty.EngineMain
 import kotlinx.coroutines.launch

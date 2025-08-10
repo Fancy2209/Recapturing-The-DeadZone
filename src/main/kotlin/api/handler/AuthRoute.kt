@@ -1,7 +1,7 @@
 package dev.deadzone.api.handler
 
 import dev.deadzone.module.Logger
-import dev.deadzone.socket.ServerContext
+import dev.deadzone.ServerContext
 import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -19,7 +19,7 @@ fun Route.authRoute(context: ServerContext) {
         }
 
         if (username == "givemeadmin") {
-            if (context.adminEnabled) {
+            if (context.config.adminEnabled) {
                 val session = context.authProvider.adminLogin()
                 if (session != null) {
                     call.respond(HttpStatusCode.OK, mapOf("playerId" to session.playerId, "token" to session.token))
@@ -64,7 +64,7 @@ fun Route.authRoute(context: ServerContext) {
         }
 
         if (username == "givemeadmin") {
-            if (context.adminEnabled) {
+            if (context.config.adminEnabled) {
                 call.respondText("granted")
             } else {
                 call.respondText("reserved")

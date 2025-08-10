@@ -6,7 +6,7 @@ import dev.deadzone.core.data.AdminData
 import dev.deadzone.module.logInput
 import dev.deadzone.module.logOutput
 import dev.deadzone.module.pioFraming
-import dev.deadzone.socket.ServerContext
+import dev.deadzone.ServerContext
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.*
 import io.ktor.server.response.*

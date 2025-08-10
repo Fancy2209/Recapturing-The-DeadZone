@@ -5,7 +5,7 @@ import dev.deadzone.api.message.client.CreateJoinRoomOutput
 import dev.deadzone.module.logInput
 import dev.deadzone.module.logOutput
 import dev.deadzone.module.pioFraming
-import dev.deadzone.socket.ServerContext
+import dev.deadzone.ServerContext
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*

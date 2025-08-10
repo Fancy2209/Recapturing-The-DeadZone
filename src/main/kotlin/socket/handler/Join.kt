@@ -4,7 +4,7 @@ import dev.deadzone.core.data.InMemoryDataProvider
 import dev.deadzone.utils.PIOSerializer
 import dev.deadzone.module.Logger
 import dev.deadzone.socket.Connection
-import dev.deadzone.socket.ServerContext
+import dev.deadzone.ServerContext
 import dev.deadzone.socket.utils.SocketMessage
 import dev.deadzone.socket.utils.SocketMessageHandler
 import io.ktor.util.date.*

@@ -1,8 +1,8 @@
 package dev.deadzone.socket
 
+import dev.deadzone.ServerContext
 import dev.deadzone.module.Logger
 import dev.deadzone.socket.handler.*
-import dev.deadzone.socket.Connection
 import dev.deadzone.socket.tasks.TimeUpdate
 import dev.deadzone.socket.utils.ServerPushTaskDispatcher
 import dev.deadzone.socket.utils.SocketMessage
