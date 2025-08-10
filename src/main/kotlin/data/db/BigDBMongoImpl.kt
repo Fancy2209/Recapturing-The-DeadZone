@@ -41,7 +41,7 @@ class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : Big
             Logger.info { "MongoDB: User collection ready, contains $count users." }
 
             if (adminEnabled) {
-                val adminDoc = plyCollection.find(Filters.eq("playerid", AdminData.PLAYER_ID)).firstOrNull()
+                val adminDoc = plyCollection.find(Filters.eq("playerId", AdminData.PLAYER_ID)).firstOrNull()
                 if (adminDoc == null) {
                     val start = getTimeMillis()
                     val doc = PlayerAccount.admin()
