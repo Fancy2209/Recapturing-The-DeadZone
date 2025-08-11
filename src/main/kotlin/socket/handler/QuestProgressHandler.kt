@@ -3,6 +3,7 @@ package dev.deadzone.socket.handler
 import dev.deadzone.context.ServerContext
 import dev.deadzone.socket.protocol.PIOSerializer
 import dev.deadzone.socket.core.Connection
+import dev.deadzone.socket.messaging.NetworkMessage
 import dev.deadzone.socket.messaging.SocketMessage
 import dev.deadzone.socket.messaging.SocketMessageHandler
 
@@ -14,11 +15,11 @@ import dev.deadzone.socket.messaging.SocketMessageHandler
  */
 class QuestProgressHandler(private val serverContext: ServerContext) : SocketMessageHandler {
     override fun match(message: SocketMessage): Boolean {
-        return message.getString("qp") != null
+        return message.getString(NetworkMessage.QUEST_PROGRESS) != null
     }
 
     override suspend fun handle(connection: Connection, message: SocketMessage, send: suspend (ByteArray) -> Unit) {
-        val message = listOf("qp", questProgressJson.trimIndent())
+        val message = listOf(NetworkMessage.QUEST_PROGRESS, questProgressJson.trimIndent())
         send(PIOSerializer.serialize(message))
     }
 }

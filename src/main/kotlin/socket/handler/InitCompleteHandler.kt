@@ -2,6 +2,7 @@ package dev.deadzone.socket.handler
 
 import dev.deadzone.context.ServerContext
 import dev.deadzone.socket.core.Connection
+import dev.deadzone.socket.messaging.NetworkMessage
 import dev.deadzone.socket.tasks.TaskController
 import dev.deadzone.socket.messaging.SocketMessage
 import dev.deadzone.socket.messaging.SocketMessageHandler
@@ -20,7 +21,7 @@ class InitCompleteHandler(
     SocketMessageHandler {
     override fun match(message: SocketMessage): Boolean {
         // IC message is null, so only check for "ic" present
-        return message.contains("ic")
+        return message.contains(NetworkMessage.INIT_COMPLETE)
     }
 
     override suspend fun handle(

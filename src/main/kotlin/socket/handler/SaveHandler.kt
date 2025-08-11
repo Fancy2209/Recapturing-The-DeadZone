@@ -18,6 +18,9 @@ import dev.deadzone.socket.handler.saveresponse.compound.BuildingMoveResponse
 import dev.deadzone.socket.handler.saveresponse.crate.CrateUnlockResponse
 import dev.deadzone.socket.handler.saveresponse.mission.*
 import dev.deadzone.socket.handler.saveresponse.survivor.PlayerCustomResponse
+import dev.deadzone.socket.messaging.CommandMessage
+import dev.deadzone.socket.messaging.NetworkMessage
+import dev.deadzone.socket.messaging.SaveDataMethod
 import dev.deadzone.socket.messaging.SocketMessage
 import dev.deadzone.socket.messaging.SocketMessageHandler
 import dev.deadzone.socket.protocol.PIOSerializer
@@ -38,7 +41,7 @@ import kotlin.random.Random
  */
 class SaveHandler(private val serverContext: ServerContext) : SocketMessageHandler {
     override fun match(message: SocketMessage): Boolean {
-        return message.contains("s") or (message.type?.equals("s") == true)
+        return message.contains(NetworkMessage.SAVE) or (message.type?.equals(NetworkMessage.SAVE) == true)
     }
 
     override suspend fun handle(
@@ -46,7 +49,7 @@ class SaveHandler(private val serverContext: ServerContext) : SocketMessageHandl
         message: SocketMessage,
         send: suspend (ByteArray) -> Unit
     ) {
-        val body = message.getMap("s")
+        val body = message.getMap(NetworkMessage.SAVE)
         val data = body?.get("data") as? Map<*, *>
         val type = data?.get("_type") as? String
         val saveId = body?.get("id") as? String
@@ -55,15 +58,15 @@ class SaveHandler(private val serverContext: ServerContext) : SocketMessageHandl
         // Note: the game typically send and expects JSON data for save message
         // encode JSON response to string before using PIO serialization
         when (type) {
-            "get_offers" -> {
+            SaveDataMethod.GET_OFFERS -> {
                 Logger.warn(LogConfigSocketToClient) { "Received 'get_offers' message [not implemented]" }
             }
 
-            "chat_getContactsBlocks" -> {
+            SaveDataMethod.CHAT_GET_CONTACTS_AND_BLOCKS -> {
                 Logger.warn(LogConfigSocketToClient) { "Received 'chat_getContactsBlocks' message [not implemented]" }
             }
 
-            "crate_unlock" -> {
+            SaveDataMethod.CRATE_UNLOCK -> {
                 val keyId = data["keyId"] as String?
                 val crateId = (data["crateId"] ?: "") as String?
 
@@ -81,7 +84,7 @@ class SaveHandler(private val serverContext: ServerContext) : SocketMessageHandl
                 send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
             }
 
-            "ply_custom" -> {
+            SaveDataMethod.PLAYER_CUSTOM -> {
                 val ap = data["ap"] as? Map<*, *> ?: return
                 val title = data["name"] as? String ?: return
                 val voice = data["v"] as? String ?: return
@@ -129,7 +132,7 @@ class SaveHandler(private val serverContext: ServerContext) : SocketMessageHandl
                 send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
             }
 
-            "mis_start" -> {
+            SaveDataMethod.MISSION_START -> {
                 // IMPORTANT NOTE: the scene that involves human model is not working now (e.g., raid island human)
                 // the same error is for survivor class if you fill SurvivorAppearance non-null value
                 // The error was 'cyclic object' thing.
@@ -200,15 +203,15 @@ class SaveHandler(private val serverContext: ServerContext) : SocketMessageHandl
             }
 
             // mis_startFlag and mis_interacted do not expect a response
-            "mis_startFlag" -> {
+            SaveDataMethod.MISSION_START_FLAG -> {
                 Logger.info { "<----- Mission start flag received ----->" }
             }
 
-            "mis_interacted" -> {
+            SaveDataMethod.MISSION_INTERACTION_FLAG -> {
                 Logger.info { "<----- First interaction received ----->" }
             }
 
-            "mis_end" -> {
+            SaveDataMethod.MISSION_END -> {
                 val svc = serverContext.requirePlayerContext(pid).services
                 val leader = svc.survivor.getSurvivorLeader()
 
@@ -241,7 +244,7 @@ class SaveHandler(private val serverContext: ServerContext) : SocketMessageHandl
                 send(PIOSerializer.serialize(buildMsg(saveId, responseJson, resourceResponseJson)))
             }
 
-            "mis_zombies" -> {
+            SaveDataMethod.MISSION_ZOMBIES -> {
                 // usually requested during middle of mission
                 // there could be 'rush' flag somewhere, which means we need to send runner zombies
 
@@ -266,17 +269,17 @@ class SaveHandler(private val serverContext: ServerContext) : SocketMessageHandl
                 send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
             }
 
-            "stat_data" -> {
+            SaveDataMethod.STAT_DATA -> {
                 val stats = data["stats"]
                 Logger.debug(logFull = true) { data["stats"].toString() }
                 Logger.warn(LogConfigSocketToClient) { "Received 'stat_data' message [not implemented] with stats: $stats" }
             }
 
-            "clear_notes" -> {
+            SaveDataMethod.CLEAR_NOTIFICATIONS -> {
                 Logger.warn(LogConfigSocketToClient) { "Received 'clear_notes' message [not implemented]" }
             }
 
-            "give" -> {
+            CommandMessage.GIVE -> {
                 val type = data["type"] as? String ?: return
 
                 Logger.info(LogConfigSocketToClient) { "Received 'give' command with type=$type | data=$data" }
@@ -327,7 +330,7 @@ class SaveHandler(private val serverContext: ServerContext) : SocketMessageHandl
             }
 
 
-            "giveRare" -> {
+            CommandMessage.GIVE_RARE -> {
                 val type = (data["type"] as String?) ?: return
                 val level = (data["level"] as Int?) ?: return
 
@@ -345,7 +348,7 @@ class SaveHandler(private val serverContext: ServerContext) : SocketMessageHandl
                 send(PIOSerializer.serialize(buildMsg(saveId, response)))
             }
 
-            "giveUnique" -> {
+            CommandMessage.GIVE_UNIQUE -> {
                 val type = (data["type"] as String?) ?: return
                 val level = (data["level"] as Int?) ?: return
 
@@ -363,7 +366,7 @@ class SaveHandler(private val serverContext: ServerContext) : SocketMessageHandl
                 send(PIOSerializer.serialize(buildMsg(saveId, response)))
             }
 
-            "bld_create" -> {
+            SaveDataMethod.BUILDING_CREATE -> {
                 val response = BuildingCreateResponse(
                     // although client know user's resource,
                     // server may revalidate (in-case user did client-side hacking)
@@ -376,7 +379,7 @@ class SaveHandler(private val serverContext: ServerContext) : SocketMessageHandl
                 send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
             }
 
-            "bld_create_buy" -> {
+            SaveDataMethod.BUILDING_CREATE_BUY -> {
                 val response = BuildingCreateBuyResponse(
                     success = true,
                     levelPts = 100
@@ -386,7 +389,7 @@ class SaveHandler(private val serverContext: ServerContext) : SocketMessageHandl
                 send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
             }
 
-            "bld_move" -> {
+            SaveDataMethod.BUILDING_MOVE -> {
                 val x = (data["tx"] as? Number)?.toInt() ?: 0
                 val y = (data["ty"] as? Number)?.toInt() ?: 0
                 val r = (data["rotation"] as? Number)?.toInt() ?: 0

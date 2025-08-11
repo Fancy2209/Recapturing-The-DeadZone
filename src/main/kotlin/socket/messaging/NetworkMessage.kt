@@ -5,6 +5,11 @@ package dev.deadzone.socket.messaging
  */
 @Suppress("Unused", "SpellCheckingInspection")
 object NetworkMessage {
+    // custom definition
+    const val JOIN = "join"
+    const val JOIN_RESULT = "playerio.joinresult"
+
+    // from game
     const val INIT_COMPLETE = "ic"
     const val ERROR = "err"
     const val BANNED = "ban"
@@ -24,7 +29,7 @@ object NetworkMessage {
     const val TIME_UPDATE = "tu"
     const val OUT_OF_SYNC = "os"
     const val PURCHASE_COIN = "p"
-    const val SAV = "s"
+    const val SAVE = "s"
     const val SAVE_SUCCCESS = "ss"
     const val MISSION_LOOT = "ml"
     const val RESOURCE_UPDATE = "ru"

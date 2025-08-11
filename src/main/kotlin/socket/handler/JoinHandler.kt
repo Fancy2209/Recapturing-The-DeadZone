@@ -4,6 +4,7 @@ import dev.deadzone.context.GlobalContext
 import dev.deadzone.context.ServerContext
 import dev.deadzone.core.data.PlayerLoginState
 import dev.deadzone.socket.core.Connection
+import dev.deadzone.socket.messaging.NetworkMessage
 import dev.deadzone.socket.messaging.SocketMessage
 import dev.deadzone.socket.messaging.SocketMessageHandler
 import dev.deadzone.socket.protocol.PIOSerializer
@@ -23,11 +24,11 @@ import java.util.zip.GZIPOutputStream
  */
 class JoinHandler(private val serverContext: ServerContext) : SocketMessageHandler {
     override fun match(message: SocketMessage): Boolean {
-        return message.getString("join") != null
+        return message.getString(NetworkMessage.JOIN) != null
     }
 
     override suspend fun handle(connection: Connection, message: SocketMessage, send: suspend (ByteArray) -> Unit) {
-        val joinKey = message.getString("join")
+        val joinKey = message.getString(NetworkMessage.JOIN)
         Logger.debug { "Handling join with key: $joinKey" }
 
         val userId = message.getString("serviceUserId")
@@ -35,7 +36,7 @@ class JoinHandler(private val serverContext: ServerContext) : SocketMessageHandl
         connection.playerId = userId
 
         // First message: join result
-        val joinResultMsg = listOf("playerio.joinresult", true)
+        val joinResultMsg = listOf(NetworkMessage.JOIN_RESULT, true)
         send(PIOSerializer.serialize(joinResultMsg))
 
         // Create PlayerContext which initializes per-player services
@@ -48,7 +49,7 @@ class JoinHandler(private val serverContext: ServerContext) : SocketMessageHandl
 
         // Second message: game ready message
         val gameReadyMsg = listOf(
-            "gr",
+            NetworkMessage.GAME_READY,
             getTimeMillis(),
             produceBinaries(),
             loadRawFile("static/data/cost_table.json"),
