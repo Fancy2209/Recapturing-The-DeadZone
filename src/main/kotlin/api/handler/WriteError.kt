@@ -31,24 +31,11 @@ suspend fun RoutingContext.writeError() {
     Logger.error(LogConfigWriteError) { writeErrorArgs.toString() }
 
     if (writeErrorArgs.details.contains("Load Never Completed", ignoreCase = true) ||
-        writeErrorArgs.details.contains("Resource not found", ignoreCase = true)
+        writeErrorArgs.details.contains("Resource not found", ignoreCase = true) ||
+        writeErrorArgs.details.contains("Resource load fail", ignoreCase = true) ||
+        writeErrorArgs.details.contains("2036", ignoreCase = true) ||
+        writeErrorArgs.details.contains("Stream error", ignoreCase = true)
     ) {
-        val regex = Regex("""URL:\s*(?:https?://[^/]+)?(//game/[^ \n]+)""")
-        val match = regex.find(writeErrorArgs.details)
-
-        if (match != null) {
-            val assetPath = match.groupValues[2]
-            Logger.error(LogConfigAssetsError) { "MISSING ASSETS [please report]: $assetPath" }
-        } else {
-            Logger.error(LogConfigAssetsError) { writeErrorArgs.details }
-        }
+        Logger.error(LogConfigAssetsError) { writeErrorArgs.details }
     }
-
-    val writeErrorError = ProtoBuf.encodeToByteArray<WriteErrorError>(
-        WriteErrorError.dummy()
-    )
-
-    logOutput(writeErrorError)
-
-    call.respondBytes(writeErrorError.pioFraming())
 }
