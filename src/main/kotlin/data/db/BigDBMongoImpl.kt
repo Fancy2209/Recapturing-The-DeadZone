@@ -34,6 +34,7 @@ class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : Big
         CoroutineScope(Dispatchers.IO).launch {
             setupCollections()
         }
+        // deleteAdminAccount()
     }
 
     private suspend fun setupCollections() {
