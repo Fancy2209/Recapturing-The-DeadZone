@@ -41,5 +41,31 @@ data class SurvivorAppearance(
                 hideGear = false
             )
         }
+
+        fun fighterM(): SurvivorAppearance {
+            return SurvivorAppearance(
+                skinColor = "light1",
+                upper = "class_fighter",
+                lower = "class_fighter",
+                hair = "hair1",
+                facialHair = "facialHair0",
+                hairColor = "darkBrown",
+                forceHair = false,
+                hideGear = false
+            )
+        }
+
+        fun reconF(): SurvivorAppearance {
+            return SurvivorAppearance(
+                skinColor = "light1",
+                upper = "class_recon",
+                lower = "class_recon",
+                hair = "hair1",
+                facialHair = null,
+                hairColor = "darkBrown",
+                forceHair = false,
+                hideGear = false
+            )
+        }
     }
 }

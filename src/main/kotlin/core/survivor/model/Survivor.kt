@@ -1,6 +1,7 @@
 package dev.deadzone.core.model.game.data
 
 import dev.deadzone.core.data.AdminData
+import dev.deadzone.core.model.game.data.SurvivorAppearance.Companion.toHumanAppearance
 import dev.deadzone.core.survivor.model.injury.Injury
 import dev.deadzone.core.survivor.model.injury.InjuryList
 import kotlinx.serialization.Serializable
@@ -44,8 +45,8 @@ data class Survivor(
                 xp = 1000,
                 missionId = null,
                 assignmentId = null,
-//                reassignTimer = null,
-//                appearance = SurvivorAppearance.playerM(),
+                reassignTimer = null,
+                appearance = SurvivorAppearance.playerM().toHumanAppearance(),
                 scale = 1.22,
                 voice = "asian-m",
                 accessories = mapOf(),
@@ -68,8 +69,8 @@ data class Survivor(
                 xp = 1000,
                 missionId = null,
                 assignmentId = null,
-//                reassignTimer = null,
-//                appearance = SurvivorAppearance.reconF(),
+                reassignTimer = null,
+                appearance = SurvivorAppearance.reconF().toHumanAppearance(),
                 scale = 1.22,
                 voice = "white-f",
                 accessories = mapOf(),
@@ -92,8 +93,8 @@ data class Survivor(
                 xp = 1000,
                 missionId = null,
                 assignmentId = null,
-//                reassignTimer = null,
-//                appearance = SurvivorAppearance.fighterM(),
+                reassignTimer = null,
+                appearance = SurvivorAppearance.fighterM().toHumanAppearance(),
                 scale = 1.18,
                 voice = "asian-m",
                 accessories = mapOf(),

@@ -1,5 +1,7 @@
 package dev.deadzone.core.data
 
+import com.mongodb.client.model.DeleteOneModel
+import com.mongodb.client.model.DeleteOptions
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Indexes
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
@@ -128,6 +130,13 @@ class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : Big
      */
     suspend fun resetUserCollection() {
         accCollection.drop()
+    }
+
+    suspend fun deleteAdminAccount() {
+        accCollection.findOneAndDelete(Filters.eq("playerId", AdminData.PLAYER_ID))
+        objCollection.findOneAndDelete(Filters.eq("playerId", AdminData.PLAYER_ID))
+        neighborCollection.findOneAndDelete(Filters.eq("playerId", AdminData.PLAYER_ID))
+        inventoryCollection.findOneAndDelete(Filters.eq("playerId", AdminData.PLAYER_ID))
     }
 
     override suspend fun shutdown() {
