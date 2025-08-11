@@ -30,8 +30,8 @@ class SaveHandler(private val serverContext: ServerContext) : SocketMessageHandl
     ) {
         val body = message.getMap(NetworkMessage.SAVE) ?: emptyMap()
         val data = body["data"] as? Map<String, Any?> ?: emptyMap()
-        val type = data["_type"] as String
-        val saveId = body["id"] as String
+        val type = data["_type"] as String? ?: return
+        val saveId = body["id"] as String? ?: return
         val pid = requireNotNull(connection.playerId) { "Missing playerId on save message for connection=$connection" }
 
         // Note: the game typically send and expects JSON data for save message
