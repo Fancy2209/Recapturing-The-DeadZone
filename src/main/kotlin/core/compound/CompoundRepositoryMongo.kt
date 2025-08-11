@@ -6,11 +6,17 @@ import dev.deadzone.core.model.game.data.GameResources
 import dev.deadzone.data.collection.PlayerObjects
 import kotlinx.coroutines.flow.firstOrNull
 
-class CompoundRepositoryMongo(val plyObj: MongoCollection<PlayerObjects>) : CompoundRepository {
-    override suspend fun getGameResources(playerId: String): GameResources? {
-        val playerObj = plyObj.find(Filters.eq("playerId", playerId)).firstOrNull()
-            ?: throw IllegalArgumentException("PlayerObjects for playerId=$playerId not found")
-
-        return playerObj.resources
+class CompoundRepositoryMongo(val objCollection: MongoCollection<PlayerObjects>) : CompoundRepository {
+    override suspend fun getGameResources(playerId: String): Result<GameResources> {
+        return try {
+            val playerObj = objCollection.find(Filters.eq("playerId", playerId)).firstOrNull()
+            if (playerObj == null) {
+                Result.failure(NoSuchElementException("No player found with id=$playerId"))
+            } else {
+                Result.success(playerObj.resources)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

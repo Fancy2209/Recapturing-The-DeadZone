@@ -10,7 +10,8 @@ package dev.deadzone.core
  *
  * Typically, the service initializes local data through the [init] method.
  * It receives a repository specific to the domain (e.g., [SurvivorRepository]) to delegates the
- * low-level database work.
+ * low-level database work. Each repository is preferred to be wrapped in try-catch
+ * and always return a Result<T> type. This is to ensure consistency on error handling across repository.
  *
  * See examples: [SurvivorService]
  */

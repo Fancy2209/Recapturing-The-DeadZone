@@ -45,7 +45,7 @@ data class PlayerObjects(
     val admin: Boolean,
 
     @Serializable(with = ByteArrayAsBinarySerializer::class)
-    val flags: ByteArray?,         // deserialized to flagset (see PlayerFlags), indicates tutorial stuff
+    val flags: ByteArray = PlayerFlags.newgame(),     // deserialized to flagset (see PlayerFlags), indicates tutorial stuff
     val nickname: String?,
     val playerSurvivor: String?,
     val levelPts: UInt = 0u,

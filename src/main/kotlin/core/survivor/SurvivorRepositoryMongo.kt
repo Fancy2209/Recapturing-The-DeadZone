@@ -7,15 +7,24 @@ import dev.deadzone.core.model.game.data.Survivor
 import dev.deadzone.data.collection.PlayerObjects
 import kotlinx.coroutines.flow.firstOrNull
 
-class SurvivorRepositoryMongo(val plyObj: MongoCollection<PlayerObjects>) : SurvivorRepository {
+class SurvivorRepositoryMongo(val objCollection: MongoCollection<PlayerObjects>) : SurvivorRepository {
     /**
      * Get survivors of [playerId], returning an empty list if nothing is present.
      */
-    override suspend fun getSurvivorsOfPlayerId(playerId: String): List<Survivor> {
-        return plyObj
-            .find(Filters.eq("playerId", playerId))
-            .firstOrNull()
-            ?.survivors ?: emptyList()
+    override suspend fun getSurvivors(playerId: String): Result<List<Survivor>> {
+        return try {
+            val playerObj = objCollection
+                .find(Filters.eq("playerId", playerId))
+                .firstOrNull()
+
+            if (playerObj == null) {
+                Result.failure(NoSuchElementException("No player found with id=$playerId"))
+            } else {
+                Result.success(playerObj.survivors)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun updateSurvivor(
@@ -23,20 +32,28 @@ class SurvivorRepositoryMongo(val plyObj: MongoCollection<PlayerObjects>) : Surv
         srvId: String,
         updateAction: suspend (Survivor) -> Survivor
     ): Result<Unit> {
-        return runCatching {
-            val playerObj = plyObj.find(Filters.eq("playerId", playerId)).firstOrNull()
-                ?: throw IllegalArgumentException("PlayerObjects for playerId=$playerId not found")
+        return try {
+            val playerObj = objCollection
+                .find(Filters.eq("playerId", playerId))
+                .firstOrNull()
 
-            val index = playerObj.survivors.indexOfFirst { it.id == srvId }
-            if (index == -1) throw IllegalArgumentException("Survivor for playerId=$playerId srvId=$srvId not found")
+            if (playerObj == null) {
+                Result.failure(NoSuchElementException("No player found with id=$playerId"))
+            } else {
+                val index = playerObj.survivors.indexOfFirst { it.id == srvId }
+                if (index == -1) throw NoSuchElementException("Survivor for playerId=$playerId srvId=$srvId not found")
 
-            val currentSurvivor = playerObj.survivors[index]
-            val updatedSurvivor = updateAction(currentSurvivor)
+                val currentSurvivor = playerObj.survivors[index]
+                val updatedSurvivor = updateAction(currentSurvivor)
 
-            val path = "survivors.$index"
-            val update = Updates.set(path, updatedSurvivor)
+                val path = "survivors.$index"
+                val update = Updates.set(path, updatedSurvivor)
 
-            plyObj.updateOne(Filters.eq("playerId", playerId), update)
+                objCollection.updateOne(Filters.eq("playerId", playerId), update)
+                Result.success(Unit)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 }

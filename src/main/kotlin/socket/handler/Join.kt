@@ -28,7 +28,7 @@ class JoinHandler(private val serverContext: ServerContext) : SocketMessageHandl
 
     override suspend fun handle(connection: Connection, message: SocketMessage, send: suspend (ByteArray) -> Unit) {
         val joinKey = message.getString("join")
-        Logger.info { "Handling join with key: $joinKey" }
+        Logger.debug { "Handling join with key: $joinKey" }
 
         val userId = message.getString("serviceUserId")
             ?: throw IllegalArgumentException("No userId for connection: $connection")
@@ -197,7 +197,7 @@ class JoinHandler(private val serverContext: ServerContext) : SocketMessageHandl
                 globalStats = emptyMap(),
 
                 // per-player update
-                resources = context.services.compound.resources,
+                resources = context.services.compound.getResources(),
                 survivors = context.services.survivor.getAllSurvivors(),
                 tasks = null,
                 missions = null,

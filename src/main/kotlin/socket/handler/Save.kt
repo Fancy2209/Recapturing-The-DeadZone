@@ -227,7 +227,7 @@ class SaveHandler(private val serverContext: ServerContext) : SocketMessageHandl
                 )
 
                 // change resource with obtained loot...
-                val currentResource = svc.compound.resources
+                val currentResource = svc.compound.getResources()
 
                 val resourceResponseJson = GlobalContext.json.encodeToString(currentResource)
 
