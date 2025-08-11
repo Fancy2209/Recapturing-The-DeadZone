@@ -12,6 +12,7 @@ import dev.deadzone.core.mission.model.LootParameter
 import dev.deadzone.core.model.data.PlayerFlags
 import dev.deadzone.core.model.game.data.*
 import dev.deadzone.socket.core.Connection
+import dev.deadzone.socket.handler.save.chat.ChatSaveHandler
 import dev.deadzone.socket.handler.save.compound.response.BuildingCreateBuyResponse
 import dev.deadzone.socket.handler.save.compound.response.BuildingCreateResponse
 import dev.deadzone.socket.handler.save.compound.response.BuildingMoveResponse
@@ -61,6 +62,25 @@ class SaveHandler(private val serverContext: ServerContext) : SocketMessageHandl
 
         // Note: the game typically send and expects JSON data for save message
         // encode JSON response to string before using PIO serialization
+
+        when (type) {
+            in SaveDataMethod.COMPOUND_BUILDING_SAVES -> {}
+            in SaveDataMethod.COMPOUND_TASK_SAVES -> {}
+            in SaveDataMethod.COMPOUND_MISC_SAVES -> {}
+            in SaveDataMethod.ITEM_SAVES -> {}
+            in SaveDataMethod.MISSION_SAVES -> {}
+            in SaveDataMethod.SURVIVOR_SAVES -> {}
+            in SaveDataMethod.RAID_SAVES -> {}
+            in SaveDataMethod.ARENA_SAVES -> {}
+            in SaveDataMethod.QUEST_SAVES -> {}
+            in SaveDataMethod.CRATE_SAVES -> {}
+            in SaveDataMethod.ALLIANCE_SAVES -> {}
+            in SaveDataMethod.CHAT_SAVES -> {}
+            in SaveDataMethod.BOUNTY_SAVES -> {}
+            in SaveDataMethod.PURCHASE_SAVES -> {}
+            in SaveDataMethod.MISC_SAVES -> {}
+        }
+
         when (type) {
 
             SaveDataMethod.GET_OFFERS -> {

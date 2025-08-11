@@ -16,6 +16,21 @@ import dev.deadzone.data.db.BigDB
 import dev.deadzone.data.db.CollectionName
 import dev.deadzone.socket.core.OnlinePlayerRegistry
 import dev.deadzone.socket.core.Server
+import dev.deadzone.socket.handler.save.arena.ArenaSaveHandler
+import dev.deadzone.socket.handler.save.bounty.BountySaveHandler
+import dev.deadzone.socket.handler.save.chat.ChatSaveHandler
+import dev.deadzone.socket.handler.save.command.CommandSaveHandler
+import dev.deadzone.socket.handler.save.compound.building.BuildingSaveHandler
+import dev.deadzone.socket.handler.save.compound.misc.CmpMiscSaveHandler
+import dev.deadzone.socket.handler.save.compound.task.TaskSaveHandler
+import dev.deadzone.socket.handler.save.crate.CrateSaveHandler
+import dev.deadzone.socket.handler.save.item.ItemSaveHandler
+import dev.deadzone.socket.handler.save.misc.MiscSaveHandler
+import dev.deadzone.socket.handler.save.mission.MissionSaveHandler
+import dev.deadzone.socket.handler.save.purchase.PurchaseSaveHandler
+import dev.deadzone.socket.handler.save.quest.QuestSaveHandler
+import dev.deadzone.socket.handler.save.raid.RaidSaveHandler
+import dev.deadzone.socket.handler.save.survivor.SurvivorSaveHandler
 import dev.deadzone.user.PlayerAccountRepository
 import dev.deadzone.user.PlayerAccountRepositoryMongo
 import dev.deadzone.user.auth.WebsiteAuthProvider
@@ -140,6 +155,13 @@ suspend fun Application.module() {
     val onlinePlayerRegistry = OnlinePlayerRegistry()
     val authProvider = WebsiteAuthProvider(database, playerAccountRepository, sessionManager)
     val playerContextTracker = PlayerContextTracker()
+    val saveHandlers = listOf(
+        ArenaSaveHandler(), BountySaveHandler(), ChatSaveHandler(),
+        CommandSaveHandler(), BuildingSaveHandler(), CmpMiscSaveHandler(),
+        TaskSaveHandler(), CrateSaveHandler(), ItemSaveHandler(),
+        MiscSaveHandler(), MissionSaveHandler(), PurchaseSaveHandler(),
+        QuestSaveHandler(), RaidSaveHandler(), SurvivorSaveHandler(),
+    )
 
     // 7. Create ServerContext
     val serverContext = ServerContext(
@@ -149,6 +171,7 @@ suspend fun Application.module() {
         onlinePlayerRegistry = onlinePlayerRegistry,
         authProvider = authProvider,
         playerContextTracker = playerContextTracker,
+        saveHandlers = saveHandlers,
         config = config,
     )
 
