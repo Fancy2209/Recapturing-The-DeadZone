@@ -33,6 +33,9 @@ jobs:
           rm -rf deploy/static
           cp -r static deploy/static
 
+      - name: Copy scripts
+        run: cp autorun.bat autorun.sh runmongo.bat runmongo.sh deploy/
+
       - name: Zip deploy folder
         run: |
           cd deploy
