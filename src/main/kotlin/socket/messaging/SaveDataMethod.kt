@@ -5,7 +5,7 @@ package dev.deadzone.socket.messaging
  */
 @Suppress("Unused", "SpellCheckingInspection")
 object SaveDataMethod {
-    // -------------------- BUILDING --------------------
+    // -------------------- COMPOUND_BUILDING --------------------
     const val BUILDING_CREATE = "bld_create"
     const val BUILDING_CREATE_BUY = "bld_create_buy"
     const val BUILDING_UPGRADE = "bld_upgrade"
@@ -20,7 +20,7 @@ object SaveDataMethod {
     const val BUILDING_REPAIR_SPEED_UP = "bld_repair_speedup"
     const val BUILDING_TRAP_EXPLODE = "bld_trap_exp"
 
-    val BUILDING_SAVES = setOf(
+    val COMPOUND_BUILDING_SAVES = setOf(
         BUILDING_CREATE,
         BUILDING_CREATE_BUY,
         BUILDING_UPGRADE,
@@ -34,6 +34,42 @@ object SaveDataMethod {
         BUILDING_REPAIR_BUY,
         BUILDING_REPAIR_SPEED_UP,
         BUILDING_TRAP_EXPLODE,
+    )
+
+    // -------------------- COMPOUND_TASK --------------------
+    const val TASK_STARTED = "tsk_start"
+    const val TASK_CANCELLED = "tsk_cancelled"
+    const val TASK_SURVIVOR_ASSIGNED = "tsk_srv_assign"
+    const val TASK_SURVIVOR_REMOVED = "tsk_srv_remove"
+    const val TASK_SPEED_UP = "tsk_speedup"
+
+    val COMPOUND_TASK_SAVES = setOf(
+        TASK_STARTED,
+        TASK_CANCELLED,
+        TASK_SURVIVOR_ASSIGNED,
+        TASK_SURVIVOR_REMOVED,
+        TASK_SPEED_UP,
+    )
+
+    // -------------------- COMPOUND_MISC --------------------
+    const val CRAFT_ITEM = "craft_item"
+    const val CRAFT_UPGRADE = "craft_upgrade"
+    const val CRAFT_SCHEMATIC = "craft_schematic"
+    const val EFFECT_SET = "effect_set"
+    const val RESEARCH_START = "rsstrt"
+    const val AH_EVENT = "ahEvent"
+    const val CULL_NEIGHBORS = "cullneighbors"
+    const val RALLY_ASSIGNMENT = "rally_assign"
+
+    val COMPOUND_MISC_SAVES = setOf(
+        CRAFT_ITEM,
+        CRAFT_UPGRADE,
+        CRAFT_SCHEMATIC,
+        EFFECT_SET,
+        RESEARCH_START,
+        AH_EVENT,
+        CULL_NEIGHBORS,
+        RALLY_ASSIGNMENT
     )
 
     // -------------------- ITEM --------------------
@@ -103,6 +139,10 @@ object SaveDataMethod {
     const val SURVIVOR_ENEMY_INJURE = "srv_einj"
     const val SURVIVOR_HEAL_INJURY = "srv_heal"
     const val SURVIVOR_HEAL_ALL = "srv_healall"
+    const val PLAYER_CUSTOM = "ply_custom"
+    const val SURVIVOR_EDIT = "srv_edit"
+    const val NAMES = "names"
+    const val RESET_LEADER = "resetLeader"
 
     val SURVIVOR_SAVES = setOf(
         SURVIVOR_CLASS,
@@ -118,6 +158,10 @@ object SaveDataMethod {
         SURVIVOR_ENEMY_INJURE,
         SURVIVOR_HEAL_INJURY,
         SURVIVOR_HEAL_ALL,
+        PLAYER_CUSTOM,
+        SURVIVOR_EDIT,
+        NAMES,
+        RESET_LEADER,
     )
 
     // -------------------- RAID --------------------
@@ -154,21 +198,6 @@ object SaveDataMethod {
         ARENA_LEADERBOARD,
     )
 
-    // -------------------- TASK --------------------
-    const val TASK_STARTED = "tsk_start"
-    const val TASK_CANCELLED = "tsk_cancelled"
-    const val TASK_SURVIVOR_ASSIGNED = "tsk_srv_assign"
-    const val TASK_SURVIVOR_REMOVED = "tsk_srv_remove"
-    const val TASK_SPEED_UP = "tsk_speedup"
-
-    val TASK_SAVES = setOf(
-        TASK_STARTED,
-        TASK_CANCELLED,
-        TASK_SURVIVOR_ASSIGNED,
-        TASK_SURVIVOR_REMOVED,
-        TASK_SPEED_UP,
-    )
-
     // -------------------- QUEST --------------------
     const val QUEST_COLLECT = "quest_collect"
     const val QUEST_TRACK = "quest_track"
@@ -195,25 +224,6 @@ object SaveDataMethod {
     val CRATE_SAVES = setOf(
         CRATE_UNLOCK,
         CRATE_MYSTERY_UNLOCK
-    )
-
-    // -------------------- COMPOUND --------------------
-    const val CRAFT_ITEM = "craft_item"
-    const val CRAFT_UPGRADE = "craft_upgrade"
-    const val CRAFT_SCHEMATIC = "craft_schematic"
-    const val EFFECT_SET = "effect_set"
-    const val RESEARCH_START = "rsstrt"
-    const val AH_EVENT = "ahEvent"
-    const val CULL_NEIGHBORS = "cullneighbors"
-
-    val COMPOUND_SAVES = setOf(
-        CRAFT_ITEM,
-        CRAFT_UPGRADE,
-        CRAFT_SCHEMATIC,
-        EFFECT_SET,
-        RESEARCH_START,
-        AH_EVENT,
-        CULL_NEIGHBORS
     )
 
     // -------------------- ALLIANCE --------------------
@@ -258,25 +268,6 @@ object SaveDataMethod {
         CHAT_ADD_BLOCK,
         CHAT_REMOVE_BLOCK,
         CHAT_REMOVE_ALL_BLOCKS,
-    )
-
-    // -------------------- PLAYER ------------------
-    const val RALLY_ASSIGNMENT = "rally_assign"
-    const val TRADE_DO_TRADE = "trade_doTrade"
-    const val PLAYER_CUSTOM = "ply_custom"
-    const val SURVIVOR_EDIT = "srv_edit"
-    const val NAMES = "names"
-    const val RESET_LEADER = "resetLeader"
-    const val GET_INVENTORY_SIZE = "get_invsize"
-
-    val PLAYER_SAVES = setOf(
-        RALLY_ASSIGNMENT,
-        TRADE_DO_TRADE,
-        PLAYER_CUSTOM,
-        SURVIVOR_EDIT,
-        NAMES,
-        RESET_LEADER,
-        GET_INVENTORY_SIZE
     )
 
     // -------------------- BOUNTY --------------------
@@ -331,6 +322,8 @@ object SaveDataMethod {
     const val CLEAR_NOTIFICATIONS = "clear_notes"
     const val FLUSH_PLAYER = "flushPlayer"
     const val SAVE_ALT_IDS = "savealts"
+    const val TRADE_DO_TRADE = "trade_doTrade"
+    const val GET_INVENTORY_SIZE = "get_invsize"
 
     val MISC_SAVES = setOf(
         TUTORIAL_PVP_PRACTICE,
@@ -340,5 +333,7 @@ object SaveDataMethod {
         CLEAR_NOTIFICATIONS,
         FLUSH_PLAYER,
         SAVE_ALT_IDS,
+        TRADE_DO_TRADE,
+        GET_INVENTORY_SIZE
     )
 }
