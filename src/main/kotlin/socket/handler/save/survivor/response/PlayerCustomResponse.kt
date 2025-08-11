@@ -1,6 +1,6 @@
-package dev.deadzone.socket.handler.saveresponse.survivor
+package dev.deadzone.socket.handler.save.survivor.response
 
-import dev.deadzone.socket.handler.saveresponse.BaseResponse
+import dev.deadzone.socket.handler.save.BaseResponse
 import kotlinx.serialization.Serializable
 
 /**

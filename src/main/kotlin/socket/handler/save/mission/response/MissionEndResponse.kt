@@ -1,4 +1,4 @@
-package dev.deadzone.socket.handler.saveresponse.mission
+package dev.deadzone.socket.handler.save.mission.response
 
 import dev.deadzone.core.items.model.Item
 import dev.deadzone.core.model.game.data.Morale

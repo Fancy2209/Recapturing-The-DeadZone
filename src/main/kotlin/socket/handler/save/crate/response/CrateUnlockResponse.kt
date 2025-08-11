@@ -1,4 +1,4 @@
-package dev.deadzone.socket.handler.saveresponse.crate
+package dev.deadzone.socket.handler.save.crate.response
 
 import dev.deadzone.core.items.ItemFactory
 import dev.deadzone.core.items.model.Item

@@ -1,4 +1,4 @@
-package dev.deadzone.socket.handler.saveresponse
+package dev.deadzone.socket.handler.save
 
 import dev.deadzone.core.model.game.data.skills.SkillState
 

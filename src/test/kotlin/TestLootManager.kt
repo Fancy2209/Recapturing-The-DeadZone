@@ -1,7 +1,7 @@
 import dev.deadzone.core.mission.LootService
 import dev.deadzone.core.mission.LootParameter
 import dev.deadzone.core.data.GameDefinitions
-import dev.deadzone.socket.handler.saveresponse.mission.loadSceneXML
+import dev.deadzone.socket.handler.save.mission.response.loadSceneXML
 import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

@@ -1,4 +1,4 @@
-package dev.deadzone.socket.handler.saveresponse.compound
+package dev.deadzone.socket.handler.save.compound.response
 
 import kotlinx.serialization.Serializable
 
