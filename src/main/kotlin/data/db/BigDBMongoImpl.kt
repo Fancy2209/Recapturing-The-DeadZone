@@ -129,6 +129,10 @@ class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : Big
     suspend fun resetUserCollection() {
         accCollection.drop()
     }
+
+    override suspend fun shutdown() {
+        // nothing
+    }
 }
 
 /**

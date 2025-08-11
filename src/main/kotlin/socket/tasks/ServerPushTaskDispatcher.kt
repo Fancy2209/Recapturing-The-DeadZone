@@ -79,4 +79,14 @@ class ServerPushTaskDispatcher {
     private fun notifyCompletion(key: String) {
         completionListeners.remove(key)?.forEach { it.invoke() }
     }
+
+    fun shutdown() {
+        runningTasks.values.forEach { it.cancel() }
+        taskSignals.values.forEach { signal -> if (!signal.isCompleted) signal.complete(Unit) }
+
+        runningTasks.clear()
+        taskSignals.clear()
+        completionListeners.clear()
+        tasks.clear()
+    }
 }

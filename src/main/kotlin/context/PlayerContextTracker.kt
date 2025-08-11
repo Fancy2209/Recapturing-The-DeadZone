@@ -108,4 +108,8 @@ class PlayerContextTracker {
     fun removePlayer(playerId: String) {
         players.remove(playerId)
     }
+
+    fun shutdown() {
+        players.clear()
+    }
 }

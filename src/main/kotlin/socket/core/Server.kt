@@ -25,7 +25,6 @@ class Server(
     private val context: ServerContext,
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
 ): TaskController {
-    private val clients = Collections.synchronizedList(mutableListOf<Connection>())
     private val socketDispatcher = SocketMessageDispatcher()
     private val taskDispatcher = ServerPushTaskDispatcher()
 
@@ -55,13 +54,12 @@ class Server(
                         socket = socket,
                         output = socket.openWriteChannel(autoFlush = true),
                     )
-                    clients.add(connection)
                     Logger.info { "New client: ${connection.socket.remoteAddress}" }
                     handleClient(connection)
                 }
             } catch (e: Exception) {
-                Logger.error { "ERROR starting server $e" }
-                stop()
+                Logger.error { "ERROR on server: $e" }
+                shutdown()
             }
         }
     }
@@ -111,28 +109,25 @@ class Server(
                 }
             } catch (e: Exception) {
                 Logger.error { "Error in socket for ${connection.socket.remoteAddress}: $e" }
-                connection.playerId?.let {
-                    context.onlinePlayerRegistry.markOffline(it)
-                }
+                context.onlinePlayerRegistry.markOffline(connection.playerId)
+                context.playerContextTracker.removePlayer(connection.playerId)
+                pushJob.cancelAndJoin()
             } finally {
                 Logger.info { "Client ${connection.socket.remoteAddress} disconnected" }
-                connection.playerId?.let {
-                    context.onlinePlayerRegistry.markOffline(it)
-                }
-                taskDispatcher.stopAllPushTasks()
+                context.onlinePlayerRegistry.markOffline(connection.playerId)
+                context.playerContextTracker.removePlayer(connection.playerId)
                 pushJob.cancelAndJoin()
-                clients.remove(connection)
                 connection.socket.close()
             }
         }
     }
 
-    fun stop() {
-        Logger.info { "Stopping ${clients.size} connections..." }
-        clients.forEach {
-            it.socket.close()
-        }
+    fun shutdown() {
+        context.playerContextTracker.shutdown()
         context.onlinePlayerRegistry.shutdown()
+        context.sessionManager.shutdown()
+        taskDispatcher.shutdown()
+        socketDispatcher.shutdown()
         Logger.info { "Server closed." }
     }
 

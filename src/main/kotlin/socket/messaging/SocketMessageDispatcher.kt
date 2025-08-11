@@ -19,4 +19,8 @@ class SocketMessageDispatcher() {
             Logger.info {"Dispatching to $it" }
         }
     }
+
+    fun shutdown() {
+        handlers.clear()
+    }
 }

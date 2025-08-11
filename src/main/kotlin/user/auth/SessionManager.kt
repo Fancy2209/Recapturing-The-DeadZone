@@ -118,9 +118,10 @@ class SessionManager {
     }
 
     /**
-     * Shutdown [cleanupExpiredSessions] task.
+     * Shutdown [cleanupExpiredSessions] task and clear sessions.
      */
     fun shutdown() {
+        sessions.clear()
         cleanupJob.cancel()
     }
 }
