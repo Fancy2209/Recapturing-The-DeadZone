@@ -1,5 +1,7 @@
 package dev.deadzone.socket.core
 
+import dev.deadzone.SERVER_HOST
+import dev.deadzone.SOCKET_SERVER_PORT
 import dev.deadzone.context.ServerContext
 import dev.deadzone.socket.handler.*
 import dev.deadzone.socket.tasks.TimeUpdate
@@ -20,8 +22,8 @@ const val POLICY_FILE_RESPONSE =
     "<cross-domain-policy><allow-access-from domain=\"*\" to-ports=\"7777\"/></cross-domain-policy>\u0000"
 
 class Server(
-    private val host: String = "127.0.0.1",
-    private val port: Int = 7777,
+    private val host: String = SERVER_HOST,
+    private val port: Int = SOCKET_SERVER_PORT,
     private val context: ServerContext,
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
 ): TaskController {

@@ -1,5 +1,6 @@
 package dev.deadzone.api.message.auth
 
+import dev.deadzone.API_SERVER_HOST
 import dev.deadzone.api.message.social.PlayerInsightState
 import dev.deadzone.core.data.AdminData
 import kotlinx.serialization.Serializable
@@ -25,7 +26,7 @@ data class AuthenticateOutput(
             return AuthenticateOutput(
                 token = AdminData.TOKEN,
                 userId = AdminData.PLAYER_ID,
-                apiServerHosts = listOf("127.0.0.1:8080")
+                apiServerHosts = listOf(API_SERVER_HOST)
             )
         }
     }

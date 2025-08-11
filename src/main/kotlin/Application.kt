@@ -66,6 +66,15 @@ fun main(args: Array<String>) {
     EngineMain.main(args)
 }
 
+const val SERVER_HOST = "127.0.0.1"
+const val FILE_SERVER_HOST = "127.0.0.1:8080"
+const val API_SERVER_HOST = "127.0.0.1:8080"
+const val SOCKET_SERVER_HOST = "127.0.0.1:7777"
+
+const val FILE_SERVER_PORT = 8080
+const val API_SERVER_PORT = 8080
+const val SOCKET_SERVER_PORT = 7777
+
 /**
  * Setup the server:
  *
@@ -177,8 +186,8 @@ suspend fun Application.module() {
 
     // 8. Configure HTTP
     install(CORS) {
-        allowHost("127.0.0.1:8080", schemes = listOf("http"))
-        allowHost("127.0.0.1:7777", schemes = listOf("http"))
+        allowHost(API_SERVER_HOST, schemes = listOf("http"))
+        allowHost(SOCKET_SERVER_HOST, schemes = listOf("http"))
         allowHeader(HttpHeaders.ContentType)
         allowMethod(HttpMethod.Get)
     }
@@ -225,6 +234,6 @@ suspend fun Application.module() {
     val server = Server(context = serverContext)
     server.start()
     Runtime.getRuntime().addShutdownHook(Thread {
-        server.stop()
+        server.shutdown()
     })
 }
