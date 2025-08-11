@@ -40,6 +40,10 @@ class MissionSaveHandler : SaveSubHandler {
                 val leader = svc.survivor.getSurvivorLeader()
 
                 val sceneXML = resolveAndLoadScene(areaType)
+                if (sceneXML == null) {
+                    Logger.error(LogConfigSocketToClient) { "That area=$areaType isn't working yet, typically because the map file is lost" }
+                    return
+                }
                 val lootParameter = LootParameter(
                     areaLevel = (data["areaLevel"] as Int),
                     playerLevel = leader.level,

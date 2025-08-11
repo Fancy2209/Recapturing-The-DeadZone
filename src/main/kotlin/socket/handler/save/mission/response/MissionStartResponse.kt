@@ -28,8 +28,9 @@ data class MissionStartResponse(
     val allianceAttackerWinPoints: Int,
 ) : BaseResponse()
 
-fun resolveAndLoadScene(areaType: String): String {
-    return loadSceneXML(areaTypeToScenes[areaType]!!.random())
+fun resolveAndLoadScene(areaType: String): String? {
+    val scene = areaTypeToScenes[areaType]?.random()
+    return scene?.let { loadSceneXML(it) }
 }
 
 fun loadSceneXML(filename: String): String {
@@ -113,7 +114,7 @@ val areaTypeToScenes = mapOf(
         "exterior-motel-2",
         "exterior-motel-3"
     ),
-    "motelSmall" to listOf(
+    "motel" to listOf(
         "exterior-motel-small-1",
         "exterior-motel-small-2",
         "exterior-motel-small-3"
