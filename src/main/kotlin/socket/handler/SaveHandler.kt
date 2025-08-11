@@ -31,10 +31,10 @@ import kotlin.random.Random
 /**
  * Handle `save` message by:
  *
- * 1. Receive the `data`, `_type`, and `id` for the said message.
+ * 1. Receive the `data`, `_type`, and `id` (save id) for the said message.
  * 2. Route the save into the corresponding handler based on `_type`.
  * 3. Handlers determine what to do based on the given `data`.
- * 4. Optionally, response back a message of type 'r' with the expected JSON payload.
+ * 4. Optionally, response back a message of type 'r' with the expected JSON payload and the given save id.
  */
 class SaveHandler(private val serverContext: ServerContext) : SocketMessageHandler {
     override fun match(message: SocketMessage): Boolean {
@@ -93,8 +93,15 @@ class SaveHandler(private val serverContext: ServerContext) : SocketMessageHandl
                 }
 
                 val bannedNicknames = listOf("dick")
-                bannedNicknames.any { bannedWord ->
+                val nicknameNotAllowed = bannedNicknames.any { bannedWord ->
                     title.contains(bannedWord)
+                }
+                if (nicknameNotAllowed) {
+                    val responseJson = GlobalContext.json.encodeToString(
+                        PlayerCustomResponse(error = "Nickname not allowed")
+                    )
+                    send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
+                    return
                 }
 
                 val svc = serverContext.requirePlayerContext(pid).services
