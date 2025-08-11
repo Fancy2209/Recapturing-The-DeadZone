@@ -58,6 +58,7 @@ class SaveHandler(private val serverContext: ServerContext) : SocketMessageHandl
         // Note: the game typically send and expects JSON data for save message
         // encode JSON response to string before using PIO serialization
         when (type) {
+
             SaveDataMethod.GET_OFFERS -> {
                 Logger.warn(LogConfigSocketToClient) { "Received 'get_offers' message [not implemented]" }
             }
