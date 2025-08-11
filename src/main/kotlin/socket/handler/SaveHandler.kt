@@ -48,6 +48,8 @@ class SaveHandler(private val serverContext: ServerContext) : SocketMessageHandl
             }
         }
 
+        // NOTE: there is uncategorized save data method: 'auth' which contains MD5 hash
+        // The hash is produced from hashing all binaries sent in join message.
         if (!match) {
             Logger.warn(LogConfigSocketError) { "Handled 's' network message but unrouted for save type: $type with data=$data" }
         }

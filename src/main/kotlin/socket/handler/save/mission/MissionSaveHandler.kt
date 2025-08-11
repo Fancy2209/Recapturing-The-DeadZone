@@ -76,7 +76,7 @@ class MissionSaveHandler : SaveSubHandler {
 
                 val responseJson = GlobalContext.json.encodeToString(
                     MissionStartResponse(
-                        id = saveId ?: "",
+                        id = saveId,
                         time = timeSeconds,
                         assignmentType = "None", // 'None' because not a raid or arena. see AssignmentType
                         areaClass = (data["areaClass"] as String?) ?: "", // supposedly depend on the area
@@ -125,7 +125,7 @@ class MissionSaveHandler : SaveSubHandler {
                         injuries = null,
                         // the survivors that goes into the mission
                         survivors = emptyList(),
-                        player = PlayerSurvivor(xp = 100, level = leader.level!!),
+                        player = PlayerSurvivor(xp = 100, level = leader.level),
                         levelPts = 0,
                         // base64 encoded string
                         cooldown = null
