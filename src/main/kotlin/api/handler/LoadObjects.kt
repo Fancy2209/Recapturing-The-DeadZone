@@ -5,8 +5,10 @@ import dev.deadzone.api.message.db.LoadObjectsArgs
 import dev.deadzone.api.message.db.LoadObjectsOutput
 import dev.deadzone.api.utils.pioFraming
 import dev.deadzone.context.ServerContext
+import dev.deadzone.core.LazyDataUpdater
 import dev.deadzone.data.collection.NeighborHistory
 import dev.deadzone.utils.LogConfigAPIError
+import dev.deadzone.utils.LogConfigSocketToClient
 import dev.deadzone.utils.LogSource
 import dev.deadzone.utils.Logger
 import dev.deadzone.utils.logInput
@@ -40,7 +42,7 @@ suspend fun RoutingContext.loadObjects(serverContext: ServerContext) {
         val playerId = objId.keys.firstOrNull() ?: continue
         // the game for unknown reason keep requesting the same playerId infinitely
         // this is to ensure the requested player does actually exists
-        serverContext.playerAccountRepository.getProfileOfPlayerId(playerId) ?: continue
+        val profile = serverContext.playerAccountRepository.getProfileOfPlayerId(playerId) ?: continue
 
         Logger.debug(src = LogSource.API) { "Found object for playerId: $playerId" }
 
@@ -48,8 +50,25 @@ suspend fun RoutingContext.loadObjects(serverContext: ServerContext) {
         val neighborHistory = serverContext.db.loadNeighborHistory(playerId)!!
         val inventory = serverContext.db.loadInventory(playerId)!!
 
+        // update time-dynamic data
+        val updatedBuildings = LazyDataUpdater.updateBuildingTimers(playerObjects.buildings)
+        val depletedResources = LazyDataUpdater.depleteResources(profile.lastLogin, playerObjects.resources)
+        try {
+            serverContext.db.updatePlayerObjectsField(playerId, "buildings", updatedBuildings)
+            serverContext.db.updatePlayerObjectsField(playerId, "resources", depletedResources)
+        } catch (e: Exception) {
+            Logger.error(LogConfigSocketToClient) { "Error while updating time-dynamic data: ${e.message}" }
+            return
+        }
+
         val obj: BigDBObject? = when (objId.table) {
-            "PlayerObjects" -> LoadObjectsOutput.fromData(playerObjects)
+            "PlayerObjects" -> LoadObjectsOutput.fromData(
+                playerObjects.copy(
+                    buildings = updatedBuildings,
+                    resources = depletedResources
+                )
+            )
+
             "NeighborHistory" -> LoadObjectsOutput.fromData(
                 NeighborHistory(
                     playerId = playerId,

@@ -55,6 +55,10 @@ data class PlayerObjects(
     val friends: Map<String, RemotePlayerData>?,
     val research: ResearchState?,
     val skills: Map<String, SkillState>?,
+
+    // data like resources and survivors isn't needed here, they are set from loginstate.
+    // but useful because client-side playerdata keeps them
+    // and its better to store this in playerobjects than making separate loginstate collection
     val resources: GameResources,
     val survivors: List<Survivor>,
     val playerAttributes: Attributes,

@@ -33,6 +33,18 @@ val BuildingLike.level: Int
         is JunkBuilding -> this.level
     }
 
+val BuildingLike.upgrade: TimerData?
+    get() = when (this) {
+        is Building -> this.upgrade
+        is JunkBuilding -> this.upgrade
+    }
+
+val BuildingLike.repair: TimerData?
+    get() = when (this) {
+        is Building -> this.repair
+        is JunkBuilding -> this.repair
+    }
+
 fun BuildingLike.copy(
     id: String = this.id,
     name: String? = null,
