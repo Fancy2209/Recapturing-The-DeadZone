@@ -52,7 +52,7 @@ class BuildingSaveHandler : SaveSubHandler {
 
                 val timer = TimerData.runForDuration(
                     duration = 10.seconds,
-                    data = mapOf("level" to 1.0)
+                    data = mapOf("level" to 0.0)
                 )
 
                 val svc = serverContext.requirePlayerContext(playerId).services
