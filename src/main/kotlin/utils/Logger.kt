@@ -285,7 +285,7 @@ val LogConfigAPIError = LogConfig(
 
 val LogConfigSocketToClient = LogConfig(
     src = LogSource.SOCKET,
-    targets = setOf(LogTarget.PRINT, LogTarget.CLIENT),
+    targets = setOf(LogTarget.PRINT, LogTarget.FILE(LogFile.SOCKET_SERVER_ERROR), LogTarget.CLIENT),
     logFull = false
 )
 
