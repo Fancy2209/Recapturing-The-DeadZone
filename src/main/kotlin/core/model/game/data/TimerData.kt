@@ -2,36 +2,23 @@ package dev.deadzone.core.model.game.data
 
 import io.ktor.util.date.getTimeMillis
 import kotlinx.serialization.Serializable
+import kotlin.time.Duration
 
 @Serializable
 data class TimerData(
     val start: Long,
-    val length: Long,
+    val length: Long, // this is in seconds!
     val data: Map<String, Double>?
 ) {
     companion object {
-        fun dummy(): TimerData {
+        fun runForDuration(
+            duration: Duration,
+            data: Map<String, Double>? = emptyMap()
+        ): TimerData {
             return TimerData(
-                start = 1000,
-                length = 1_000_000,
-                data = mapOf()
-            )
-        }
-
-        fun fiveMinutesFromNow(): TimerData {
-            val now = getTimeMillis()
-            return TimerData(
-                start = now,
-                length = now + (5 * 60 * 1000L),
-                data = emptyMap()
-            )
-        }
-
-        fun hasEnded(): TimerData {
-            return TimerData(
-                start = getTimeMillis() - (5 * 60 * 1000), // 5 mins ago
-                length = 1,                                // 1 sec duration
-                data = mapOf()
+                start = getTimeMillis(),
+                length = duration.inWholeSeconds,
+                data = data
             )
         }
     }
