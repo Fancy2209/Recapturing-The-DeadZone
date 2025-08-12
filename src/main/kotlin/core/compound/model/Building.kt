@@ -46,52 +46,53 @@ val BuildingLike.repair: TimerData?
     }
 
 fun BuildingLike.copy(
-    id: String = this.id,
+    id: String? = null,
     name: String? = null,
     type: String? = null,
-    level: Int = 0,
+    level: Int? = null,
     rotation: Int? = null,
     tx: Int? = null,
     ty: Int? = null,
-    destroyed: Boolean = false,
-    resourceValue: Double = 0.0,
+    destroyed: Boolean? = null,
+    resourceValue: Double? = null,
     upgrade: TimerData? = null,
     repair: TimerData? = null,
-    items: List<Item> = emptyList(),
+    items: List<Item>? = null,
     pos: String? = null,
     rot: String? = null
 ): BuildingLike = when (this) {
     is Building -> this.copy(
-        id = id,
-        name = name,
-        type = type,
-        level = level,
-        rotation = rotation,
-        tx = tx,
-        ty = ty,
-        destroyed = destroyed,
-        resourceValue = resourceValue,
-        upgrade = upgrade,
-        repair = repair
+        id = id ?: this.id,
+        name = name ?: this.name,
+        type = type ?: this.type,
+        level = level ?: this.level,
+        rotation = rotation ?: this.rotation,
+        tx = tx ?: this.tx,
+        ty = ty ?: this.ty,
+        destroyed = destroyed ?: this.destroyed,
+        resourceValue = resourceValue ?: this.resourceValue,
+        upgrade = upgrade ?: this.upgrade,
+        repair = repair ?: this.repair
     )
 
     is JunkBuilding -> this.copy(
-        id = id,
-        name = name,
-        type = type,
-        level = level,
-        rotation = rotation,
-        tx = tx,
-        ty = ty,
-        destroyed = destroyed,
-        resourceValue = resourceValue,
-        upgrade = upgrade,
-        repair = repair,
-        items = items,
-        pos = pos,
-        rot = rot
+        id = id ?: this.id,
+        name = name ?: this.name,
+        type = type ?: this.type,
+        level = level ?: this.level,
+        rotation = rotation ?: this.rotation,
+        tx = tx ?: this.tx,
+        ty = ty ?: this.ty,
+        destroyed = destroyed ?: this.destroyed,
+        resourceValue = resourceValue ?: this.resourceValue,
+        upgrade = upgrade ?: this.upgrade,
+        repair = repair ?: this.repair,
+        items = items ?: this.items,
+        pos = pos ?: this.pos,
+        rot = rot ?: this.rot
     )
 }
+
 
 @Serializable
 data class Building(

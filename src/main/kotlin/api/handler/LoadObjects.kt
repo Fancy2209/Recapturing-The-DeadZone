@@ -50,24 +50,26 @@ suspend fun RoutingContext.loadObjects(serverContext: ServerContext) {
         val neighborHistory = serverContext.db.loadNeighborHistory(playerId)!!
         val inventory = serverContext.db.loadInventory(playerId)!!
 
-        // update time-dynamic data
-        val updatedBuildings = LazyDataUpdater.updateBuildingTimers(playerObjects.buildings)
-        val depletedResources = LazyDataUpdater.depleteResources(profile.lastLogin, playerObjects.resources)
-        try {
-            serverContext.db.updatePlayerObjectsField(playerId, "buildings", updatedBuildings)
-            serverContext.db.updatePlayerObjectsField(playerId, "resources", depletedResources)
-        } catch (e: Exception) {
-            Logger.error(LogConfigSocketToClient) { "Error while updating time-dynamic data: ${e.message}" }
-            return
-        }
-
         val obj: BigDBObject? = when (objId.table) {
-            "PlayerObjects" -> LoadObjectsOutput.fromData(
-                playerObjects.copy(
-                    buildings = updatedBuildings,
-                    resources = depletedResources
+            "PlayerObjects" -> {
+                // update time-dynamic data
+                val updatedBuildings = LazyDataUpdater.updateBuildingTimers(playerObjects.buildings)
+                val depletedResources = LazyDataUpdater.depleteResources(profile.lastLogin, playerObjects.resources)
+                try {
+                    serverContext.db.updatePlayerObjectsField(playerId, "buildings", updatedBuildings)
+                    serverContext.db.updatePlayerObjectsField(playerId, "resources", depletedResources)
+                } catch (e: Exception) {
+                    Logger.error(LogConfigSocketToClient) { "Error while updating time-dynamic data: ${e.message}" }
+                    return
+                }
+
+                LoadObjectsOutput.fromData(
+                    playerObjects.copy(
+                        buildings = updatedBuildings,
+                        resources = depletedResources
+                    )
                 )
-            )
+            }
 
             "NeighborHistory" -> LoadObjectsOutput.fromData(
                 NeighborHistory(

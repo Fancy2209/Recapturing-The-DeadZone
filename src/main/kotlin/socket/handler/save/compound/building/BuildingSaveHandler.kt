@@ -116,7 +116,7 @@ class BuildingSaveHandler : SaveSubHandler {
                 svc.compound.updateBuilding(bldId) { bld ->
                     timer = TimerData.runForDuration(
                         duration = 10.seconds,
-                        data = mapOf("level" to bld.level.toDouble())
+                        data = mapOf("level" to (bld.level + 1.0).toDouble())
                     )
                     bld.copy(upgrade = timer)
                 }

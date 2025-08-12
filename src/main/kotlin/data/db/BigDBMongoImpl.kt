@@ -95,7 +95,6 @@ class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : Big
         val filter = Filters.eq("playerId", playerId)
         val update = Updates.set(path, value)
         objCollection.updateOne(filter, update)
-        Result.success(Unit)
     }
 
     @Suppress("UNCHECKED_CAST")
