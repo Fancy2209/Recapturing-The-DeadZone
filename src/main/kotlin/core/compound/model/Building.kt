@@ -27,6 +27,12 @@ val BuildingLike.type: String
         is JunkBuilding -> this.type
     }
 
+val BuildingLike.level: Int
+    get() = when(this) {
+        is Building -> this.level
+        is JunkBuilding -> this.level
+    }
+
 fun BuildingLike.copy(
     id: String = this.id,
     name: String? = null,

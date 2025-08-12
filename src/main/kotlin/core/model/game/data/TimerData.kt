@@ -8,7 +8,7 @@ import kotlin.time.Duration
 data class TimerData(
     val start: Long,
     val length: Long, // this is in seconds!
-    val data: Map<String, Double>?
+    val data: Map<String, Double>? // this depends on each response. e.g., building upgrade need level
 ) {
     companion object {
         fun runForDuration(

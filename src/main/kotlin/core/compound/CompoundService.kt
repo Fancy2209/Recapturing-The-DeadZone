@@ -1,8 +1,10 @@
 package dev.deadzone.core.compound
 
 import dev.deadzone.core.PlayerService
+import dev.deadzone.core.items.model.Item
 import dev.deadzone.core.model.game.data.*
 import dev.deadzone.utils.LogConfigSocketError
+import dev.deadzone.utils.LogConfigSocketToClient
 import dev.deadzone.utils.Logger
 import io.ktor.util.date.*
 import kotlin.random.Random
@@ -27,6 +29,10 @@ class CompoundService(private val compoundRepository: CompoundRepository) : Play
         result.onSuccess {
             this.resources = update
         }
+    }
+
+    fun getBuildingById(bldId: String): BuildingLike {
+        return buildings[getIndexOfBuilding(bldId)]
     }
 
     private fun getIndexOfBuilding(bldId: String): Int {
@@ -61,6 +67,16 @@ class CompoundService(private val compoundRepository: CompoundRepository) : Play
         }
     }
 
+    suspend fun deleteBuilding(bldId: String) {
+        val result = compoundRepository.deleteBuilding(playerId, bldId)
+        result.onFailure {
+            Logger.error(LogConfigSocketError) { "Error on deleteBuilding: ${it.message}" }
+        }
+        result.onSuccess {
+            this.buildings.removeIf { it.id == bldId }
+        }
+    }
+
     // probably means canceling build, hence deleting the ongoing createBuiding
     suspend fun cancelBuilding(bldId: String) {
         val result = compoundRepository.deleteBuilding(playerId, bldId)
@@ -72,44 +88,48 @@ class CompoundService(private val compoundRepository: CompoundRepository) : Play
         }
     }
 
-    suspend fun collectBuilding(bldId: String): Double {
+    suspend fun collectBuilding(bldId: String): GameResources {
         val lastUpdate = lastResourceValueUpdated[bldId]
             ?: throw NoSuchElementException("Building bldId=$bldId is not categorized as production buildings")
 
         val collectedAmount = calculateResource(lastUpdate.seconds)
         lastResourceValueUpdated[bldId] = getTimeMillis()
 
+        lateinit var prod: String
         // updateBuilding already do necessary result catch and update the in-memory buildings
         updateBuilding(bldId) { oldBld ->
+            // lookup to GameDefinitions, what does the building produce in 'prod' element
+            prod = "wood"
             oldBld.copy(resourceValue = 0.0)
         }
 
-        return collectedAmount
+        val res = when (prod) {
+            "wood" -> GameResources(wood = collectedAmount.toInt())
+            "metal" -> GameResources(metal = collectedAmount.toInt())
+            "cloth" -> GameResources(cloth = collectedAmount.toInt())
+            "food" -> GameResources(food = collectedAmount.toInt())
+            "water" -> GameResources(water = collectedAmount.toInt())
+            "cash" -> GameResources(cash = collectedAmount.toInt())
+            "ammunition" -> GameResources(ammunition = collectedAmount.toInt())
+            else -> {
+                throw IllegalArgumentException("Error during collectBuilding, type $prod doesn't exist")
+            }
+        }
+
+        return res
+    }
+
+    suspend fun recycleBuilding(bldId: String): List<Item> {
+        deleteBuilding(bldId)
+        // lookup to building xml what should be obtained
+        return emptyList()
     }
 
     fun calculateResource(durationSec: Duration): Double {
-        return Random.nextDouble(1.0, 10.0)
-    }
-
-    suspend fun repairBuilding(bldId: String) {
-        // TODO
-        updateBuilding(bldId) { oldBld ->
-            oldBld.copy()
-        }
-    }
-
-    suspend fun speedUpBuilding(bldId: String) {
-        // TODO
-        updateBuilding(bldId) { oldBld ->
-            oldBld.copy()
-        }
-    }
-
-    suspend fun upgradeBuilding(bldId: String) {
-        // TODO
-        updateBuilding(bldId) { oldBld ->
-            oldBld.copy()
-        }
+        val productionRate = 4
+        // parameter: building level, effects
+        // see GameDefintions of building.xml for realistic result
+        return 10.0 + (productionRate * durationSec.inWholeMinutes)
     }
 
     override suspend fun init(playerId: String): Result<Unit> {

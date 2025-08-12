@@ -3,26 +3,31 @@ package dev.deadzone.socket.handler.save.compound.building
 import dev.deadzone.context.GlobalContext
 import dev.deadzone.context.ServerContext
 import dev.deadzone.context.requirePlayerContext
-import dev.deadzone.core.model.game.data.GameResourcesConstants_Constants
-import dev.deadzone.core.model.game.data.TimerData
+import dev.deadzone.core.model.game.data.*
 import dev.deadzone.socket.handler.buildMsg
 import dev.deadzone.socket.handler.save.SaveSubHandler
-import dev.deadzone.socket.handler.save.compound.building.response.BuildingCancelResponse
-import dev.deadzone.socket.handler.save.compound.building.response.BuildingCollectResponse
-import dev.deadzone.socket.handler.save.compound.building.response.BuildingCreateBuyResponse
-import dev.deadzone.socket.handler.save.compound.building.response.BuildingCreateResponse
-import dev.deadzone.socket.handler.save.compound.building.response.BuildingMoveResponse
-import dev.deadzone.socket.handler.save.compound.building.response.BuildingRecycleResponse
-import dev.deadzone.socket.handler.save.compound.building.response.BuildingRepairResponse
-import dev.deadzone.socket.handler.save.compound.building.response.BuildingRepairSpeedUpResponse
-import dev.deadzone.socket.handler.save.compound.building.response.BuildingSpeedUpResponse
-import dev.deadzone.socket.handler.save.compound.building.response.BuildingUpgradeResponse
+import dev.deadzone.socket.handler.save.compound.building.response.*
 import dev.deadzone.socket.messaging.SaveDataMethod
 import dev.deadzone.socket.protocol.PIOSerializer
 import dev.deadzone.utils.LogConfigSocketToClient
 import dev.deadzone.utils.Logger
+import java.util.*
+import kotlin.math.max
 import kotlin.time.Duration.Companion.seconds
 
+/**
+ * Note about building operation:
+ *
+ * - There is no building or task complete signal. This also apply for other operations.
+ * - Client keep tracks own timer and assumes that server also do it.
+ * So we need to update the timer on upgrade/repair of Building.
+ *
+ * - We don't need to run a task that completes the upgrade, instead do it lazily.
+ * That is when the client request data to server (such as during login)
+ *
+ * - We will check if timer start + length is lower than current time
+ * If it is, remove the timer and apply change (i.e., increment level if upgrading)
+ */
 class BuildingSaveHandler : SaveSubHandler {
     override val supportedTypes: Set<String> = SaveDataMethod.COMPOUND_BUILDING_SAVES
 
@@ -37,22 +42,42 @@ class BuildingSaveHandler : SaveSubHandler {
         when (type) {
             // read buildings.xml from GameDefinition for items/build duration
             SaveDataMethod.BUILDING_CREATE -> {
-                val bldId = data["id"] ?: return
-                val bldType = data["type"] ?: return
-                val x = data["tx"] ?: return
-                val y = data["ty"] ?: return
-                val r = data["rotation"] ?: return
+                val bldId = data["id"] as String? ?: return
+                val bldType = data["type"] as String? ?: return
+                val x = data["tx"] as Int? ?: return
+                val y = data["ty"] as Int? ?: return
+                val r = data["rotation"] as Int? ?: return
 
                 Logger.debug(LogConfigSocketToClient) { "'BUILDING_CREATE' message for $saveId and $bldId,$bldType to tx=$x, ty=$y, rotation=$r" }
 
+                val timer = TimerData.runForDuration(
+                    duration = 10.seconds,
+                    data = mapOf("level" to 1.0)
+                )
+
                 val svc = serverContext.requirePlayerContext(playerId).services
+                svc.compound.createBuilding {
+                    Building(
+                        id = UUID.randomUUID().toString(),
+                        name = null,
+                        type = bldType,
+                        level = 0, // always 0 because create
+                        rotation = r,
+                        tx = x,
+                        ty = y,
+                        destroyed = false,
+                        resourceValue = 0.0,
+                        upgrade = timer, // create can be thought as an upgrade to level 0
+                        repair = null
+                    )
+                }
 
                 val response = BuildingCreateResponse(
                     // although client know user's resource,
                     // server may revalidate (in-case user did client-side hacking)
                     success = true,
                     items = emptyMap(),
-                    timer = TimerData.runForDuration(10.seconds)
+                    timer = timer
                 )
 
                 val responseJson = GlobalContext.json.encodeToString(response)
@@ -60,12 +85,17 @@ class BuildingSaveHandler : SaveSubHandler {
             }
 
             SaveDataMethod.BUILDING_MOVE -> {
-                val x = (data["tx"] as? Number)?.toInt() ?: 0
-                val y = (data["ty"] as? Number)?.toInt() ?: 0
-                val r = (data["rotation"] as? Number)?.toInt() ?: 0
-                val buildingId = data["id"] // use this to refer the building
+                val x = (data["tx"] as? Number)?.toInt() ?: return
+                val y = (data["ty"] as? Number)?.toInt() ?: return
+                val r = (data["rotation"] as? Number)?.toInt() ?: return
+                val buildingId = data["id"] as String? ?: return
 
                 Logger.debug(LogConfigSocketToClient) { "'bld_move' message for $saveId and $buildingId to tx=$x, ty=$y, rotation=$r" }
+
+                val svc = serverContext.requirePlayerContext(playerId).services
+                svc.compound.updateBuilding(buildingId) {
+                    it.copy(tx = x, ty = y, rotation = r)
+                }
 
                 val responseJson = GlobalContext.json.encodeToString(
                     BuildingMoveResponse(
@@ -77,16 +107,24 @@ class BuildingSaveHandler : SaveSubHandler {
             }
 
             SaveDataMethod.BUILDING_UPGRADE -> {
-                val bldId = data["id"] ?: return
+                val bldId = data["id"] as String? ?: return
 
                 Logger.debug(LogConfigSocketToClient) { "'BUILDING_UPGRADE' message for $saveId and $bldId" }
 
+                lateinit var timer: TimerData
                 val svc = serverContext.requirePlayerContext(playerId).services
+                svc.compound.updateBuilding(bldId) { bld ->
+                    timer = TimerData.runForDuration(
+                        duration = 10.seconds,
+                        data = mapOf("level" to bld.level.toDouble())
+                    )
+                    bld.copy(upgrade = timer)
+                }
 
                 val response = BuildingUpgradeResponse(
                     success = true,
                     items = emptyMap(),
-                    timer = TimerData.runForDuration(10.seconds)
+                    timer = timer
                 )
 
                 val responseJson = GlobalContext.json.encodeToString(response)
@@ -94,11 +132,12 @@ class BuildingSaveHandler : SaveSubHandler {
             }
 
             SaveDataMethod.BUILDING_RECYCLE -> {
-                val bldId = data["id"] ?: return
+                val bldId = data["id"] as String? ?: return
 
                 Logger.debug(LogConfigSocketToClient) { "'BUILDING_RECYCLE' message for $saveId and $bldId" }
 
                 val svc = serverContext.requirePlayerContext(playerId).services
+                svc.compound.deleteBuilding(bldId)
 
                 val response = BuildingRecycleResponse(
                     success = true,
@@ -110,20 +149,31 @@ class BuildingSaveHandler : SaveSubHandler {
             }
 
             SaveDataMethod.BUILDING_COLLECT -> {
-                val bldId = data["id"] ?: return
+                val bldId = data["id"] as String? ?: return
 
                 Logger.debug(LogConfigSocketToClient) { "'BUILDING_COLLECT' message for $saveId and $bldId" }
 
                 val svc = serverContext.requirePlayerContext(playerId).services
+                val collectResult = svc.compound.collectBuilding(bldId)
+                val resType =
+                    requireNotNull(collectResult.getNonEmptyResTypeOrNull()) { "Unexpected null on getNonEmptyResTypeOrNull during collect resource" }
+                val resAmount =
+                    requireNotNull(collectResult.getNonEmptyResAmountOrNull()?.toDouble()) { "Unexpected null on getNonEmptyResAmountOrNull during collect resource" }
+
+                val currentResource = svc.compound.getResources()
+                val limit = 100.0 // this based on storage
+                val expectedResource = currentResource.wood + resAmount
+                val remainder = expectedResource - limit
+                val total = max(limit, expectedResource)
 
                 val response = BuildingCollectResponse(
                     success = true,
                     locked = false,
-                    resource = GameResourcesConstants_Constants.WOOD.value,
-                    collected = 100,
-                    remainder = 4,
-                    total = 100 - 4,
-                    bonus = 0,
+                    resource = resType,
+                    collected = resAmount,
+                    remainder = remainder, // - with current resource
+                    total = total, // + with current resource
+                    bonus = 0.0,
                     destroyed = false,
                 )
 
@@ -132,11 +182,12 @@ class BuildingSaveHandler : SaveSubHandler {
             }
 
             SaveDataMethod.BUILDING_CANCEL -> {
-                val bldId = data["id"] ?: return
+                val bldId = data["id"] as String? ?: return
 
                 Logger.debug(LogConfigSocketToClient) { "'BUILDING_CANCEL' message for $saveId and $bldId" }
 
                 val svc = serverContext.requirePlayerContext(playerId).services
+                svc.compound.cancelBuilding(bldId)
 
                 val response = BuildingCancelResponse(
                     success = true,
@@ -148,6 +199,7 @@ class BuildingSaveHandler : SaveSubHandler {
             }
 
             SaveDataMethod.BUILDING_SPEED_UP -> {
+                // TODO
                 val bldId = data["id"] ?: return
 
                 Logger.debug(LogConfigSocketToClient) { "'BUILDING_SPEED_UP' message for $saveId and $bldId" }
@@ -165,16 +217,21 @@ class BuildingSaveHandler : SaveSubHandler {
             }
 
             SaveDataMethod.BUILDING_REPAIR -> {
-                val bldId = data["id"] ?: return
+                val bldId = data["id"] as String? ?: return
 
                 Logger.debug(LogConfigSocketToClient) { "'BUILDING_REPAIR' message for $saveId and $bldId" }
 
+                val timer = TimerData.runForDuration(10.seconds)
+
                 val svc = serverContext.requirePlayerContext(playerId).services
+                svc.compound.updateBuilding(bldId) { bld ->
+                    bld.copy(repair = timer)
+                }
 
                 val response = BuildingRepairResponse(
                     success = true,
                     items = emptyMap(),
-                    timer = TimerData.runForDuration(10.seconds)
+                    timer = timer
                 )
 
                 val responseJson = GlobalContext.json.encodeToString(response)
@@ -182,6 +239,7 @@ class BuildingSaveHandler : SaveSubHandler {
             }
 
             SaveDataMethod.BUILDING_REPAIR_SPEED_UP -> {
+                // TODO
                 val bldId = data["id"] ?: return
 
                 Logger.debug(LogConfigSocketToClient) { "'BUILDING_REPAIR_SPEED_UP' message for $saveId and $bldId" }

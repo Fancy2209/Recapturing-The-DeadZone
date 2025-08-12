@@ -7,9 +7,9 @@ data class BuildingCollectResponse(
     val success: Boolean = true,
     val locked: Boolean,
     val resource: String, // point to GameResources constants
-    val collected: Int,
-    val remainder: Int,
-    val total: Int,
-    val bonus: Int, // some special bonus IDK
+    val collected: Double,
+    val remainder: Double,
+    val total: Double,
+    val bonus: Double, // some special bonus IDK
     val destroyed: Boolean = false
 )
