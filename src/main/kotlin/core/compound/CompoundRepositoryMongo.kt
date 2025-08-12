@@ -25,31 +25,30 @@ class CompoundRepositoryMongo(val objCollection: MongoCollection<PlayerObjects>)
     }
 
     override suspend fun updateGameResources(
-        playerId: String,
-        updateAction: suspend (GameResources) -> GameResources
+        playerId: String, newResources: GameResources
     ): Result<Unit> {
         return runMongoCatching {
             val filter = Filters.eq("playerId", playerId)
-            val playerObj = objCollection
-                .find(filter)
-                .firstOrNull()
-                ?: throw NoSuchElementException("No player found with id=$playerId")
+            val updateSet = Updates.set("resources", newResources)
 
-            val updatedResources = updateAction(playerObj.resources)
-            val updateSet = Updates.set("resources", updatedResources)
+            val result = objCollection.updateOne(filter, updateSet)
 
-            objCollection.updateOne(filter, updateSet)
+            if (result.matchedCount != 1L) {
+                throw NoSuchElementException("No player found with id=$playerId")
+            }
+
+            if (result.modifiedCount != 1L) {
+                throw NoSuchElementException("No game resource found for playerId=$playerId")
+            }
+
             Unit
         }
     }
 
-    override suspend fun createBuilding(
-        playerId: String,
-        createAction: suspend () -> BuildingLike
-    ): Result<Unit> {
+    override suspend fun createBuilding(playerId: String, newBuilding: BuildingLike): Result<Unit> {
         return runMongoCatching {
             val filter = Filters.eq("playerId", playerId)
-            val updateAdd = Updates.addToSet("buildings", createAction())
+            val updateAdd = Updates.addToSet("buildings", newBuilding)
 
             objCollection.updateOne(filter, updateAdd)
             Unit
@@ -69,35 +68,24 @@ class CompoundRepositoryMongo(val objCollection: MongoCollection<PlayerObjects>)
     override suspend fun updateBuilding(
         playerId: String,
         bldId: String,
-        updateAction: suspend (BuildingLike) -> BuildingLike
+        updatedBuilding: BuildingLike
     ): Result<Unit> {
         return runMongoCatching {
-            val filter = Filters.eq("playerId", playerId)
+            val filter = Filters.and(
+                Filters.eq("playerId", playerId),
+                Filters.eq("buildings.id", bldId)
+            )
+            val update = Updates.set("buildings.$", updatedBuilding)
+            val result = objCollection.updateOne(filter, update)
 
-            val playerObj = objCollection
-                .find(filter)
-                .firstOrNull()
-                ?: throw NoSuchElementException("No player found with id=$playerId")
-
-            val index = playerObj.buildings.indexOfFirst {
-                when (it) {
-                    is Building -> {
-                        it.id == bldId
-                    }
-
-                    is JunkBuilding -> {
-                        it.id == bldId
-                    }
-                }
+            if (result.matchedCount != 1L) {
+                throw NoSuchElementException("No player found with id=$playerId")
             }
-            if (index == -1) throw NoSuchElementException("Building for playerId=$playerId bldId=$bldId not found")
 
-            val currentBuilding = playerObj.buildings[index]
-            val updatedBuilding = updateAction(currentBuilding)
+            if (result.modifiedCount != 1L) {
+                throw NoSuchElementException("No building found for bldId=$bldId on playerId=$playerId")
+            }
 
-            val updateSet = Updates.set("buildings.$index", updatedBuilding)
-
-            objCollection.updateOne(filter, updateSet)
             Unit
         }
     }
@@ -116,6 +104,7 @@ class CompoundRepositoryMongo(val objCollection: MongoCollection<PlayerObjects>)
             if (updateResult.modifiedCount != 1L) {
                 throw NoSuchElementException("No building found for bldId=$bldId on playerId=$playerId")
             }
+
             Unit
         }
     }
