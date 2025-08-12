@@ -94,7 +94,7 @@ class BuildingSaveHandler : SaveSubHandler {
 
                 val svc = serverContext.requirePlayerContext(playerId).services
                 svc.compound.updateBuilding(buildingId) {
-                    it.copy(tx = x, ty = y, rotation = r)
+                    it.copy(id = buildingId, tx = x, ty = y, rotation = r)
                 }
 
                 val responseJson = GlobalContext.json.encodeToString(
@@ -118,7 +118,7 @@ class BuildingSaveHandler : SaveSubHandler {
                         duration = 10.seconds,
                         data = mapOf("level" to (bld.level + 1.0).toDouble())
                     )
-                    bld.copy(upgrade = timer)
+                    bld.copy(id = bldId, upgrade = timer)
                 }
 
                 val response = BuildingUpgradeResponse(
@@ -225,7 +225,7 @@ class BuildingSaveHandler : SaveSubHandler {
 
                 val svc = serverContext.requirePlayerContext(playerId).services
                 svc.compound.updateBuilding(bldId) { bld ->
-                    bld.copy(repair = timer)
+                    bld.copy(id = bldId, repair = timer)
                 }
 
                 val response = BuildingRepairResponse(

@@ -100,7 +100,7 @@ class CompoundService(private val compoundRepository: CompoundRepository) : Play
         updateBuilding(bldId) { oldBld ->
             // lookup to GameDefinitions, what does the building produce in 'prod' element
             prod = "wood"
-            oldBld.copy(resourceValue = 0.0)
+            oldBld.copy(id = oldBld.id,resourceValue = 0.0)
         }
 
         val res = when (prod) {
@@ -161,7 +161,7 @@ class CompoundService(private val compoundRepository: CompoundRepository) : Play
             for (bldLike in buildings) {
                 val lastUpdate = lastResourceValueUpdated[bldLike.id] ?: continue
                 updateBuilding(bldLike.id) { oldBld ->
-                    oldBld.copy(resourceValue = calculateResource((now - lastUpdate).seconds))
+                    oldBld.copy(id = oldBld.id, resourceValue = calculateResource((now - lastUpdate).seconds))
                 }
             }
         }
