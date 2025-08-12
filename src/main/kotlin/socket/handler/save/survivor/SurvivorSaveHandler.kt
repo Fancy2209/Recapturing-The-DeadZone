@@ -108,9 +108,8 @@ class SurvivorSaveHandler : SaveSubHandler {
 
                 svc.playerObjectMetadata.updatePlayerNickname(nickname = title)
 
-                svc.survivor.updateSurvivor(
-                    srvId = svc.survivor.survivorLeaderId,
-                    newSurvivor = svc.survivor.getSurvivorLeader().copy(
+                svc.survivor.updateSurvivor(srvId = svc.survivor.survivorLeaderId) {
+                    svc.survivor.getSurvivorLeader().copy(
                         title = title,
                         firstName = title.split(" ").firstOrNull() ?: "",
                         lastName = title.split(" ").getOrNull(1) ?: "",
@@ -118,7 +117,7 @@ class SurvivorSaveHandler : SaveSubHandler {
                         gender = gender,
                         appearance = appearance
                     )
-                )
+                }
 
                 val responseJson = GlobalContext.json.encodeToString(PlayerCustomResponse())
 
