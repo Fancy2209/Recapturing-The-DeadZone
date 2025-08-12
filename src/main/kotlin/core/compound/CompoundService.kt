@@ -1,52 +1,114 @@
 package dev.deadzone.core.compound
 
 import dev.deadzone.core.PlayerService
-import dev.deadzone.core.model.game.data.Building
-import dev.deadzone.core.model.game.data.BuildingLike
-import dev.deadzone.core.model.game.data.GameResources
-import dev.deadzone.core.model.game.data.JunkBuilding
-import dev.deadzone.core.model.game.data.Survivor
+import dev.deadzone.core.model.game.data.*
 import dev.deadzone.utils.LogConfigSocketError
 import dev.deadzone.utils.Logger
+import io.ktor.util.date.*
+import kotlin.random.Random
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 class CompoundService(private val compoundRepository: CompoundRepository) : PlayerService {
     private lateinit var resources: GameResources
     private val buildings = mutableListOf<BuildingLike>()
+    private val lastResourceValueUpdated = mutableMapOf<String, Long>()
     private lateinit var playerId: String
 
     fun getResources() = resources
     fun getBuildings() = buildings
 
-    suspend fun updateResources(newResources: GameResources) {
-        val result = compoundRepository.updateGameResources(playerId) { newResources }
+    suspend fun updateResources(updateAction: suspend (GameResources) -> GameResources) {
+        val update = updateAction(resources)
+        val result = compoundRepository.updateGameResources(playerId, update)
         result.onFailure {
             Logger.error(LogConfigSocketError) { "Error on updateResources: ${it.message}" }
         }
         result.onSuccess {
-            this.resources = newResources
+            this.resources = update
         }
     }
 
-    suspend fun updateBuilding(bldId: String, newBuilding: BuildingLike) {
-        val result = compoundRepository.updateBuilding(playerId, bldId) { newBuilding }
+    private fun getIndexOfBuilding(bldId: String): Int {
+        val idx = buildings.indexOfFirst { it.id == bldId }
+        if (idx == -1) throw NoSuchElementException("Building bldId=$bldId not found for playerId=$playerId")
+        return idx
+    }
+
+    suspend fun updateBuilding(
+        bldId: String,
+        updateAction: suspend (BuildingLike) -> BuildingLike
+    ) {
+        val idx = getIndexOfBuilding(bldId)
+        val update = updateAction(buildings[idx])
+        val result = compoundRepository.updateBuilding(playerId, bldId, update)
         result.onFailure {
             Logger.error(LogConfigSocketError) { "Error on updateBuilding: ${it.message}" }
         }
         result.onSuccess {
-            this.buildings.forEachIndexed { idx, bldLike ->
-                when (bldLike) {
-                    is Building -> {
-                        if (bldLike.id == bldId) {
-                            buildings[idx] = newBuilding
-                        }
-                    }
-                    is JunkBuilding -> {
-                        if (bldLike.id == bldId) {
-                            buildings[idx] = newBuilding
-                        }
-                    }
-                }
-            }
+            buildings[idx] = update
+        }
+    }
+
+    suspend fun createBuilding(createAction: suspend () -> (BuildingLike)) {
+        val create = createAction()
+        val result = compoundRepository.createBuilding(playerId, create)
+        result.onFailure {
+            Logger.error(LogConfigSocketError) { "Error on createBuilding: ${it.message}" }
+        }
+        result.onSuccess {
+            this.buildings.add(create)
+        }
+    }
+
+    // probably means canceling build, hence deleting the ongoing createBuiding
+    suspend fun cancelBuilding(bldId: String) {
+        val result = compoundRepository.deleteBuilding(playerId, bldId)
+        result.onFailure {
+            Logger.error(LogConfigSocketError) { "Error on cancelBuilding: ${it.message}" }
+        }
+        result.onSuccess {
+            buildings.removeIf { it.id == bldId }
+        }
+    }
+
+    suspend fun collectBuilding(bldId: String): Double {
+        val lastUpdate = lastResourceValueUpdated[bldId]
+            ?: throw NoSuchElementException("Building bldId=$bldId is not categorized as production buildings")
+
+        val collectedAmount = calculateResource(lastUpdate.seconds)
+        lastResourceValueUpdated[bldId] = getTimeMillis()
+
+        // updateBuilding already do necessary result catch and update the in-memory buildings
+        updateBuilding(bldId) { oldBld ->
+            oldBld.copy(resourceValue = 0.0)
+        }
+
+        return collectedAmount
+    }
+
+    fun calculateResource(durationSec: Duration): Double {
+        return Random.nextDouble(1.0, 10.0)
+    }
+
+    suspend fun repairBuilding(bldId: String) {
+        // TODO
+        updateBuilding(bldId) { oldBld ->
+            oldBld.copy()
+        }
+    }
+
+    suspend fun speedUpBuilding(bldId: String) {
+        // TODO
+        updateBuilding(bldId) { oldBld ->
+            oldBld.copy()
+        }
+    }
+
+    suspend fun upgradeBuilding(bldId: String) {
+        // TODO
+        updateBuilding(bldId) { oldBld ->
+            oldBld.copy()
         }
     }
 
@@ -57,6 +119,31 @@ class CompoundService(private val compoundRepository: CompoundRepository) : Play
             val _buildings = compoundRepository.getBuildings(playerId).getOrThrow()
             resources = _resources
             buildings.addAll(_buildings)
+
+            val now = getTimeMillis()
+
+            for (bldLike in buildings) {
+                if (isProductionBuilding(bldLike.type)) {
+                    lastResourceValueUpdated[bldLike.id] = now
+                }
+            }
+        }
+    }
+
+    private fun isProductionBuilding(idInXML: String): Boolean {
+        return idInXML.contains("resource")
+    }
+
+    override suspend fun close(playerId: String): Result<Unit> {
+        return runCatching {
+            val now = getTimeMillis()
+
+            for (bldLike in buildings) {
+                val lastUpdate = lastResourceValueUpdated[bldLike.id] ?: continue
+                updateBuilding(bldLike.id) { oldBld ->
+                    oldBld.copy(resourceValue = calculateResource((now - lastUpdate).seconds))
+                }
+            }
         }
     }
 }

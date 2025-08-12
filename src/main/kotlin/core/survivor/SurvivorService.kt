@@ -74,4 +74,8 @@ class SurvivorService(
             survivors.addAll(_survivors)
         }
     }
+
+    override suspend fun close(playerId: String): Result<Unit> {
+        return Result.success(Unit)
+    }
 }

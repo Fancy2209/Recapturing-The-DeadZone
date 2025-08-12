@@ -27,4 +27,24 @@ interface PlayerService {
      * @return An empty result just for denoting success or failure.
      */
     suspend fun init(playerId: String): Result<Unit>
+
+    /**
+     * Closes the service for the specified [playerId].
+     *
+     * This method is called when the player logs off or disconnects.
+     * It should synchronize any in-memory state with persistent storage
+     * to ensure no progress or transient data is lost.
+     *
+     * For example, [CompoundService] maintains additional timing data to enable lazy
+     * calculation of building resource production without storing additional time data
+     * in the DB and doing more query. This also avoid the need of server running
+     * an increment resource task on each production building.
+     *
+     * However, without a server-initiated task, the DB wouldn't keep the latest data at all time.
+     * The `close` method would update fields such as `resourceValue` on production buildings,
+     * to reflect the final accumulated resources since the last time resources was collected.
+     *
+     * @return An empty result just for denoting success or failure.
+     */
+    suspend fun close(playerId: String): Result<Unit>
 }

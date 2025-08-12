@@ -49,4 +49,8 @@ class PlayerObjectsMetadataService(
             }
         }
     }
+
+    override suspend fun close(playerId: String): Result<Unit> {
+        return Result.success(Unit)
+    }
 }
