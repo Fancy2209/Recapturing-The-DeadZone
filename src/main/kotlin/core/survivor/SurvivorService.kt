@@ -26,40 +26,23 @@ class SurvivorService(
         return survivors
     }
 
-    fun getSurvivorById(srvId: String?): Survivor {
-        return survivors.find { it.id == srvId }
-            ?: throw NoSuchElementException("Couldn't find survivor of id=$srvId for player=$playerId")
+    fun getIndexOfSurvivor(srvId: String?): Int {
+        val idx = survivors.indexOfFirst { it.id == srvId }
+        if (idx == -1) throw NoSuchElementException("Couldn't find survivor of id=$srvId for player=$playerId")
+        return idx
     }
 
-    suspend fun saveSurvivorAppearance(srvId: String, newAppearance: HumanAppearance) {
-        var newSurvivor: Survivor? = null
-        val result = survivorRepository.updateSurvivor(playerId, srvId) { srv ->
-            newSurvivor = srv.copy(appearance = newAppearance)
-            newSurvivor
-        }
-        result.onFailure {
-            Logger.error(LogConfigSocketError) { "Error on saveSurvivorAppearance: ${it.message}" }
-        }
-        result.onSuccess {
-            newSurvivor?.let {
-                this.survivors.forEachIndexed { idx, srv ->
-                    if (srv.id == srvId) {
-                        survivors[idx] = newSurvivor
-                    }
-                }
-            }
-        }
-    }
-
-    suspend fun updateSurvivor(srvId: String, newSurvivor: Survivor) {
-        val result = survivorRepository.updateSurvivor(playerId, srvId) { newSurvivor }
+    suspend fun updateSurvivor(
+        srvId: String, updateAction: suspend (Survivor) -> Survivor
+    ) {
+        val idx = getIndexOfSurvivor(srvId)!!
+        val update = updateAction(survivors[idx])
+        val result = survivorRepository.updateSurvivor(playerId, srvId, update)
         result.onFailure {
             Logger.error(LogConfigSocketToClient) { "Error on updateSurvivor: ${it.message}" }
         }
         result.onSuccess {
-            if (survivors.removeIf { it.id == srvId }) {
-                survivors.add(newSurvivor)
-            }
+            survivors[idx] = update
         }
     }
 

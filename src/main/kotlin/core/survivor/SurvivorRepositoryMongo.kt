@@ -24,24 +24,24 @@ class SurvivorRepositoryMongo(val objCollection: MongoCollection<PlayerObjects>)
     override suspend fun updateSurvivor(
         playerId: String,
         srvId: String,
-        updateAction: suspend (Survivor) -> Survivor
+        updatedSurvivor: Survivor
     ): Result<Unit> {
         return runMongoCatching {
-            val playerObj = objCollection
-                .find(Filters.eq("playerId", playerId))
-                .firstOrNull()
-                ?: throw NoSuchElementException("No player found with id=$playerId")
+            val filter = Filters.and(
+                Filters.eq("playerId", playerId),
+                Filters.eq("survivors.id", srvId)
+            )
+            val update = Updates.set("survivors.$", updatedSurvivor)
+            val result = objCollection.updateOne(filter, update)
 
-            val index = playerObj.survivors.indexOfFirst { it.id == srvId }
-            if (index == -1) throw NoSuchElementException("Survivor for playerId=$playerId srvId=$srvId not found")
+            if (result.matchedCount != 1L) {
+                throw NoSuchElementException("No player found with id=$playerId")
+            }
 
-            val currentSurvivor = playerObj.survivors[index]
-            val updatedSurvivor = updateAction(currentSurvivor)
+            if (result.modifiedCount != 1L) {
+                throw NoSuchElementException("Survivor for playerId=$playerId srvId=$srvId not found")
+            }
 
-            val path = "survivors.$index"
-            val update = Updates.set(path, updatedSurvivor)
-
-            objCollection.updateOne(Filters.eq("playerId", playerId), update)
             Unit
         }
     }
