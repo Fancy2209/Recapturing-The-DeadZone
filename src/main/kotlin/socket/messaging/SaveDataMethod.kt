@@ -122,7 +122,8 @@ object SaveDataMethod {
         MISSION_TRIGGER,
         MISSION_ELITE_SPAWNED,
         MISSION_ELITE_KILLED,
-        STAT_DATA
+        STAT_DATA,
+        STAT
     )
 
     // -------------------- SURVIVOR --------------------

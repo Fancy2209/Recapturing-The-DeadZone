@@ -203,6 +203,12 @@ class MissionSaveHandler : SaveSubHandler {
                 Logger.debug(logFull = true) { data["stats"].toString() }
                 Logger.warn(LogConfigSocketToClient) { "Received 'STAT_DATA' message on MissionSaveHandler [not implemented] with stats: $stats" }
             }
+
+            SaveDataMethod.STAT -> {
+                val stats = data["stats"]
+                Logger.debug(logFull = true) { data["stats"].toString() }
+                Logger.warn(LogConfigSocketToClient) { "Received 'STAT_DATA' message on MissionSaveHandler [not implemented] with stats: $stats" }
+            }
         }
     }
 }
