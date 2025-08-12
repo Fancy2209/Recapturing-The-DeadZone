@@ -2,7 +2,7 @@ package dev.deadzone.core.model.game.data
 
 import kotlinx.serialization.Serializable
 import dev.deadzone.core.items.model.Item
-import java.util.UUID
+import java.util.*
 
 @Serializable
 data class JunkBuilding(

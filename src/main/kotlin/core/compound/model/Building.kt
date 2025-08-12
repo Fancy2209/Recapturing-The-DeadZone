@@ -1,5 +1,6 @@
 package dev.deadzone.core.model.game.data
 
+import dev.deadzone.core.items.model.Item
 import dev.deadzone.utils.LogConfigSocketToClient
 import dev.deadzone.utils.Logger
 import kotlinx.serialization.DeserializationStrategy
@@ -13,6 +14,60 @@ import java.util.*
 @Serializable(with = BuildingLikeSerializer::class)
 @JsonClassDiscriminator("_t")
 sealed class BuildingLike
+
+val BuildingLike.id: String
+    get() = when (this) {
+        is Building -> this.id
+        is JunkBuilding -> this.id
+    }
+
+fun BuildingLike.copy(
+    id: String = this.id,
+    name: String? = null,
+    type: String? = null,
+    level: Int = 0,
+    rotation: Int? = null,
+    tx: Int? = null,
+    ty: Int? = null,
+    destroyed: Boolean = false,
+    resourceValue: Double = 0.0,
+    upgrade: TimerData? = null,
+    repair: TimerData? = null,
+    items: List<Item> = emptyList(),
+    pos: String? = null,
+    rot: String? = null
+): BuildingLike = when (this) {
+    is Building -> this.copy(
+        id = id,
+        name = name,
+        type = type,
+        level = level,
+        rotation = rotation,
+        tx = tx,
+        ty = ty,
+        destroyed = destroyed,
+        resourceValue = resourceValue,
+        upgrade = upgrade,
+        repair = repair
+    )
+
+    is JunkBuilding -> this.copy(
+        id = id,
+        name = name,
+        type = type,
+        level = level,
+        rotation = rotation,
+        tx = tx,
+        ty = ty,
+        destroyed = destroyed,
+        resourceValue = resourceValue,
+        upgrade = upgrade,
+        repair = repair,
+        items = items,
+        pos = pos,
+        rot = rot
+    )
+}
 
 @Serializable
 data class Building(
