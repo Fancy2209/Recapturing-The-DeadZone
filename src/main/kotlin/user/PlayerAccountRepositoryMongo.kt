@@ -2,6 +2,7 @@ package dev.deadzone.user
 
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Projections
+import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.toxicbakery.bcrypt.Bcrypt
 import dev.deadzone.core.auth.model.UserProfile
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import org.bson.Document
 import kotlin.io.encoding.Base64
 
+// TODO refactor with return result type and runMongoCatching
 class PlayerAccountRepositoryMongo(val userCollection: MongoCollection<PlayerAccount>) : PlayerAccountRepository {
     override suspend fun doesUserExist(username: String): Boolean {
         return userCollection
@@ -47,6 +49,20 @@ class PlayerAccountRepositoryMongo(val userCollection: MongoCollection<PlayerAcc
             val jsonString = it.toJson()
             GlobalContext.json.decodeFromString<UserProfile>(jsonString)
         }
+    }
+
+    override suspend fun updatePlayerAccount(
+        playerId: String,
+        account: PlayerAccount
+    ) {
+        userCollection.replaceOne(Filters.eq("playerId", playerId), account)
+    }
+
+    override suspend fun updateLastLogin(playerId: String, lastLogin: Long) {
+        userCollection.updateOne(
+            Filters.eq("playerId", playerId),
+            Updates.set("profile.lastLogin", lastLogin)
+        )
     }
 
     override suspend fun verifyCredentials(username: String, password: String): String? {

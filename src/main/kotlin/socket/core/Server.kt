@@ -13,6 +13,7 @@ import dev.deadzone.socket.tasks.TaskController
 import dev.deadzone.utils.Logger
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
+import io.ktor.util.date.getTimeMillis
 import io.ktor.utils.io.*
 import kotlinx.coroutines.*
 import java.util.*
@@ -26,7 +27,7 @@ class Server(
     private val port: Int = SOCKET_SERVER_PORT,
     private val context: ServerContext,
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-): TaskController {
+) : TaskController {
     private val socketDispatcher = SocketMessageDispatcher()
     private val taskDispatcher = ServerPushTaskDispatcher()
 
@@ -113,10 +114,12 @@ class Server(
             } catch (e: Exception) {
                 Logger.error { "Error in socket for ${connection.socket.remoteAddress}: $e" }
                 context.onlinePlayerRegistry.markOffline(connection.playerId)
+                context.playerAccountRepository.updateLastLogin(connection.playerId, getTimeMillis())
                 context.playerContextTracker.removePlayer(connection.playerId)
             } finally {
                 Logger.info { "Client ${connection.socket.remoteAddress} disconnected" }
                 context.onlinePlayerRegistry.markOffline(connection.playerId)
+                context.playerAccountRepository.updateLastLogin(connection.playerId, getTimeMillis())
                 context.playerContextTracker.removePlayer(connection.playerId)
                 taskDispatcher.stopAllPushTasks()
                 pushJob.cancelAndJoin()

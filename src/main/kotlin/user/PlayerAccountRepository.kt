@@ -14,6 +14,10 @@ interface PlayerAccountRepository {
 
     suspend fun getProfileOfPlayerId(playerId: String): UserProfile?
 
+    suspend fun updatePlayerAccount(playerId: String, account: PlayerAccount)
+
+    suspend fun updateLastLogin(playerId: String, lastLogin: Long)
+
     /**
      * Verify credentials of the given username and password
      *
