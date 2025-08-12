@@ -4,6 +4,7 @@ import com.mongodb.client.model.DeleteOneModel
 import com.mongodb.client.model.DeleteOptions
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Indexes
+import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import com.toxicbakery.bcrypt.Bcrypt
 import dev.deadzone.core.auth.model.ServerMetadata
@@ -86,6 +87,15 @@ class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : Big
 
     override suspend fun loadInventory(playerId: String): Inventory? {
         return inventoryCollection.find(Filters.eq("playerId", playerId)).firstOrNull()
+    }
+
+    override suspend fun <T> updatePlayerObjectsField(
+        playerId: String, path: String, value: T
+    ) {
+        val filter = Filters.eq("playerId", playerId)
+        val update = Updates.set(path, value)
+        objCollection.updateOne(filter, update)
+        Result.success(Unit)
     }
 
     @Suppress("UNCHECKED_CAST")
