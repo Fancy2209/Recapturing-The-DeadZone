@@ -114,11 +114,11 @@ class Server(
                 Logger.error { "Error in socket for ${connection.socket.remoteAddress}: $e" }
                 context.onlinePlayerRegistry.markOffline(connection.playerId)
                 context.playerContextTracker.removePlayer(connection.playerId)
-                pushJob.cancelAndJoin()
             } finally {
                 Logger.info { "Client ${connection.socket.remoteAddress} disconnected" }
                 context.onlinePlayerRegistry.markOffline(connection.playerId)
                 context.playerContextTracker.removePlayer(connection.playerId)
+                taskDispatcher.stopAllPushTasks()
                 pushJob.cancelAndJoin()
                 connection.socket.close()
             }
