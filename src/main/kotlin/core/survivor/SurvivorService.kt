@@ -34,16 +34,18 @@ class SurvivorService(
     suspend fun saveSurvivorAppearance(srvId: String, newAppearance: HumanAppearance) {
         var newSurvivor: Survivor? = null
         val result = survivorRepository.updateSurvivor(playerId, srvId) { srv ->
-            newSurvivor = srv
-            srv.copy(appearance = newAppearance)
+            newSurvivor = srv.copy(appearance = newAppearance)
+            newSurvivor
         }
         result.onFailure {
             Logger.error(LogConfigSocketError) { "Error on saveSurvivorAppearance: ${it.message}" }
         }
         result.onSuccess {
             newSurvivor?.let {
-                if (survivors.removeIf { it.id == srvId }) {
-                    survivors.add(newSurvivor)
+                this.survivors.forEachIndexed { idx, srv ->
+                    if (srv.id == srvId) {
+                        survivors[idx] = newSurvivor
+                    }
                 }
             }
         }
