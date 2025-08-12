@@ -33,6 +33,7 @@ class Server(
     init {
         with(context) {
             socketDispatcher.register(JoinHandler(this))
+            socketDispatcher.register(AuthHandler())
             socketDispatcher.register(QuestProgressHandler(this))
             socketDispatcher.register(InitCompleteHandler(this, this@Server))
             socketDispatcher.register(SaveHandler(this))
