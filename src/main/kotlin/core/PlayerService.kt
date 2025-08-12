@@ -13,6 +13,8 @@ package dev.deadzone.core
  * low-level database work. Each repository is preferred to be wrapped in try-catch
  * and always return a Result<T> type. This is to ensure consistency on error handling across repository.
  *
+ * Repository may define CRUD operations only, letting the service define the more complex operations.
+ *
  * See examples: [SurvivorService]
  */
 interface PlayerService {
