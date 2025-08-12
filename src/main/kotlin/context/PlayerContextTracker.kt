@@ -110,6 +110,9 @@ class PlayerContextTracker {
     }
 
     fun shutdown() {
+        players.values.forEach {
+            it.connection.socket.close()
+        }
         players.clear()
     }
 }
