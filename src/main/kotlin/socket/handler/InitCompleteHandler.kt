@@ -31,12 +31,12 @@ class InitCompleteHandler(private val serverContext: ServerContext) :
         // When game init is completed, mark player as active
         serverContext.onlinePlayerRegistry.markOnline(connection.playerId)
 
-        // periodically send time update to client
-        serverContext.taskDispatcher.runTask(NetworkMessage.TIME_UPDATE) {
-            it // use default as time update is static task
-        }
-        serverContext.taskDispatcher.addCompletionListener(NetworkMessage.TIME_UPDATE) {
-            Logger.debug(LogSource.SOCKET) { "tu completed from ic" }
-        }
+        // send serverTime to client (required)
+        serverContext.taskDispatcher.runTask(
+            connection = connection,
+            taskKey = NetworkMessage.TIME_UPDATE,
+            cfgBuilder = { null },
+            onComplete = {}
+        )
     }
 }

@@ -44,7 +44,7 @@ class SaveHandler(private val serverContext: ServerContext) : SocketMessageHandl
             if (type in saveHandler.supportedTypes) {
                 match = true
                 // further string matching on the type on each handler
-                saveHandler.handle(type, saveId, data, pid, send, serverContext)
+                saveHandler.handle(connection, type, saveId, data, send, serverContext)
             }
         }
 

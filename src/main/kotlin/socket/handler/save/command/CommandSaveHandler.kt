@@ -5,6 +5,7 @@ import dev.deadzone.context.ServerContext
 import dev.deadzone.core.items.model.CrateItem
 import dev.deadzone.core.items.model.Item
 import dev.deadzone.core.items.model.SchematicItem
+import dev.deadzone.socket.core.Connection
 import dev.deadzone.socket.handler.buildMsg
 import dev.deadzone.socket.handler.save.SaveSubHandler
 import dev.deadzone.socket.messaging.CommandMessage
@@ -17,10 +18,10 @@ class CommandSaveHandler : SaveSubHandler {
     override val supportedTypes: Set<String> = CommandMessage.COMMAND_SAVES
 
     override suspend fun handle(
+        connection: Connection,
         type: String,
         saveId: String,
         data: Map<String, Any?>,
-        playerId: String,
         send: suspend (ByteArray) -> Unit,
         serverContext: ServerContext
     ) {

@@ -5,6 +5,7 @@ import dev.deadzone.context.ServerContext
 import dev.deadzone.context.requirePlayerContext
 import dev.deadzone.core.model.data.PlayerFlags
 import dev.deadzone.core.model.game.data.HumanAppearance
+import dev.deadzone.socket.core.Connection
 import dev.deadzone.socket.handler.buildMsg
 import dev.deadzone.socket.handler.save.SaveSubHandler
 import dev.deadzone.socket.handler.save.survivor.response.PlayerCustomResponse
@@ -17,13 +18,15 @@ class SurvivorSaveHandler : SaveSubHandler {
     override val supportedTypes: Set<String> = SaveDataMethod.SURVIVOR_SAVES
 
     override suspend fun handle(
+        connection: Connection,
         type: String,
         saveId: String,
         data: Map<String, Any?>,
-        playerId: String,
         send: suspend (ByteArray) -> Unit,
         serverContext: ServerContext
     ) {
+        val playerId = connection.playerId
+
         when (type) {
             SaveDataMethod.SURVIVOR_CLASS -> {
                 Logger.warn(LogConfigSocketToClient) { "Received 'SURVIVOR_CLASS' message [not implemented]" }

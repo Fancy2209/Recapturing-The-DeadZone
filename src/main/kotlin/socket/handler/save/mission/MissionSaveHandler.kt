@@ -7,6 +7,7 @@ import dev.deadzone.core.mission.LootService
 import dev.deadzone.core.mission.model.LootParameter
 import dev.deadzone.core.model.game.data.ZombieData
 import dev.deadzone.core.model.game.data.toFlatList
+import dev.deadzone.socket.core.Connection
 import dev.deadzone.socket.handler.buildMsg
 import dev.deadzone.socket.handler.save.SaveSubHandler
 import dev.deadzone.socket.handler.save.mission.response.*
@@ -20,13 +21,14 @@ class MissionSaveHandler : SaveSubHandler {
     override val supportedTypes: Set<String> = SaveDataMethod.MISSION_SAVES
 
     override suspend fun handle(
+        connection: Connection,
         type: String,
         saveId: String,
         data: Map<String, Any?>,
-        playerId: String,
         send: suspend (ByteArray) -> Unit,
         serverContext: ServerContext
     ) {
+        val playerId = connection.playerId
         when (type) {
             SaveDataMethod.MISSION_START -> {
                 // IMPORTANT NOTE: the scene that involves human model is not working now (e.g., raid island human)

@@ -3,12 +3,12 @@ package dev.deadzone.socket.tasks.impl
 import dev.deadzone.context.ServerContext
 import dev.deadzone.socket.core.Connection
 import dev.deadzone.socket.messaging.NetworkMessage
-import dev.deadzone.socket.tasks.ServerPushTask
+import dev.deadzone.socket.tasks.ServerTask
 import dev.deadzone.socket.tasks.TaskConfig
 import dev.deadzone.socket.tasks.TaskScheduler
 import kotlin.time.Duration.Companion.seconds
 
-class BuildingCompleteTask(serverContext: ServerContext) : ServerPushTask {
+class BuildingCompleteTask(serverContext: ServerContext) : ServerTask {
     override val key: String
         get() = NetworkMessage.BUILDING_COMPLETE
 

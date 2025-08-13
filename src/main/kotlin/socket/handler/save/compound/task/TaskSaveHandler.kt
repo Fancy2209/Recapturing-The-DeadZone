@@ -1,6 +1,7 @@
 package dev.deadzone.socket.handler.save.compound.task
 
 import dev.deadzone.context.ServerContext
+import dev.deadzone.socket.core.Connection
 import dev.deadzone.socket.handler.save.SaveSubHandler
 import dev.deadzone.socket.messaging.SaveDataMethod
 import dev.deadzone.utils.LogConfigSocketToClient
@@ -10,10 +11,10 @@ class TaskSaveHandler : SaveSubHandler {
     override val supportedTypes: Set<String> = SaveDataMethod.COMPOUND_TASK_SAVES
 
     override suspend fun handle(
+        connection: Connection,
         type: String,
         saveId: String,
         data: Map<String, Any?>,
-        playerId: String,
         send: suspend (ByteArray) -> Unit,
         serverContext: ServerContext
     ) {

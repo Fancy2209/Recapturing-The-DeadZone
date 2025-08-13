@@ -4,6 +4,7 @@ import dev.deadzone.context.GlobalContext
 import dev.deadzone.context.ServerContext
 import dev.deadzone.context.requirePlayerContext
 import dev.deadzone.core.model.game.data.*
+import dev.deadzone.socket.core.Connection
 import dev.deadzone.socket.handler.buildMsg
 import dev.deadzone.socket.handler.save.SaveSubHandler
 import dev.deadzone.socket.handler.save.compound.building.response.*
@@ -33,10 +34,10 @@ class BuildingSaveHandler : SaveSubHandler {
     override val supportedTypes: Set<String> = SaveDataMethod.COMPOUND_BUILDING_SAVES
 
     override suspend fun handle(
+        connection: Connection,
         type: String,
         saveId: String,
         data: Map<String, Any?>,
-        playerId: String,
         send: suspend (ByteArray) -> Unit,
         serverContext: ServerContext
     ) {
@@ -85,6 +86,16 @@ class BuildingSaveHandler : SaveSubHandler {
 
                 val responseJson = GlobalContext.json.encodeToString(response)
                 send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
+
+
+                serverContext.requirePlayerContext(playerId)
+
+                serverContext.taskDispatcher.runTask(
+                    connection = ,
+                    taskKey = NetworkMessage.TIME_UPDATE,
+                    cfgBuilder = { null },
+                    onComplete = {}
+                )
 
                 serverContext.taskDispatcher.runTask(NetworkMessage.BUILDING_COMPLETE) {
                     it.copy(
