@@ -13,6 +13,7 @@ import dev.deadzone.socket.protocol.PIOSerializer
 import dev.deadzone.utils.LogConfigSocketToClient
 import dev.deadzone.utils.Logger
 import kotlin.math.max
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -50,8 +51,10 @@ class BuildingSaveHandler : SaveSubHandler {
 
                 Logger.debug(LogConfigSocketToClient) { "'BUILDING_CREATE' message for $saveId and $bldId,$bldType to tx=$x, ty=$y, rotation=$r" }
 
+                val buildDuration = 4.seconds
+
                 val timer = TimerData.runForDuration(
-                    duration = 4.seconds,
+                    duration = buildDuration,
                     data = mapOf("level" to 0)
                 )
 
@@ -82,6 +85,13 @@ class BuildingSaveHandler : SaveSubHandler {
 
                 val responseJson = GlobalContext.json.encodeToString(response)
                 send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
+
+                serverContext.taskDispatcher.runTask(NetworkMessage.TASK_COMPLETE) {
+                    it.copy(
+                        initialRunDelay = buildDuration,
+                        extra = mapOf("taskId" to bldId)
+                    )
+                }
             }
 
             SaveDataMethod.BUILDING_MOVE -> {
@@ -158,7 +168,9 @@ class BuildingSaveHandler : SaveSubHandler {
                 val resType =
                     requireNotNull(collectResult.getNonEmptyResTypeOrNull()) { "Unexpected null on getNonEmptyResTypeOrNull during collect resource" }
                 val resAmount =
-                    requireNotNull(collectResult.getNonEmptyResAmountOrNull()?.toDouble()) { "Unexpected null on getNonEmptyResAmountOrNull during collect resource" }
+                    requireNotNull(
+                        collectResult.getNonEmptyResAmountOrNull()?.toDouble()
+                    ) { "Unexpected null on getNonEmptyResAmountOrNull during collect resource" }
 
                 val currentResource = svc.compound.getResources()
                 val limit = 100.0 // this based on storage
