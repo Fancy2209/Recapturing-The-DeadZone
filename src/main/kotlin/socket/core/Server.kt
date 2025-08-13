@@ -7,8 +7,7 @@ import dev.deadzone.socket.handler.*
 import dev.deadzone.socket.messaging.SocketMessage
 import dev.deadzone.socket.messaging.SocketMessageDispatcher
 import dev.deadzone.socket.protocol.PIODeserializer
-import dev.deadzone.socket.tasks.ServerPushTaskDispatcher
-import dev.deadzone.socket.tasks.impl.BuildingUpgradeTask
+import dev.deadzone.socket.tasks.impl.BuildingCompleteTask
 import dev.deadzone.socket.tasks.impl.TimeUpdateTask
 import dev.deadzone.utils.Logger
 import dev.deadzone.utils.UUID
@@ -17,7 +16,6 @@ import io.ktor.network.sockets.*
 import io.ktor.util.date.*
 import io.ktor.utils.io.*
 import kotlinx.coroutines.*
-import java.util.*
 
 const val POLICY_FILE_REQUEST = "<policy-file-request/>"
 const val POLICY_FILE_RESPONSE =
@@ -40,7 +38,7 @@ class Server(
             socketDispatcher.register(SaveHandler(this))
             socketDispatcher.register(ZombieAttackHandler(this))
             context.taskDispatcher.register(TimeUpdateTask(this))
-            context.taskDispatcher.register(BuildingUpgradeTask(this))
+            context.taskDispatcher.register(BuildingCompleteTask(this))
         }
     }
 
