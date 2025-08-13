@@ -206,7 +206,7 @@ data class PlayerObjects(
                 bountyCap = 0,
                 lastLogout = null,
                 dzBounty = null,
-                nextDZBountyIssue = 1230768000000,
+                nextDZBountyIssue = 1765074185294,
                 highActivity = null,
                 notifications = null,
             )

@@ -10,6 +10,7 @@ import dev.deadzone.socket.messaging.SocketMessage
 import dev.deadzone.socket.messaging.SocketMessageHandler
 import dev.deadzone.socket.protocol.PIOSerializer
 import dev.deadzone.utils.Logger
+import dev.deadzone.utils.Time
 import io.ktor.util.date.*
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -51,7 +52,7 @@ class JoinHandler(private val serverContext: ServerContext) : SocketMessageHandl
         // Second message: game ready message
         val gameReadyMsg = listOf(
             NetworkMessage.GAME_READY,
-            getTimeMillis(),
+            Time.now(),
             produceBinaries(),
             loadRawFile("static/data/cost_table.json"),
             loadRawFile("static/data/srv_table.json"),
