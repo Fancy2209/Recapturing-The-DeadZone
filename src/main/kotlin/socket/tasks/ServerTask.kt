@@ -10,9 +10,9 @@ import dev.deadzone.socket.core.Connection
  */
 interface ServerTask {
     /**
-     * Identifier for the task.
+     * List of valid identifier for the task, usually NetworkMessage.
      */
-    val key: String
+    val key: Set<String>
 
     /**
      * Default config for the task.

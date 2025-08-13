@@ -16,11 +16,12 @@ import kotlin.time.Duration.Companion.seconds
  * The game registers callback for such message, though not sure how frequent should we send the message.
  */
 class TimeUpdateTask(serverContext: ServerContext) : ServerTask {
-    override val key: String
-        get() = NetworkMessage.TIME_UPDATE
+    override val key: Set<String>
+        get() = setOf(NetworkMessage.TIME_UPDATE)
 
     override val config: TaskConfig
         get() = TaskConfig(
+            key = NetworkMessage.TIME_UPDATE,
             initialRunDelay = 1.seconds,
             repeatDelay = 1000.milliseconds,
             extra = emptyMap(),
@@ -30,6 +31,6 @@ class TimeUpdateTask(serverContext: ServerContext) : ServerTask {
         get() = null
 
     override suspend fun run(connection: Connection, finalConfig: TaskConfig) {
-        connection.sendMessage(key, Time.now())
+        connection.sendMessage(finalConfig.key, Time.now())
     }
 }

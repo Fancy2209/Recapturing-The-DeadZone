@@ -8,12 +8,13 @@ import dev.deadzone.socket.tasks.TaskConfig
 import dev.deadzone.socket.tasks.TaskScheduler
 import kotlin.time.Duration.Companion.seconds
 
-class BuildingCompleteTask(serverContext: ServerContext) : ServerTask {
-    override val key: String
-        get() = NetworkMessage.BUILDING_COMPLETE
+class BuildingTask(serverContext: ServerContext) : ServerTask {
+    override val key: Set<String>
+        get() = setOf(NetworkMessage.BUILDING_COMPLETE, NetworkMessage.BUILDING_REPAIR_COMPLETE)
 
     override val config: TaskConfig
         get() = TaskConfig(
+            key = NetworkMessage.BUILDING_COMPLETE,
             // each building task should have initial run delay, which is when building upgrade is finished
             initialRunDelay = 0.seconds,
             repeatDelay = null,
@@ -26,6 +27,6 @@ class BuildingCompleteTask(serverContext: ServerContext) : ServerTask {
     override suspend fun run(connection: Connection, finalConfig: TaskConfig) {
         val customMessage = finalConfig.extra["msg"] as? List<*> ?: emptyList<Any?>()
         val nonnull = customMessage.filterNotNull().toTypedArray()
-        connection.sendMessage(key, *nonnull)
+        connection.sendMessage(finalConfig.key, *nonnull)
     }
 }

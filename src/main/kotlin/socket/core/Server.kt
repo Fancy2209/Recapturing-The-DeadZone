@@ -7,7 +7,7 @@ import dev.deadzone.socket.handler.*
 import dev.deadzone.socket.messaging.SocketMessage
 import dev.deadzone.socket.messaging.SocketMessageDispatcher
 import dev.deadzone.socket.protocol.PIODeserializer
-import dev.deadzone.socket.tasks.impl.BuildingCompleteTask
+import dev.deadzone.socket.tasks.impl.BuildingTask
 import dev.deadzone.socket.tasks.impl.TimeUpdateTask
 import dev.deadzone.utils.Logger
 import dev.deadzone.utils.UUID
@@ -39,7 +39,7 @@ class Server(
             socketDispatcher.register(ZombieAttackHandler(this))
             socketDispatcher.register(RequestSurvivorCheckHandler())
             context.taskDispatcher.register(TimeUpdateTask(this))
-            context.taskDispatcher.register(BuildingCompleteTask(this))
+            context.taskDispatcher.register(BuildingTask(this))
         }
     }
 

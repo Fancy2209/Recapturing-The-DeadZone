@@ -7,6 +7,11 @@ import kotlin.time.Duration
  */
 data class TaskConfig(
     /**
+     * The identifier for the task, usually NetworkMessage.
+     */
+    val key: String,
+
+    /**
      * The time delay before running the task on the first time after its ready.
      * If null task will be run immediately after its ready.
      */
