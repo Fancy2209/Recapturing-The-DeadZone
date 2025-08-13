@@ -7,9 +7,9 @@ import kotlin.time.Duration
  */
 data class TaskConfig(
     /**
-     * The identifier for the task, usually NetworkMessage.
+     * The identifier for the task within the template, usually NetworkMessage.
      */
-    val key: String,
+    val targetTask: String,
 
     /**
      * The time delay before running the task on the first time after its ready.

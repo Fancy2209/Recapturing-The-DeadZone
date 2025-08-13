@@ -22,10 +22,10 @@ import kotlin.coroutines.coroutineContext
  */
 class ServerTaskDispatcher : TaskScheduler {
     // taskKey -> template
-    private val registeredTasks = mutableMapOf<String, ServerTask>()
+    private val registeredTasks = mutableMapOf<TaskTemplate, ServerTask>()
 
     // taskKey -> default config
-    private val defaultConfigs = mutableMapOf<String, TaskConfig>()
+    private val defaultConfigs = mutableMapOf<TaskTemplate, TaskConfig>()
 
     // unique task id -> task instance
     private val runningInstances = mutableMapOf<UUID, TaskInstance>()
@@ -42,12 +42,12 @@ class ServerTaskDispatcher : TaskScheduler {
      */
     fun runTask(
         connection: Connection,
-        taskKey: String,
+        taskTemplateKey: TaskTemplate,
         cfgBuilder: (TaskConfig) -> TaskConfig?,
         onComplete: (() -> Unit)? = null
     ): UUID {
-        val task = requireNotNull(registeredTasks[taskKey]) { "Task not registered: $taskKey" }
-        val defaultCfg = requireNotNull(defaultConfigs[taskKey]) { "Missing default config for $taskKey" }
+        val task = requireNotNull(registeredTasks[taskTemplateKey]) { "Task not registered: $taskTemplateKey" }
+        val defaultCfg = requireNotNull(defaultConfigs[taskTemplateKey]) { "Missing default config for $taskTemplateKey" }
         val cfg = cfgBuilder(defaultCfg) ?: defaultCfg
 
         val taskId = UUID.randomUUID()
@@ -68,7 +68,7 @@ class ServerTaskDispatcher : TaskScheduler {
             }
         }
 
-        runningInstances[taskId] = TaskInstance(connection.playerId, taskKey, cfg, job, onComplete)
+        runningInstances[taskId] = TaskInstance(connection.playerId, taskTemplateKey, cfg, job, onComplete)
         return taskId
     }
 
@@ -122,7 +122,7 @@ class ServerTaskDispatcher : TaskScheduler {
  */
 data class TaskInstance(
     val playerId: String,
-    val taskKey: String,
+    val taskKey: TaskTemplate,
     val config: TaskConfig,
     val job: Job,
     val onComplete: (() -> Unit)?

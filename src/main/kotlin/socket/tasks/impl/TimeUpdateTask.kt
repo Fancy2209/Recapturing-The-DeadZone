@@ -5,6 +5,7 @@ import dev.deadzone.socket.core.Connection
 import dev.deadzone.socket.messaging.NetworkMessage
 import dev.deadzone.socket.tasks.ServerTask
 import dev.deadzone.socket.tasks.TaskConfig
+import dev.deadzone.socket.tasks.TaskTemplate
 import dev.deadzone.socket.tasks.TaskScheduler
 import dev.deadzone.utils.Time
 import kotlin.time.Duration.Companion.milliseconds
@@ -16,12 +17,12 @@ import kotlin.time.Duration.Companion.seconds
  * The game registers callback for such message, though not sure how frequent should we send the message.
  */
 class TimeUpdateTask(serverContext: ServerContext) : ServerTask {
-    override val key: Set<String>
-        get() = setOf(NetworkMessage.TIME_UPDATE)
+    override val key: TaskTemplate
+        get() = TaskTemplate.TIME_UPDATE
 
     override val config: TaskConfig
         get() = TaskConfig(
-            key = NetworkMessage.TIME_UPDATE,
+            targetTask = NetworkMessage.TIME_UPDATE,
             initialRunDelay = 1.seconds,
             repeatDelay = 1000.milliseconds,
             extra = emptyMap(),
@@ -31,6 +32,6 @@ class TimeUpdateTask(serverContext: ServerContext) : ServerTask {
         get() = null
 
     override suspend fun run(connection: Connection, finalConfig: TaskConfig) {
-        connection.sendMessage(finalConfig.key, Time.now())
+        connection.sendMessage(finalConfig.targetTask, Time.now())
     }
 }

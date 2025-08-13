@@ -5,8 +5,7 @@ import dev.deadzone.socket.core.Connection
 import dev.deadzone.socket.messaging.NetworkMessage
 import dev.deadzone.socket.messaging.SocketMessage
 import dev.deadzone.socket.messaging.SocketMessageHandler
-import dev.deadzone.utils.LogSource
-import dev.deadzone.utils.Logger
+import dev.deadzone.socket.tasks.TaskTemplate
 
 /**
  * Handle `ic` message by:
@@ -34,7 +33,7 @@ class InitCompleteHandler(private val serverContext: ServerContext) :
         // send serverTime to client (required)
         serverContext.taskDispatcher.runTask(
             connection = connection,
-            taskKey = NetworkMessage.TIME_UPDATE,
+            taskTemplateKey = TaskTemplate.TIME_UPDATE,
             cfgBuilder = { null },
             onComplete = {}
         )

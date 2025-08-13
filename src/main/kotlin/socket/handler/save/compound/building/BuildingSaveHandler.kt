@@ -11,6 +11,7 @@ import dev.deadzone.socket.handler.save.compound.building.response.*
 import dev.deadzone.socket.messaging.NetworkMessage
 import dev.deadzone.socket.messaging.SaveDataMethod
 import dev.deadzone.socket.protocol.PIOSerializer
+import dev.deadzone.socket.tasks.TaskTemplate
 import dev.deadzone.utils.LogConfigSocketToClient
 import dev.deadzone.utils.Logger
 import kotlinx.serialization.json.*
@@ -89,14 +90,12 @@ class BuildingSaveHandler : SaveSubHandler {
                 val responseJson = GlobalContext.json.encodeToString(response)
                 send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
 
-
-                serverContext.requirePlayerContext(playerId)
-
                 serverContext.taskDispatcher.runTask(
                     connection = connection,
-                    taskKey = NetworkMessage.BUILDING_COMPLETE,
+                    taskTemplateKey = TaskTemplate.BUILDING,
                     cfgBuilder = {
                         it.copy(
+                            targetTask = NetworkMessage.BUILDING_COMPLETE,
                             initialRunDelay = buildDuration,
                             extra = mapOf("msg" to listOf(bldId))
                         )
@@ -132,11 +131,13 @@ class BuildingSaveHandler : SaveSubHandler {
 
                 Logger.debug(LogConfigSocketToClient) { "'BUILDING_UPGRADE' message for $saveId and $bldId" }
 
+                val buildDuration = 10.seconds
+
                 lateinit var timer: TimerData
                 val svc = serverContext.requirePlayerContext(playerId).services
                 svc.compound.updateBuilding(bldId) { bld ->
                     timer = TimerData.runForDuration(
-                        duration = 10.seconds,
+                        duration = buildDuration,
                         data = mapOf("level" to (bld.level + 1), "type" to "upgrade")
                     )
                     bld.copy(upgrade = timer)
@@ -150,6 +151,19 @@ class BuildingSaveHandler : SaveSubHandler {
 
                 val responseJson = GlobalContext.json.encodeToString(response)
                 send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
+
+                serverContext.taskDispatcher.runTask(
+                    connection = connection,
+                    taskTemplateKey = TaskTemplate.BUILDING,
+                    cfgBuilder = {
+                        it.copy(
+                            targetTask = NetworkMessage.BUILDING_COMPLETE,
+                            initialRunDelay = buildDuration,
+                            extra = mapOf("msg" to listOf(bldId))
+                        )
+                    },
+                    onComplete = {}
+                )
             }
 
             SaveDataMethod.BUILDING_RECYCLE -> {
@@ -222,17 +236,19 @@ class BuildingSaveHandler : SaveSubHandler {
             }
 
             SaveDataMethod.BUILDING_SPEED_UP -> {
-                // TODO
-                val bldId = data["id"] ?: return
+                val bldId = data["id"] as String? ?: return
 
                 Logger.debug(LogConfigSocketToClient) { "'BUILDING_SPEED_UP' message for $saveId and $bldId" }
 
                 val svc = serverContext.requirePlayerContext(playerId).services
+                svc.compound.updateBuilding(bldId) { bld ->
+                    bld.copy(upgrade = null)
+                }
 
                 val response = BuildingSpeedUpResponse(
                     success = true,
                     error = "",
-                    cost = 1
+                    cost = 0
                 )
 
                 val responseJson = GlobalContext.json.encodeToString(response)
@@ -244,13 +260,15 @@ class BuildingSaveHandler : SaveSubHandler {
 
                 Logger.debug(LogConfigSocketToClient) { "'BUILDING_REPAIR' message for $saveId and $bldId" }
 
-                val timer = TimerData.runForDuration(10.seconds)
+                val buildDuration = 10.seconds
+                val timer = TimerData.runForDuration(
+                    duration = buildDuration,
+                    data = mapOf("type" to "repair")
+                )
 
                 val svc = serverContext.requirePlayerContext(playerId).services
                 svc.compound.updateBuilding(bldId) { bld ->
-                    val x = bld.copy(repair = timer)
-                    Logger.debug("${bld.id} = ${bldId} = ${x.id}")
-                    x
+                    bld.copy(repair = timer)
                 }
 
                 val response = BuildingRepairResponse(
@@ -261,20 +279,35 @@ class BuildingSaveHandler : SaveSubHandler {
 
                 val responseJson = GlobalContext.json.encodeToString(response)
                 send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
+
+                serverContext.taskDispatcher.runTask(
+                    connection = connection,
+                    taskTemplateKey = TaskTemplate.BUILDING,
+                    cfgBuilder = {
+                        it.copy(
+                            targetTask = NetworkMessage.BUILDING_REPAIR_COMPLETE,
+                            initialRunDelay = buildDuration,
+                            extra = mapOf("msg" to listOf(bldId))
+                        )
+                    },
+                    onComplete = {}
+                )
             }
 
             SaveDataMethod.BUILDING_REPAIR_SPEED_UP -> {
-                // TODO
-                val bldId = data["id"] ?: return
+                val bldId = data["id"] as String? ?: return
 
                 Logger.debug(LogConfigSocketToClient) { "'BUILDING_REPAIR_SPEED_UP' message for $saveId and $bldId" }
 
                 val svc = serverContext.requirePlayerContext(playerId).services
+                svc.compound.updateBuilding(bldId) { bld ->
+                    bld.copy(repair = null)
+                }
 
-                val response = BuildingRepairSpeedUpResponse(
+                val response = BuildingSpeedUpResponse(
                     success = true,
                     error = "",
-                    cost = 1
+                    cost = 0
                 )
 
                 val responseJson = GlobalContext.json.encodeToString(response)
