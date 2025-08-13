@@ -8,9 +8,9 @@ import dev.deadzone.socket.tasks.TaskConfig
 import dev.deadzone.socket.tasks.TaskScheduler
 import kotlin.time.Duration.Companion.seconds
 
-class BuildingUpgradeTask(serverContext: ServerContext) : ServerPushTask {
+class BuildingCompleteTask(serverContext: ServerContext) : ServerPushTask {
     override val key: String
-        get() = NetworkMessage.TASK_COMPLETE
+        get() = NetworkMessage.BUILDING_COMPLETE
 
     override val config: TaskConfig
         get() = TaskConfig(
@@ -24,9 +24,6 @@ class BuildingUpgradeTask(serverContext: ServerContext) : ServerPushTask {
         get() = null
 
     override suspend fun run(connection: Connection, finalConfig: TaskConfig) {
-        val taskId =
-            requireNotNull(finalConfig.extra["taskId"] as String?) { "Missing taskId when running BuildingUpgradeTask for playerId=${connection.playerId}" }
-
-        connection.sendMessage(NetworkMessage.TASK_COMPLETE, taskId)
+        connection.sendMessage(key)
     }
 }
