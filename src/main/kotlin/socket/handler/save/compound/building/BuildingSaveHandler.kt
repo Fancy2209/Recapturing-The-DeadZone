@@ -88,7 +88,10 @@ class BuildingSaveHandler : SaveSubHandler {
                 send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
 
                 serverContext.taskDispatcher.runTask(NetworkMessage.BUILDING_COMPLETE) {
-                    it.copy(initialRunDelay = buildDuration + 3.seconds)
+                    it.copy(
+                        initialRunDelay = buildDuration + 3.seconds,
+                        extra = mapOf("msg" to listOf(bldId, ))
+                    )
                 }
             }
 
