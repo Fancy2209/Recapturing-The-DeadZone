@@ -21,15 +21,25 @@ import kotlin.time.Duration.Companion.seconds
 /**
  * Note about building operation:
  *
- * - There is no building or task complete signal. This also apply for other operations.
- * - Client keep tracks own timer and assumes that server also do it.
- * So we need to update the timer on upgrade/repair of Building.
+ * When building is created/upgraded/repaired:
+ * - Client send the request
+ * - Server reads that, create a building internally, with the upgrade/repair timer
+ * - Timer data depends on operation, it usually includes type (e.g., "repair"/"upgrade"), level, xp
+ * - Server should run a background task which fire when the building operation has finished
+ * - The completion of that task should send a BUILDING_COMPLETE or BUILDING_REPAIR_COMPLETE message to client
  *
- * - We don't need to run a task that completes the upgrade, instead do it lazily.
- * That is when the client request data to server (such as during login)
+ * When user logoff whilst building operation is ongoing:
+ * - Server do not need to save anything, assuming that server already saves everything on operation start.
  *
- * - We will check if timer start + length is lower than current time
- * If it is, remove the timer and apply change (i.e., increment level if upgrading)
+ * When user login whilst building operation is still on going:
+ * - Server does not need to update the upgrade/repair timer, this is because clients read it.
+ * - Instead, when the timer has ended, schedule a background task that sends
+ * BUILDING_COMPLETE after game is started (which is after INIT_COMPLETE)
+ * - The game automatically read the timer and start their countdown of the task.
+ *
+ * When user login after building operation is done:
+ * - Same, no need to update timer. Don't delete it because client reads it.
+ * - No need to send BUILDING_COMPLETE, (NOTSURE): but you will likely need to reflect the building operation, maybe during PlayerLoginState?
  */
 class BuildingSaveHandler : SaveSubHandler {
     override val supportedTypes: Set<String> = SaveDataMethod.COMPOUND_BUILDING_SAVES
