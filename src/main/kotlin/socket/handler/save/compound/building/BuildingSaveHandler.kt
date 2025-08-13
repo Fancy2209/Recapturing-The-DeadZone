@@ -7,11 +7,11 @@ import dev.deadzone.core.model.game.data.*
 import dev.deadzone.socket.handler.buildMsg
 import dev.deadzone.socket.handler.save.SaveSubHandler
 import dev.deadzone.socket.handler.save.compound.building.response.*
+import dev.deadzone.socket.messaging.NetworkMessage
 import dev.deadzone.socket.messaging.SaveDataMethod
 import dev.deadzone.socket.protocol.PIOSerializer
 import dev.deadzone.utils.LogConfigSocketToClient
 import dev.deadzone.utils.Logger
-import java.util.*
 import kotlin.math.max
 import kotlin.time.Duration.Companion.seconds
 
@@ -82,6 +82,8 @@ class BuildingSaveHandler : SaveSubHandler {
 
                 val responseJson = GlobalContext.json.encodeToString(response)
                 send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
+
+                serverContext.taskDispatcher.runTask(NetworkMessage.TASK_COMPLETE)
             }
 
             SaveDataMethod.BUILDING_MOVE -> {

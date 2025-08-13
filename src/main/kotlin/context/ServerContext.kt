@@ -5,6 +5,7 @@ import dev.deadzone.core.auth.SessionManager
 import dev.deadzone.data.db.BigDB
 import dev.deadzone.socket.core.OnlinePlayerRegistry
 import dev.deadzone.socket.handler.save.SaveSubHandler
+import dev.deadzone.socket.tasks.ServerPushTaskDispatcher
 import dev.deadzone.user.PlayerAccountRepository
 
 /**
@@ -16,6 +17,7 @@ data class ServerContext(
     val sessionManager: SessionManager,
     val onlinePlayerRegistry: OnlinePlayerRegistry,
     val authProvider: AuthProvider,
+    val taskDispatcher: ServerPushTaskDispatcher,
     val playerContextTracker: PlayerContextTracker,
     val saveHandlers: List<SaveSubHandler>,
     val config: ServerConfig,

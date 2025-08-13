@@ -15,7 +15,7 @@ class BuildingUpgradeTask(serverContext: ServerContext): ServerPushTask {
 
     override suspend fun run(connection: Connection) {
         while (coroutineContext.isActive) {
-            delay(11000)
+            delay(15000)
             connection.sendMessage(key, getTimeMillis())
         }
     }

@@ -3,7 +3,6 @@ package dev.deadzone.socket.handler
 import dev.deadzone.context.ServerContext
 import dev.deadzone.socket.core.Connection
 import dev.deadzone.socket.messaging.NetworkMessage
-import dev.deadzone.socket.tasks.TaskController
 import dev.deadzone.socket.messaging.SocketMessage
 import dev.deadzone.socket.messaging.SocketMessageHandler
 import dev.deadzone.utils.LogSource
@@ -14,10 +13,7 @@ import dev.deadzone.utils.Logger
  *
  * 1. Do the necessary setup in server.
  */
-class InitCompleteHandler(
-    private val serverContext: ServerContext,
-    private val taskController: TaskController
-) :
+class InitCompleteHandler(private val serverContext: ServerContext) :
     SocketMessageHandler {
     override fun match(message: SocketMessage): Boolean {
         // IC message is null, so only check for "ic" present
@@ -36,9 +32,9 @@ class InitCompleteHandler(
         serverContext.onlinePlayerRegistry.markOnline(connection.playerId)
 
         // periodically send time update to client
-        taskController.runTask("tu")
-        taskController.addTaskCompletionCallback("tu") {
-            Logger.info(LogSource.SOCKET) { "tu completed from ic" }
+        serverContext.taskDispatcher.runTask(NetworkMessage.TIME_UPDATE)
+        serverContext.taskDispatcher.addCompletionListener(NetworkMessage.TIME_UPDATE) {
+            Logger.debug(LogSource.SOCKET) { "tu completed from ic" }
         }
     }
 }

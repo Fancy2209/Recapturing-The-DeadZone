@@ -8,7 +8,6 @@ import dev.deadzone.socket.messaging.SocketMessage
 import dev.deadzone.socket.messaging.SocketMessageDispatcher
 import dev.deadzone.socket.protocol.PIODeserializer
 import dev.deadzone.socket.tasks.ServerPushTaskDispatcher
-import dev.deadzone.socket.tasks.TaskController
 import dev.deadzone.socket.tasks.impl.BuildingUpgradeTask
 import dev.deadzone.socket.tasks.impl.TimeUpdateTask
 import dev.deadzone.utils.Logger
@@ -28,20 +27,19 @@ class Server(
     private val port: Int = SOCKET_SERVER_PORT,
     private val context: ServerContext,
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-) : TaskController {
+) {
     private val socketDispatcher = SocketMessageDispatcher()
-    private val taskDispatcher = ServerPushTaskDispatcher()
 
     init {
         with(context) {
             socketDispatcher.register(JoinHandler(this))
             socketDispatcher.register(AuthHandler())
             socketDispatcher.register(QuestProgressHandler(this))
-            socketDispatcher.register(InitCompleteHandler(this, this@Server))
+            socketDispatcher.register(InitCompleteHandler(this))
             socketDispatcher.register(SaveHandler(this))
             socketDispatcher.register(ZombieAttackHandler(this))
-            taskDispatcher.register(TimeUpdateTask(this))
-            taskDispatcher.register(BuildingUpgradeTask(this))
+            context.taskDispatcher.register(TimeUpdateTask(this))
+            context.taskDispatcher.register(BuildingUpgradeTask(this))
         }
     }
 
@@ -76,7 +74,7 @@ class Server(
             val input = socket.openReadChannel()
 
             val pushJob = coroutineScope.launch {
-                taskDispatcher.runReadyTasks(connection, this)
+                context.taskDispatcher.runReadyTasks(connection, this)
             }
 
             try {
@@ -123,7 +121,7 @@ class Server(
                 context.onlinePlayerRegistry.markOffline(connection.playerId)
                 context.playerAccountRepository.updateLastLogin(connection.playerId, getTimeMillis())
                 context.playerContextTracker.removePlayer(connection.playerId)
-                taskDispatcher.stopAllPushTasks()
+                context.taskDispatcher.stopAllPushTasks()
                 pushJob.cancelAndJoin()
                 connection.socket.close()
             }
@@ -134,21 +132,9 @@ class Server(
         context.playerContextTracker.shutdown()
         context.onlinePlayerRegistry.shutdown()
         context.sessionManager.shutdown()
-        taskDispatcher.shutdown()
+        context.taskDispatcher.shutdown()
         socketDispatcher.shutdown()
         Logger.info { "Server closed." }
-    }
-
-    override fun runTask(key: String) {
-        taskDispatcher.signalTaskReady(key)
-    }
-
-    override fun stopTask(key: String) {
-        taskDispatcher.signalTaskStop(key)
-    }
-
-    override fun addTaskCompletionCallback(key: String, cb: () -> Unit) {
-        taskDispatcher.addCompletionListener(key, cb)
     }
 }
 

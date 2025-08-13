@@ -31,11 +31,11 @@ class ServerPushTaskDispatcher {
         tasks.add(task)
     }
 
-    fun signalTaskReady(taskKey: String) {
+    fun runTask(taskKey: String) {
         taskSignals.remove(taskKey)?.complete(Unit)
     }
 
-    fun signalTaskStop(taskKey: String) {
+    fun stopTask(taskKey: String) {
         runningTasks.remove(taskKey)?.cancel()
     }
 
