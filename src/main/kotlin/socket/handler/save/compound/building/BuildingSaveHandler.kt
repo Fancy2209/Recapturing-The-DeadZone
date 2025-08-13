@@ -88,7 +88,7 @@ class BuildingSaveHandler : SaveSubHandler {
 
                 serverContext.taskDispatcher.runTask(NetworkMessage.BUILDING_COMPLETE) {
                     it.copy(
-                        initialRunDelay = buildDuration + 1.seconds,
+                        initialRunDelay = buildDuration,
                         extra = mapOf("msg" to listOf(bldId))
                     )
                 }

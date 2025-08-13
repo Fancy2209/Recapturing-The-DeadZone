@@ -57,27 +57,29 @@ class ServerPushTaskDispatcher : TaskScheduler {
             if (runningTasks.containsKey(task.key)) return@forEach
 
             val job = scope.launch {
-                val signal = CompletableDeferred<Unit>()
-                taskSignals[task.key] = signal
-                if (pendingTriggers.remove(task.key)) {
-                    signal.complete(Unit)
-                }
+                while (isActive) {
+                    val signal = CompletableDeferred<Unit>()
+                    taskSignals[task.key] = signal
+                    if (pendingTriggers.remove(task.key)) {
+                        signal.complete(Unit)
+                    }
 
-                signal.await()
+                    signal.await()
 
-                Logger.info(LogSource.SOCKET) { "Push task ${task.key} is ready to run." }
+                    Logger.info(LogSource.SOCKET) { "Push task ${task.key} is ready to run." }
 
-                try {
-                    val scheduler = task.scheduler ?: this@ServerPushTaskDispatcher
-                    scheduler.schedule(task, connection)
-                    Logger.info(LogSource.SOCKET) { "Push task ${task.key} ran successfully." }
-                } catch (_: CancellationException) {
-                    Logger.info(LogSource.SOCKET) { "Push task '${task.key}' was cancelled." }
-                } catch (e: Exception) {
-                    Logger.error(LogConfigSocketError) { "Error running push task '${task.key}': $e" }
-                } finally {
-                    runningTasks.remove(task.key)
-                    notifyCompletion(task.key)
+                    try {
+                        val scheduler = task.scheduler ?: this@ServerPushTaskDispatcher
+                        scheduler.schedule(task, connection)
+                        Logger.info(LogSource.SOCKET) { "Push task ${task.key} ran successfully." }
+                    } catch (_: CancellationException) {
+                        Logger.info(LogSource.SOCKET) { "Push task '${task.key}' was cancelled." }
+                    } catch (e: Exception) {
+                        Logger.error(LogConfigSocketError) { "Error running push task '${task.key}': $e" }
+                    } finally {
+                        runningTasks.remove(task.key)
+                        notifyCompletion(task.key)
+                    }
                 }
             }
 
