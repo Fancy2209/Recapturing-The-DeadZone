@@ -42,7 +42,15 @@ suspend fun RoutingContext.loadObjects(serverContext: ServerContext) {
         val playerId = objId.keys.firstOrNull() ?: continue
         // the game for unknown reason keep requesting the same playerId infinitely
         // this is to ensure the requested player does actually exists
-        val profile = serverContext.playerAccountRepository.getProfileOfPlayerId(playerId) ?: continue
+        val result = serverContext.playerAccountRepository.getProfileOfPlayerId(playerId)
+        result.onFailure {
+            // NOTE: will always error once because game retries with incremented key
+            Logger.warn(LogConfigAPIError) { "Failure on getProfileOfPlayerId for playerId=$playerId: ${it.message}" }
+            continue
+        }
+        val profile = requireNotNull(result.getOrThrow()) {
+            "getProfileOfPlayerId succeed but returned profile is null"
+        }
 
         Logger.debug(src = LogSource.API) { "Found object for playerId: $playerId" }
 
