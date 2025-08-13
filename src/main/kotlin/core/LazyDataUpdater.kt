@@ -23,31 +23,25 @@ object LazyDataUpdater {
     }
 
     fun updateBuildingTimers(buildings: List<BuildingLike>): List<BuildingLike> {
-        val now = getTimeMillis().milliseconds
-
         return buildings.map { bld ->
-            val upgradeDone = bld.upgrade?.let {
-                now >= it.start.milliseconds + it.length.milliseconds
-            } ?: false
-            val repairDone = bld.repair?.let {
-                now >= it.start.milliseconds + it.length.milliseconds
-            } ?: false
+            val upgradeDone = bld.upgrade?.hasEnded() ?: false
+            val repairDone = bld.repair?.hasEnded() ?: false
 
             when (bld) {
                 is Building -> when {
                     upgradeDone -> {
                         val level = bld.upgrade?.data?.get("level") ?: 1.0
-                        bld.copy(id = bld.id, level = level.toInt(), upgrade = null)
+                        bld.copy(level = level.toInt(), upgrade = null)
                     }
-                    repairDone -> bld.copy(id = bld.id, repair = null)
+                    repairDone -> bld.copy(repair = null)
                     else -> bld
                 }
                 is JunkBuilding -> when {
                     upgradeDone -> {
                         val level = bld.upgrade?.data?.get("level") ?: 1.0
-                        bld.copy(id = bld.id, level = level.toInt(), upgrade = null)
+                        bld.copy(level = level.toInt(), upgrade = null)
                     }
-                    repairDone -> bld.copy(id = bld.id, repair = null)
+                    repairDone -> bld.copy(repair = null)
                     else -> bld
                 }
             }

@@ -1,13 +1,14 @@
 package dev.deadzone.core.model.game.data
 
-import io.ktor.util.date.getTimeMillis
+import io.ktor.util.date.*
 import kotlinx.serialization.Serializable
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 @Serializable
 data class TimerData(
-    val start: Long,
-    val length: Long, // this is in seconds!
+    val start: Long, // epoch millis
+    val length: Long, // length in seconds!
     val data: Map<String, Double>? // this depends on each response. e.g., building upgrade need level
 ) {
     companion object {
@@ -22,4 +23,8 @@ data class TimerData(
             )
         }
     }
+}
+
+fun TimerData.hasEnded(): Boolean {
+    return getTimeMillis() >= this.start + this.length.seconds.inWholeMilliseconds
 }
