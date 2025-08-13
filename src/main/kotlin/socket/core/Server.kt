@@ -4,16 +4,17 @@ import dev.deadzone.SERVER_HOST
 import dev.deadzone.SOCKET_SERVER_PORT
 import dev.deadzone.context.ServerContext
 import dev.deadzone.socket.handler.*
-import dev.deadzone.socket.tasks.TimeUpdate
-import dev.deadzone.socket.tasks.ServerPushTaskDispatcher
 import dev.deadzone.socket.messaging.SocketMessage
 import dev.deadzone.socket.messaging.SocketMessageDispatcher
 import dev.deadzone.socket.protocol.PIODeserializer
+import dev.deadzone.socket.tasks.ServerPushTaskDispatcher
 import dev.deadzone.socket.tasks.TaskController
+import dev.deadzone.socket.tasks.impl.BuildingUpgradeTask
+import dev.deadzone.socket.tasks.impl.TimeUpdateTask
 import dev.deadzone.utils.Logger
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
-import io.ktor.util.date.getTimeMillis
+import io.ktor.util.date.*
 import io.ktor.utils.io.*
 import kotlinx.coroutines.*
 import java.util.*
@@ -39,7 +40,8 @@ class Server(
             socketDispatcher.register(InitCompleteHandler(this, this@Server))
             socketDispatcher.register(SaveHandler(this))
             socketDispatcher.register(ZombieAttackHandler(this))
-            taskDispatcher.register(TimeUpdate(this))
+            taskDispatcher.register(TimeUpdateTask(this))
+            taskDispatcher.register(BuildingUpgradeTask(this))
         }
     }
 
