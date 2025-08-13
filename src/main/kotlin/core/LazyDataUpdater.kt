@@ -2,7 +2,6 @@ package dev.deadzone.core
 
 import dev.deadzone.core.model.game.data.*
 import io.ktor.util.date.*
-import kotlin.math.ceil
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
@@ -10,11 +9,11 @@ import kotlin.time.Duration.Companion.milliseconds
  */
 object LazyDataUpdater {
     fun depleteResources(lastLogin: Long, res: GameResources): GameResources {
-        val minutesPassed = (getTimeMillis().milliseconds - lastLogin.milliseconds).inWholeMinutes
+        val minutesPassed = (getTimeMillis() - lastLogin).milliseconds.inWholeMinutes
         val depletionRate = 0.05
         // depletion formula: each minutes deplete res by 0.05, an hour is 3
 
-        val depleted = ceil(minutesPassed * depletionRate)
+        val depleted = depletionRate * minutesPassed
 
         return res.copy(
             food = res.food - (depleted).toInt(),
