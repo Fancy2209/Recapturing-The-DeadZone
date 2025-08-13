@@ -1,6 +1,5 @@
 package dev.deadzone.socket.handler
 
-import dev.deadzone.context.GlobalContext
 import dev.deadzone.socket.core.Connection
 import dev.deadzone.socket.messaging.NetworkMessage
 import dev.deadzone.socket.messaging.SocketMessage
@@ -18,12 +17,12 @@ class RequestSurvivorCheckHandler() : SocketMessageHandler {
         message: SocketMessage,
         send: suspend (ByteArray) -> Unit
     ) {
-        Logger.debug { "Received RSC of saveId: ${message.getString("id")}" }
+        val id = message.getMap("rsc")?.get("id") as String?
+        Logger.debug { "Received RSC of saveId: $id" }
 
         val messageToSend =
             listOf(
                 NetworkMessage.REQUEST_SURVIVOR_CHECK,
-                GlobalContext.json.encodeToString(mapOf("success" to true))
             )
 
         send(PIOSerializer.serialize(messageToSend))

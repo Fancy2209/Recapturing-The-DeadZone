@@ -15,6 +15,7 @@ import dev.deadzone.socket.tasks.TaskTemplate
 import dev.deadzone.utils.LogConfigSocketToClient
 import dev.deadzone.utils.Logger
 import kotlin.math.max
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -54,11 +55,12 @@ class BuildingSaveHandler : SaveSubHandler {
 
                 Logger.debug(LogConfigSocketToClient) { "'BUILDING_CREATE' message for $saveId and $bldId,$bldType to tx=$x, ty=$y, rotation=$r" }
 
-                val buildDuration = 4.seconds
+                val buildDuration = if (bldType.contains("storage")) 1.minutes else 4.seconds
 
                 val timer = TimerData.runForDuration(
                     duration = buildDuration,
-                    data = mapOf("level" to 0, "type" to "upgrade")
+                    // xp used when reconnect, readObject of building
+                    data = mapOf("level" to 0, "type" to "upgrade", "xp" to 50)
                 )
 
                 val svc = serverContext.requirePlayerContext(playerId).services
@@ -137,7 +139,7 @@ class BuildingSaveHandler : SaveSubHandler {
                 svc.compound.updateBuilding(bldId) { bld ->
                     timer = TimerData.runForDuration(
                         duration = buildDuration,
-                        data = mapOf("level" to (bld.level + 1), "type" to "upgrade")
+                        data = mapOf("level" to (bld.level + 1), "type" to "upgrade", "xp" to 50)
                     )
                     bld.copy(upgrade = timer)
                 }
