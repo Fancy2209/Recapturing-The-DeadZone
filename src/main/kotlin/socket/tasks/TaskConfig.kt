@@ -20,5 +20,5 @@ data class TaskConfig(
     /**
      * Extra data for task if needed.
      */
-    val extra: Map<String, Any>
+    val extra: Map<String, Any>,
 )
