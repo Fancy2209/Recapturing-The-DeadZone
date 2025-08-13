@@ -58,7 +58,7 @@ class BuildingSaveHandler : SaveSubHandler {
                 val svc = serverContext.requirePlayerContext(playerId).services
                 svc.compound.createBuilding {
                     Building(
-                        id = UUID.randomUUID().toString(),
+                        id = bldId,
                         name = null,
                         type = bldType,
                         level = 0, // always 0 because create
@@ -94,7 +94,7 @@ class BuildingSaveHandler : SaveSubHandler {
 
                 val svc = serverContext.requirePlayerContext(playerId).services
                 svc.compound.updateBuilding(buildingId) {
-                    it.copy(id = buildingId, tx = x, ty = y, rotation = r)
+                    it.copy(tx = x, ty = y, rotation = r)
                 }
 
                 val responseJson = GlobalContext.json.encodeToString(
@@ -118,7 +118,7 @@ class BuildingSaveHandler : SaveSubHandler {
                         duration = 10.seconds,
                         data = mapOf("level" to (bld.level + 1.0).toDouble())
                     )
-                    bld.copy(id = bldId, upgrade = timer)
+                    bld.copy(upgrade = timer)
                 }
 
                 val response = BuildingUpgradeResponse(
@@ -225,7 +225,9 @@ class BuildingSaveHandler : SaveSubHandler {
 
                 val svc = serverContext.requirePlayerContext(playerId).services
                 svc.compound.updateBuilding(bldId) { bld ->
-                    bld.copy(id = bldId, repair = timer)
+                    val x = bld.copy(repair = timer)
+                    Logger.debug("${bld.id} = ${bldId} = ${x.id}")
+                    x
                 }
 
                 val response = BuildingRepairResponse(
