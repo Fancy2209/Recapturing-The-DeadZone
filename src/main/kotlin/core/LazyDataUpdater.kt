@@ -10,7 +10,7 @@ import kotlin.time.Duration.Companion.milliseconds
  */
 object LazyDataUpdater {
     fun depleteResources(lastLogin: Long, res: GameResources): GameResources {
-        val minutesPassed = (getTimeMillis() - lastLogin).milliseconds.inWholeMinutes
+        val minutesPassed = min(0, (getTimeMillis() - lastLogin).milliseconds.inWholeMinutes)
         val depletionRate = 0.02
         // depletion formula: each minutes deplete res by 0.05, an hour is 3
 
