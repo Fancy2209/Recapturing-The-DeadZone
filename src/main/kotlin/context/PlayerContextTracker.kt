@@ -19,7 +19,7 @@ import io.ktor.util.date.getTimeMillis
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * Tracks each active player context, which is the player's in-memory data.
+ * Tracks each active player context and socket connection.
  */
 class PlayerContextTracker {
     val players = ConcurrentHashMap<String, PlayerContext>()
@@ -111,7 +111,7 @@ class PlayerContextTracker {
 
     fun shutdown() {
         players.values.forEach {
-            it.connection.socket.close()
+            it.connection.shutdown()
         }
         players.clear()
     }

@@ -6,6 +6,10 @@ import dev.deadzone.utils.UUID
 import io.ktor.network.sockets.Socket
 import io.ktor.utils.io.ByteWriteChannel
 import io.ktor.utils.io.writeFully
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 
 /**
  * Representation of a player connection.
@@ -15,6 +19,7 @@ class Connection(
     var playerId: String = "",
     val connectionId: String = UUID.new(),
     val socket: Socket,
+    val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default),
     private val output: ByteWriteChannel,
 ) {
     /**
@@ -42,6 +47,11 @@ class Connection(
 
         Logger.debug(logFull = logFull) { "Sending message of type '$type' | raw message: ${bytes.decodeToString()}" }
         output.writeFully(bytes)
+    }
+
+    fun shutdown() {
+        scope.cancel()
+        socket.close()
     }
 
     override fun toString(): String {

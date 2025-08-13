@@ -38,14 +38,12 @@ class ServerTaskDispatcher : TaskScheduler {
     }
 
     /**
-     * Run a task for the player, returning the task ID (UUID).
+     * Run a task for the socket connection, returning the task ID (UUID).
      */
     fun runTask(
-        playerId: String,
+        connection: Connection,
         taskKey: String,
         cfgBuilder: (TaskConfig) -> TaskConfig?,
-        scope: CoroutineScope,
-        connection: Connection,
         onComplete: (() -> Unit)? = null
     ): UUID {
         val task = requireNotNull(registeredTasks[taskKey]) { "Task not registered: $taskKey" }
@@ -54,7 +52,7 @@ class ServerTaskDispatcher : TaskScheduler {
 
         val taskId = UUID.randomUUID()
 
-        val job = scope.launch {
+        val job = connection.scope.launch {
             try {
                 Logger.debug(LogSource.SOCKET) { "Push task ${task.key} is going to run." }
                 val scheduler = task.scheduler ?: this@ServerTaskDispatcher
@@ -70,7 +68,7 @@ class ServerTaskDispatcher : TaskScheduler {
             }
         }
 
-        runningInstances[taskId] = TaskInstance(playerId, taskKey, cfg, job, onComplete)
+        runningInstances[taskId] = TaskInstance(connection.playerId, taskKey, cfg, job, onComplete)
         return taskId
     }
 
