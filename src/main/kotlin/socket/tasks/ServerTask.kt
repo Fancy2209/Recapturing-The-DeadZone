@@ -7,6 +7,12 @@ import dev.deadzone.socket.core.Connection
  *
  * Implementations of this interface can push data to clients through client's [Connection]
  * if needed.
+ *
+ * We may need to implement sort of queue system for task that needs to be run.
+ * During LoadObjects, we re-check the game timers. We don't want to send BUILDING_COMPLETE message
+ * if the building completes while the game is in loading, hence the idea of making queued task.
+ *
+ * Open the queue and run all tasks when the game reached INIT_COMPLETE
  */
 interface ServerTask {
     /**

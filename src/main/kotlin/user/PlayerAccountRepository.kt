@@ -3,6 +3,9 @@ package dev.deadzone.user
 import dev.deadzone.core.auth.model.UserProfile
 import dev.deadzone.data.collection.PlayerAccount
 
+/**
+ * Player account repository, analogous to game service's repo
+ */
 interface PlayerAccountRepository {
     suspend fun doesUserExist(username: String): Result<Boolean>
 

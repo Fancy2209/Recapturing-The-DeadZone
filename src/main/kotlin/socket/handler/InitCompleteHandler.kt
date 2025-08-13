@@ -11,6 +11,9 @@ import dev.deadzone.socket.tasks.TaskTemplate
  * Handle `ic` message by:
  *
  * 1. Do the necessary setup in server.
+ *
+ * Very important signal sent by client. It doesn't expects a response, so likely a one-way signal.
+ * In here the game is guaranteed to be loaded (in timeline screen). So we could do some setup here.
  */
 class InitCompleteHandler(private val serverContext: ServerContext) :
     SocketMessageHandler {
@@ -24,9 +27,6 @@ class InitCompleteHandler(private val serverContext: ServerContext) :
         message: SocketMessage,
         send: suspend (ByteArray) -> Unit
     ) {
-        // Client part sends network INIT_COMPLETE message, with no handler attached
-        // Likely only signal to server
-
         // When game init is completed, mark player as active
         serverContext.onlinePlayerRegistry.markOnline(connection.playerId)
 

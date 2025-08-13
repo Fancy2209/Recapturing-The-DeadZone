@@ -13,6 +13,9 @@ import kotlinx.coroutines.flow.firstOrNull
 import org.bson.Document
 import kotlin.io.encoding.Base64
 
+/**
+ * Player account repository, analogous to game service's repo, though don't have service class, but is used anywhere in server.
+ */
 class PlayerAccountRepositoryMongo(val userCollection: MongoCollection<PlayerAccount>) : PlayerAccountRepository {
     override suspend fun doesUserExist(username: String): Result<Boolean> {
         return runMongoCatching {
