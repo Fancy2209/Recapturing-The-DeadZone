@@ -24,7 +24,8 @@ class BuildingCompleteTask(serverContext: ServerContext) : ServerPushTask {
         get() = null
 
     override suspend fun run(connection: Connection, finalConfig: TaskConfig) {
-        val customMessage = finalConfig.extra["msg"] as? List<Any?> ?: emptyList()
-        connection.sendMessage(key, customMessage)
+        val customMessage = finalConfig.extra["msg"] as? List<*> ?: emptyList<Any?>()
+        val nonnull = customMessage.filterNotNull().toTypedArray()
+        connection.sendMessage(key, *nonnull)
     }
 }

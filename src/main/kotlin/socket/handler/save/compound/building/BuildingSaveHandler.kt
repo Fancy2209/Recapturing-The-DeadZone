@@ -12,9 +12,8 @@ import dev.deadzone.socket.messaging.SaveDataMethod
 import dev.deadzone.socket.protocol.PIOSerializer
 import dev.deadzone.utils.LogConfigSocketToClient
 import dev.deadzone.utils.Logger
-import dev.deadzone.utils.toJsonElement
+import kotlinx.serialization.json.*
 import kotlin.math.max
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -56,7 +55,7 @@ class BuildingSaveHandler : SaveSubHandler {
 
                 val timer = TimerData.runForDuration(
                     duration = buildDuration,
-                    data = mapOf("level" to 0, "type" to "upgrade").toJsonElement()
+                    data = mapOf("level" to 0, "type" to "upgrade")
                 )
 
                 val svc = serverContext.requirePlayerContext(playerId).services
@@ -89,8 +88,8 @@ class BuildingSaveHandler : SaveSubHandler {
 
                 serverContext.taskDispatcher.runTask(NetworkMessage.BUILDING_COMPLETE) {
                     it.copy(
-                        initialRunDelay = buildDuration + 3.seconds,
-                        extra = mapOf("msg" to listOf(bldId, ))
+                        initialRunDelay = buildDuration + 1.seconds,
+                        extra = mapOf("msg" to listOf(bldId))
                     )
                 }
             }
@@ -127,7 +126,7 @@ class BuildingSaveHandler : SaveSubHandler {
                 svc.compound.updateBuilding(bldId) { bld ->
                     timer = TimerData.runForDuration(
                         duration = 10.seconds,
-                        data = mapOf("level" to (bld.level + 1), "type" to "upgrade").toJsonElement()
+                        data = mapOf("level" to (bld.level + 1), "type" to "upgrade")
                     )
                     bld.copy(upgrade = timer)
                 }

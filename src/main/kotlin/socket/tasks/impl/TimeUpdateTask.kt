@@ -8,6 +8,7 @@ import dev.deadzone.socket.tasks.TaskConfig
 import dev.deadzone.socket.tasks.TaskScheduler
 import dev.deadzone.utils.Time
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * Sends a time update ('tu') message to client.
@@ -20,7 +21,7 @@ class TimeUpdateTask(serverContext: ServerContext) : ServerPushTask {
 
     override val config: TaskConfig
         get() = TaskConfig(
-            initialRunDelay = 0.milliseconds,
+            initialRunDelay = 1.seconds,
             repeatDelay = 1000.milliseconds,
             extra = emptyMap(),
         )
