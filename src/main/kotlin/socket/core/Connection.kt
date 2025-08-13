@@ -2,10 +2,10 @@ package dev.deadzone.socket.core
 
 import dev.deadzone.socket.protocol.PIOSerializer
 import dev.deadzone.utils.Logger
+import dev.deadzone.utils.UUID
 import io.ktor.network.sockets.Socket
 import io.ktor.utils.io.ByteWriteChannel
 import io.ktor.utils.io.writeFully
-import java.util.UUID
 
 /**
  * Representation of a player connection.
@@ -13,7 +13,7 @@ import java.util.UUID
  */
 class Connection(
     var playerId: String = "",
-    val connectionId: String = UUID.randomUUID().toString(),
+    val connectionId: String = UUID.new(),
     val socket: Socket,
     private val output: ByteWriteChannel,
 ) {

@@ -1,7 +1,5 @@
 package dev.deadzone.core.data
 
-import com.mongodb.client.model.DeleteOneModel
-import com.mongodb.client.model.DeleteOptions
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Indexes
 import com.mongodb.client.model.Updates
@@ -16,12 +14,12 @@ import dev.deadzone.data.collection.PlayerObjects
 import dev.deadzone.data.db.BigDB
 import dev.deadzone.data.db.CollectionName
 import dev.deadzone.utils.Logger
+import dev.deadzone.utils.UUID
 import io.ktor.util.date.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import java.util.*
 import kotlin.io.encoding.Base64
 
 class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : BigDB {
@@ -108,9 +106,9 @@ class BigDBMongoImpl(db: MongoDatabase, private val adminEnabled: Boolean) : Big
     }
 
     override suspend fun createUser(username: String, password: String): String {
-        val pid = UUID.randomUUID().toString()
+        val pid = UUID.new()
         val profile = UserProfile.default(username = username, pid = pid)
-        val playerSrvId = UUID.randomUUID().toString()
+        val playerSrvId = UUID.new()
 
         val doc = PlayerAccount(
             playerId = pid,

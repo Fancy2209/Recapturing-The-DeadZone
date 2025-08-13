@@ -20,7 +20,7 @@ class TimeUpdateTask(serverContext: ServerContext): ServerPushTask {
 
     override suspend fun run(connection: Connection) {
         while (coroutineContext.isActive) {
-            delay(5000)
+            delay(1000)
             connection.sendMessage(key, getTimeMillis())
         }
     }

@@ -204,7 +204,7 @@ data class PlayerObjects(
                 questsTracked = null,
                 gQuestsV2 = null,
                 bountyCap = 0,
-                lastLogout = getTimeMillis() - 100000,
+                lastLogout = null,
                 dzBounty = null,
                 nextDZBountyIssue = 1230768000000,
                 highActivity = null,

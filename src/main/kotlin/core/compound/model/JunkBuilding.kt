@@ -2,12 +2,12 @@ package dev.deadzone.core.model.game.data
 
 import kotlinx.serialization.Serializable
 import dev.deadzone.core.items.model.Item
-import java.util.*
+import dev.deadzone.utils.UUID
 
 @Serializable
 data class JunkBuilding(
     // from Building
-    val id: String = UUID.randomUUID().toString(),
+    val id: String = UUID.new(),
     val name: String? = null,
     val type: String,
     val level: Int = 0,

@@ -2,6 +2,7 @@ package dev.deadzone.core.auth
 
 import dev.deadzone.core.auth.model.PlayerSession
 import dev.deadzone.core.data.AdminData
+import dev.deadzone.utils.UUID
 import io.ktor.util.date.getTimeMillis
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -9,7 +10,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -46,7 +46,7 @@ class SessionManager {
         val token = if (playerId == AdminData.PLAYER_ID) {
             AdminData.TOKEN
         } else {
-            UUID.randomUUID().toString()
+            UUID.new()
         }
 
         val session = PlayerSession(

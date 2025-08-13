@@ -5,6 +5,7 @@ import dev.deadzone.context.GlobalContext
 import dev.deadzone.core.data.GameDefinitions
 import dev.deadzone.core.mission.model.LootContent
 import dev.deadzone.core.mission.model.LootParameter
+import dev.deadzone.utils.UUID
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import java.io.StringReader
@@ -17,7 +18,6 @@ import javax.xml.transform.stream.StreamResult
 import javax.xml.parsers.DocumentBuilder
 import org.xml.sax.InputSource
 import java.util.TreeMap
-import java.util.UUID
 import kotlin.random.Random
 
 val ALL_LOCS = listOf(
@@ -199,7 +199,7 @@ class LootService(
         // i.e., weapon, schematics, is limited to 1 but junk items can be 5
 
         return LootContent(
-            itemId = UUID.randomUUID().toString(),
+            itemId = UUID.new(),
             itemIdInXML = res.idInXML,
             quantity = qty,
         )

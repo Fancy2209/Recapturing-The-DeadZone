@@ -51,8 +51,8 @@ class BuildingSaveHandler : SaveSubHandler {
                 Logger.debug(LogConfigSocketToClient) { "'BUILDING_CREATE' message for $saveId and $bldId,$bldType to tx=$x, ty=$y, rotation=$r" }
 
                 val timer = TimerData.runForDuration(
-                    duration = 10.seconds,
-                    data = mapOf("level" to 0.0)
+                    duration = 4.seconds,
+                    data = mapOf("level" to 0)
                 )
 
                 val svc = serverContext.requirePlayerContext(playerId).services
@@ -82,8 +82,6 @@ class BuildingSaveHandler : SaveSubHandler {
 
                 val responseJson = GlobalContext.json.encodeToString(response)
                 send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
-
-                serverContext.taskDispatcher.runTask(NetworkMessage.TASK_COMPLETE)
             }
 
             SaveDataMethod.BUILDING_MOVE -> {
@@ -118,7 +116,7 @@ class BuildingSaveHandler : SaveSubHandler {
                 svc.compound.updateBuilding(bldId) { bld ->
                     timer = TimerData.runForDuration(
                         duration = 10.seconds,
-                        data = mapOf("level" to (bld.level + 1.0).toDouble())
+                        data = mapOf("level" to (bld.level + 1))
                     )
                     bld.copy(upgrade = timer)
                 }

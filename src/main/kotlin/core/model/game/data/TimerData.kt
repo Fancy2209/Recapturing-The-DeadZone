@@ -9,12 +9,12 @@ import kotlin.time.Duration.Companion.seconds
 data class TimerData(
     val start: Long, // epoch millis
     val length: Long, // length in seconds!
-    val data: Map<String, Double>? // this depends on each response. e.g., building upgrade need level
+    val data: Map<String, Int>? // this depends on each response. e.g., building upgrade need level
 ) {
     companion object {
         fun runForDuration(
             duration: Duration,
-            data: Map<String, Double>? = emptyMap()
+            data: Map<String, Int>? = emptyMap()
         ): TimerData {
             return TimerData(
                 start = getTimeMillis(),

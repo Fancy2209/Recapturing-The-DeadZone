@@ -4,12 +4,12 @@ import dev.deadzone.core.data.AdminData
 import dev.deadzone.core.model.game.data.SurvivorAppearance.Companion.toHumanAppearance
 import dev.deadzone.core.survivor.model.injury.Injury
 import dev.deadzone.core.survivor.model.injury.InjuryList
+import dev.deadzone.utils.UUID
 import kotlinx.serialization.Serializable
-import java.util.UUID
 
 @Serializable
 data class Survivor(
-    val id: String = UUID.randomUUID().toString(),
+    val id: String = UUID.new(),
     val title: String,
     val firstName: String = "",
     val lastName: String = "",

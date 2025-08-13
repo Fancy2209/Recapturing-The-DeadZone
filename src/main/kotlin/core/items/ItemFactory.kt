@@ -4,8 +4,8 @@ import dev.deadzone.core.data.assets.ItemResource
 import dev.deadzone.core.items.model.Item
 import dev.deadzone.core.items.model.ItemQualityType
 import dev.deadzone.context.GlobalContext
+import dev.deadzone.utils.UUID
 import org.w3c.dom.Element
-import java.util.UUID
 
 object ItemFactory {
     private val gameResourceRegistry get() = GlobalContext.gameDefinitions
@@ -14,14 +14,14 @@ object ItemFactory {
         return createItemFromResource(res = gameResourceRegistry.itemsById.values.random())
     }
 
-    fun createItemFromId(itemId: String = UUID.randomUUID().toString(), idInXML: String): Item {
+    fun createItemFromId(itemId: String = UUID.new(), idInXML: String): Item {
         val res =
             gameResourceRegistry.itemsById[idInXML]
                 ?: throw IllegalArgumentException("Failed creating Item id=$itemId from xml id=$idInXML (xml id not found)")
         return createItemFromResource(itemId, res)
     }
 
-    fun createItemFromResource(itemId: String = UUID.randomUUID().toString(), res: ItemResource): Item {
+    fun createItemFromResource(itemId: String = UUID.new(), res: ItemResource): Item {
         val baseItem = Item(
             id = itemId,
             type = res.idInXML,

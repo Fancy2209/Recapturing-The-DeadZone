@@ -11,6 +11,7 @@ import dev.deadzone.socket.tasks.ServerPushTaskDispatcher
 import dev.deadzone.socket.tasks.impl.BuildingUpgradeTask
 import dev.deadzone.socket.tasks.impl.TimeUpdateTask
 import dev.deadzone.utils.Logger
+import dev.deadzone.utils.UUID
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
 import io.ktor.util.date.*
@@ -54,7 +55,7 @@ class Server(
                     val socket = serverSocket.accept()
 
                     val connection = Connection(
-                        connectionId = UUID.randomUUID().toString(),
+                        connectionId = UUID.new(),
                         socket = socket,
                         output = socket.openWriteChannel(autoFlush = true),
                     )

@@ -8,11 +8,10 @@ import dev.deadzone.core.items.model.SchematicItem
 import dev.deadzone.socket.handler.buildMsg
 import dev.deadzone.socket.handler.save.SaveSubHandler
 import dev.deadzone.socket.messaging.CommandMessage
-import dev.deadzone.socket.messaging.SaveDataMethod
 import dev.deadzone.socket.protocol.PIOSerializer
 import dev.deadzone.utils.LogConfigSocketToClient
 import dev.deadzone.utils.Logger
-import java.util.*
+import dev.deadzone.utils.UUID
 
 class CommandSaveHandler : SaveSubHandler {
     override val supportedTypes: Set<String> = CommandMessage.COMMAND_SAVES
@@ -62,7 +61,7 @@ class CommandSaveHandler : SaveSubHandler {
                         val mod1 = data["mod1"] as? String?
                         val mod2 = data["mod2"] as? String?
                         val item = Item(
-                            id = UUID.randomUUID().toString(),
+                            id = UUID.new(),
                             type = type,
                             level = level,
                             qty = qty.toUInt(),
@@ -82,7 +81,7 @@ class CommandSaveHandler : SaveSubHandler {
                 val level = (data["level"] as Int?) ?: return
 
                 val item = Item(
-                    id = UUID.randomUUID().toString(),
+                    id = UUID.new(),
                     type = type,
                     level = level,
                     quality = 50,
@@ -100,7 +99,7 @@ class CommandSaveHandler : SaveSubHandler {
                 val level = (data["level"] as Int?) ?: return
 
                 val item = Item(
-                    id = UUID.randomUUID().toString(),
+                    id = UUID.new(),
                     type = type,
                     level = level,
                     quality = 51,
