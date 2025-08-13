@@ -43,6 +43,11 @@ export default defineConfig({
         {
           icon: "github",
           label: "GitHub",
+          href: "https://github.com/glennhenry/Recapturing-The-DeadZone",
+        },
+        {
+          icon: "github",
+          label: "GitHub",
           href: "https://github.com/glennhenry/DeadZone-Documentation",
         },
         {
