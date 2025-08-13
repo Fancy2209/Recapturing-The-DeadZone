@@ -18,7 +18,7 @@ data class TaskConfig(
     val repeatDelay: Duration? = null,
 
     /**
-     * Extra data for task if needed.
+     * Extra data for task if needed. Usually used when want to send list of PIO message.
      */
     val extra: Map<String, Any>,
 )

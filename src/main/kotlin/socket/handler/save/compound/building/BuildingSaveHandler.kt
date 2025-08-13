@@ -41,6 +41,8 @@ class BuildingSaveHandler : SaveSubHandler {
         send: suspend (ByteArray) -> Unit,
         serverContext: ServerContext
     ) {
+        val playerId = connection.playerId
+
         when (type) {
             // read buildings.xml from GameDefinition for items/build duration
             SaveDataMethod.BUILDING_CREATE -> {
@@ -91,18 +93,16 @@ class BuildingSaveHandler : SaveSubHandler {
                 serverContext.requirePlayerContext(playerId)
 
                 serverContext.taskDispatcher.runTask(
-                    connection = ,
-                    taskKey = NetworkMessage.TIME_UPDATE,
-                    cfgBuilder = { null },
+                    connection = connection,
+                    taskKey = NetworkMessage.BUILDING_COMPLETE,
+                    cfgBuilder = {
+                        it.copy(
+                            initialRunDelay = buildDuration,
+                            extra = mapOf("msg" to listOf(bldId))
+                        )
+                    },
                     onComplete = {}
                 )
-
-                serverContext.taskDispatcher.runTask(NetworkMessage.BUILDING_COMPLETE) {
-                    it.copy(
-                        initialRunDelay = buildDuration,
-                        extra = mapOf("msg" to listOf(bldId))
-                    )
-                }
             }
 
             SaveDataMethod.BUILDING_MOVE -> {

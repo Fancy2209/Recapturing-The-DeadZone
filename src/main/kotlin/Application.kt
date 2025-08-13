@@ -31,7 +31,7 @@ import dev.deadzone.socket.handler.save.purchase.PurchaseSaveHandler
 import dev.deadzone.socket.handler.save.quest.QuestSaveHandler
 import dev.deadzone.socket.handler.save.raid.RaidSaveHandler
 import dev.deadzone.socket.handler.save.survivor.SurvivorSaveHandler
-import dev.deadzone.socket.tasks.ServerPushTaskDispatcher
+import dev.deadzone.socket.tasks.ServerTaskDispatcher
 import dev.deadzone.user.PlayerAccountRepository
 import dev.deadzone.user.PlayerAccountRepositoryMongo
 import dev.deadzone.user.auth.WebsiteAuthProvider
@@ -164,7 +164,7 @@ suspend fun Application.module() {
     }
     val onlinePlayerRegistry = OnlinePlayerRegistry()
     val authProvider = WebsiteAuthProvider(database, playerAccountRepository, sessionManager)
-    val taskDispatcher = ServerPushTaskDispatcher()
+    val taskDispatcher = ServerTaskDispatcher()
     val playerContextTracker = PlayerContextTracker()
     val saveHandlers = listOf(
         ArenaSaveHandler(), BountySaveHandler(), ChatSaveHandler(),

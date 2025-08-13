@@ -37,6 +37,7 @@ class Server(
             socketDispatcher.register(InitCompleteHandler(this))
             socketDispatcher.register(SaveHandler(this))
             socketDispatcher.register(ZombieAttackHandler(this))
+            socketDispatcher.register(RequestSurvivorCheckHandler())
             context.taskDispatcher.register(TimeUpdateTask(this))
             context.taskDispatcher.register(BuildingCompleteTask(this))
         }
@@ -71,10 +72,6 @@ class Server(
         coroutineScope.launch {
             val socket = connection.socket
             val input = socket.openReadChannel()
-
-            val pushJob = coroutineScope.launch {
-                context.taskDispatcher.runReadyTasks(connection, this)
-            }
 
             try {
                 val buffer = ByteArray(4096)
@@ -115,14 +112,14 @@ class Server(
                 context.onlinePlayerRegistry.markOffline(connection.playerId)
                 context.playerAccountRepository.updateLastLogin(connection.playerId, getTimeMillis())
                 context.playerContextTracker.removePlayer(connection.playerId)
+//                context.taskDispatcher.stopAllTasksForPlayer(connection.playerId)
             } finally {
                 Logger.info { "Client ${connection.socket.remoteAddress} disconnected" }
                 context.onlinePlayerRegistry.markOffline(connection.playerId)
                 context.playerAccountRepository.updateLastLogin(connection.playerId, getTimeMillis())
                 context.playerContextTracker.removePlayer(connection.playerId)
-                context.taskDispatcher.stopAllPushTasks()
-                pushJob.cancelAndJoin()
-                connection.socket.close()
+                context.taskDispatcher.stopAllTasksForPlayer(connection.playerId)
+                connection.shutdown()
             }
         }
     }
