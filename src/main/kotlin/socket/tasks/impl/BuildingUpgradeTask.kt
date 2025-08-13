@@ -4,19 +4,29 @@ import dev.deadzone.context.ServerContext
 import dev.deadzone.socket.core.Connection
 import dev.deadzone.socket.messaging.NetworkMessage
 import dev.deadzone.socket.tasks.ServerPushTask
-import io.ktor.util.date.getTimeMillis
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlin.coroutines.coroutineContext
+import dev.deadzone.socket.tasks.TaskConfig
+import dev.deadzone.socket.tasks.TaskScheduler
+import kotlin.time.Duration.Companion.seconds
 
-class BuildingUpgradeTask(serverContext: ServerContext): ServerPushTask {
+class BuildingUpgradeTask(serverContext: ServerContext) : ServerPushTask {
     override val key: String
         get() = NetworkMessage.TASK_COMPLETE
 
-    override suspend fun run(connection: Connection) {
-        while (coroutineContext.isActive) {
-            delay(15000)
-            connection.sendMessage(key, getTimeMillis())
-        }
+    override val config: TaskConfig
+        get() = TaskConfig(
+            // each building task should have initial run delay, which is when building upgrade is finished
+            initialRunDelay = 0.seconds,
+            repeatDelay = null,
+            extra = emptyMap(),
+        )
+
+    override val scheduler: TaskScheduler?
+        get() = null
+
+    override suspend fun run(connection: Connection, finalConfig: TaskConfig) {
+        val taskId =
+            requireNotNull(finalConfig.extra["taskId"] as String?) { "Missing taskId when running BuildingUpgradeTask for playerId=${connection.playerId}" }
+
+        connection.sendMessage(NetworkMessage.TASK_COMPLETE, taskId)
     }
 }

@@ -30,5 +30,5 @@ interface ServerPushTask {
      *
      * @param connection the player's socket connection to send message if needed.
      */
-    suspend fun run(connection: Connection)
+    suspend fun run(connection: Connection, finalConfig: TaskConfig)
 }

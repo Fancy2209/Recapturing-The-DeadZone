@@ -4,24 +4,31 @@ import dev.deadzone.context.ServerContext
 import dev.deadzone.socket.core.Connection
 import dev.deadzone.socket.messaging.NetworkMessage
 import dev.deadzone.socket.tasks.ServerPushTask
+import dev.deadzone.socket.tasks.TaskConfig
+import dev.deadzone.socket.tasks.TaskScheduler
 import dev.deadzone.utils.Time
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlin.coroutines.coroutineContext
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Sends a time update ('tu') message to client.
  *
  * The game registers callback for such message, though not sure how frequent should we send the message.
  */
-class TimeUpdateTask(serverContext: ServerContext): ServerPushTask {
+class TimeUpdateTask(serverContext: ServerContext) : ServerPushTask {
     override val key: String
         get() = NetworkMessage.TIME_UPDATE
 
-    override suspend fun run(connection: Connection) {
-        while (coroutineContext.isActive) {
-            delay(1000)
-            connection.sendMessage(key, Time.now())
-        }
+    override val config: TaskConfig
+        get() = TaskConfig(
+            initialRunDelay = 0.milliseconds,
+            repeatDelay = 1000.milliseconds,
+            extra = emptyMap(),
+        )
+
+    override val scheduler: TaskScheduler?
+        get() = null
+
+    override suspend fun run(connection: Connection, finalConfig: TaskConfig) {
+        connection.sendMessage(key, Time.now())
     }
 }

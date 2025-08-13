@@ -86,10 +86,10 @@ class ServerPushTaskDispatcher : TaskScheduler {
         if (shouldRunInfinitely) {
             while (coroutineContext.isActive) {
                 delay(finalConfig.repeatDelay)
-                task.run(connection)
+                task.run(connection, finalConfig)
             }
         } else {
-            task.run(connection)
+            task.run(connection, finalConfig)
         }
     }
 
