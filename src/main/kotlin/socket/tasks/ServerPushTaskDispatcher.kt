@@ -26,6 +26,7 @@ class ServerPushTaskDispatcher : TaskScheduler {
     private val configs = mutableMapOf<String, TaskConfig>()
     private val runningTasks = mutableMapOf<String, Job>()
     private val taskSignals = mutableMapOf<String, CompletableDeferred<Unit>>()
+    private val pendingTriggers = mutableSetOf<String>()
     private val completionListeners = mutableMapOf<String, MutableList<() -> Unit>>()
 
     fun register(task: ServerPushTask) {
@@ -38,7 +39,13 @@ class ServerPushTaskDispatcher : TaskScheduler {
         val defaultConfig = requireNotNull(configs[taskKey]) { "Missing task config for taskKey=$taskKey" }
         val config = configBuilder(defaultConfig) ?: defaultConfig
         configs[taskKey] = config
-        taskSignals.remove(taskKey)?.complete(Unit)
+
+        val signal = taskSignals.remove(taskKey)
+        if (signal != null) {
+            signal.complete(Unit)
+        } else {
+            pendingTriggers.add(taskKey)
+        }
     }
 
     fun stopTask(taskKey: String) {
@@ -52,6 +59,10 @@ class ServerPushTaskDispatcher : TaskScheduler {
             val job = scope.launch {
                 val signal = CompletableDeferred<Unit>()
                 taskSignals[task.key] = signal
+                if (pendingTriggers.remove(task.key)) {
+                    signal.complete(Unit)
+                }
+
                 signal.await()
 
                 Logger.info(LogSource.SOCKET) { "Push task ${task.key} is ready to run." }
