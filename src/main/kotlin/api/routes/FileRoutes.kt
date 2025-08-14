@@ -18,4 +18,5 @@ fun Route.fileRoutes() {
 
     staticFiles("/game", File("static/game/"))
     staticFiles("/assets", File("static/assets"))
+    staticFiles("/crossdomain.xml", File("static/crossdomain.xml"))
 }
