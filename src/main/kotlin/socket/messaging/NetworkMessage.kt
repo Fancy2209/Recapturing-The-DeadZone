@@ -13,7 +13,7 @@ object NetworkMessage {
     const val INIT_COMPLETE = "ic"
     const val ERROR = "err"
     const val BANNED = "ban"
-    const val SEND_RESPONS = "r"
+    const val SEND_RESPONSE = "r"
     const val SERVER_SHUTDOWN_UPDATE = "ssu"
     const val SERVER_SHUTDOWN_MAINTENANCE = "ssm"
     const val SERVER_ROOM_DISABLED = "srd"
