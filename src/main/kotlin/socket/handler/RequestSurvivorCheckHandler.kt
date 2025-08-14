@@ -25,7 +25,7 @@ class RequestSurvivorCheckHandler() : SocketMessageHandler {
         message: SocketMessage,
         send: suspend (ByteArray) -> Unit
     ) {
-        val id: String = message.getMap("rsc").get("id") as String
+        val id: String = message.getMap("rsc")?.get("id") as String
         Logger.debug { "Received RSC of saveId: $id" }
 
         val messageToSend =
