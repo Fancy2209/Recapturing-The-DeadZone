@@ -8,6 +8,9 @@
   "ArenaLaunch_<name>": {
     "TODO": "this is dynamic data"
   },
+  "ArenaLaunch_stadium": {
+    "TODO": "this is dynamic data"
+  },
   "ResearchTask": {},
   "AllianceCreation": {},
   "SpeedUpInfectedBounty": {},
