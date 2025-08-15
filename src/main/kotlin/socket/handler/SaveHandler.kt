@@ -7,7 +7,7 @@ import dev.deadzone.socket.messaging.SocketMessage
 import dev.deadzone.socket.messaging.SocketMessageHandler
 import dev.deadzone.utils.LogConfigSocketError
 import dev.deadzone.utils.Logger
-import io.ktor.util.date.*
+import dev.deadzone.utils.Time
 
 /**
  * Handle `save` message by:
@@ -58,7 +58,7 @@ fun buildMsg(saveId: String?, vararg payloads: Any): List<Any> {
     return buildList {
         add("r")
         add(saveId ?: "m")
-        add(getTimeMillis())
+        add(Time.now())
         addAll(payloads)
     }
 }
