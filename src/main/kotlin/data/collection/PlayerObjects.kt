@@ -181,8 +181,8 @@ data class PlayerObjects(
                 research = ResearchState(active = emptyList(), levels = emptyMap()),
                 skills = null,
                 resources = GameResources(
-                    cash = 0, wood = 100, metal = 100,
-                    cloth = 100, food = 25, water = 25, ammunition = 100
+                    cash = 100, wood = 300, metal = 300,
+                    cloth = 300, food = 100, water = 100, ammunition = 150
                 ),
                 survivors = listOf(playerSrv),
                 playerAttributes = Attributes.Companion.dummy(),
