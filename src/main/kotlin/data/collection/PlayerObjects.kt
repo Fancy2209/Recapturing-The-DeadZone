@@ -182,7 +182,7 @@ data class PlayerObjects(
                 skills = null,
                 resources = GameResources(
                     cash = 100, wood = 300, metal = 300,
-                    cloth = 300, food = 100, water = 100, ammunition = 150
+                    cloth = 300, food = 25, water = 25, ammunition = 150
                 ),
                 survivors = listOf(playerSrv),
                 playerAttributes = Attributes.Companion.dummy(),

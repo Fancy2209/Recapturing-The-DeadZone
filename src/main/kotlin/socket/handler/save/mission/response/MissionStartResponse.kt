@@ -215,10 +215,10 @@ val areaTypeToScenes = mapOf(
         "interior-store-2",
         "interior-store-3"
     ),
+    // No idea if this is the right one lol
     "tutorialStore" to listOf(
-        "interior-store-1",
-        "interior-store-2",
-        "interior-store-3"
+        "interior-store-small-1",
+        "interior-store-small-2"
     ),
     "hardwareStore" to listOf(
         "interior-store-small-1",
