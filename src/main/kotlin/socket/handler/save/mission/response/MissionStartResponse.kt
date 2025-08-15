@@ -215,6 +215,11 @@ val areaTypeToScenes = mapOf(
         "interior-store-2",
         "interior-store-3"
     ),
+    "tutorialStore" to listOf(
+        "interior-store-1",
+        "interior-store-2",
+        "interior-store-3"
+    ),
     "hardwareStore" to listOf(
         "interior-store-small-1",
         "interior-store-small-2"
