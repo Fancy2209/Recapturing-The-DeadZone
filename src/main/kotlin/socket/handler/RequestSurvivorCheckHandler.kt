@@ -25,18 +25,25 @@ class RequestSurvivorCheckHandler() : SocketMessageHandler {
         message: SocketMessage,
         send: suspend (ByteArray) -> Unit
     ) {
-        val id: String = message.getMap("rsc")?.get("id") as String
+        val id = message.getMap("rsc")?.get("id") as? String
         Logger.debug { "Received RSC of saveId: $id" }
 
-        val messageToSend =
+        val reponseMsg =
             listOf(
                 NetworkMessage.SEND_RESPONSE,  // Message Type
-                id,   // id
+                id ?: "m",   // id
                 Time.now(),   // server time
                 survivorCheckJson.trimIndent() // response
             )
+        
+        val newSurvivorMsg =
+            listOf(
+                NetworkMessage.SURVIVOR_NEW,  // Message Type
+                survivorNewJson.trimIndent()
+            )
 
-        send(PIOSerializer.serialize(messageToSend))
+        send(PIOSerializer.serialize(reponseMsg))
+        send(PIOSerializer.serialize(newSurvivorMsg))
     }
 }
 
@@ -45,3 +52,34 @@ const val survivorCheckJson = """
   "success": true
 }
 """
+
+const val survivorNewJson = """
+{
+  "id": "",
+  "title": "",
+  firstName: "Jesse",
+  lastName: "Pinkman",
+  "gender": "male",
+  "classId": "unassigned",
+  "voice": "white-m"
+}
+"""
+/*
+{
+  "id": null,
+  "title": null,
+  "firstName": null,
+  "lastName": null,
+  "gender": null,
+  "portrait": null,
+  "classId": null,
+  "morale": null,
+  "injuries": null,
+  "missionId": null,
+  "assignmentId": null,
+  "reassignTimer": null,
+  "appearance": null,
+  "scale": null,
+  "voice": null
+}
+*/
