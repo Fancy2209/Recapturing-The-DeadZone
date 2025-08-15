@@ -51,7 +51,8 @@ data class Inventory(
 
         fun newgame(pid: String): Inventory {
             val items = listOf(
-                Item(type = "pocketKnife")
+                Item(type = "pocketKnife"),
+                Item(type = "lawson22")
             )
             return Inventory(
                 playerId = pid,
