@@ -47,7 +47,7 @@ class MissionSaveHandler : SaveSubHandler {
                     return
                 }
                 val lootParameter = LootParameter(
-                    areaLevel = (data["areaLevel"] as Int),
+                    areaLevel = (data["areaLevel"] as? Int ?: 0),
                     playerLevel = leader.level,
                     itemWeightOverrides = mapOf(),
                     specificItemBoost = mapOf(

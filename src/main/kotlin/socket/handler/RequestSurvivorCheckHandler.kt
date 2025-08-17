@@ -47,11 +47,7 @@ class RequestSurvivorCheckHandler() : SocketMessageHandler {
     }
 }
 
-const val survivorCheckJson = """
-{
-  "success": true
-}
-"""
+const val survivorCheckJson = """{"success": true}"""
 
 const val survivorNewJson = """
 {

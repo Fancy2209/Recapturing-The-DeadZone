@@ -109,6 +109,7 @@ class Server(
                 }
             } catch (e: Exception) {
                 Logger.error { "Error in socket for ${connection.socket.remoteAddress}: $e" }
+                e.printStackTrace()
                 context.onlinePlayerRegistry.markOffline(connection.playerId)
                 context.playerAccountRepository.updateLastLogin(connection.playerId, getTimeMillis())
                 context.playerContextTracker.removePlayer(connection.playerId)
