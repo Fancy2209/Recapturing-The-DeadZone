@@ -326,11 +326,102 @@ class BuildingSaveHandler : SaveSubHandler {
             }
 
             SaveDataMethod.BUILDING_CREATE_BUY -> {
-                Logger.debug(LogConfigSocketToClient) { "Received 'BUILDING_CREATE_BUY' message [not implemented]" }
+                val bldId = data["id"] as String? ?: return
+                val bldType = data["type"] as String? ?: return
+                val x = data["tx"] as Int? ?: return
+                val y = data["ty"] as Int? ?: return
+                val r = data["rotation"] as Int? ?: return
+
+                Logger.debug(LogConfigSocketToClient) { "'BUILDING_CREATE_BUY' message for $saveId and $bldId,$bldType to tx=$x, ty=$y, rotation=$r" }
+
+                val buildDuration = 0.seconds
+
+                val timer = TimerData.runForDuration(
+                    duration = buildDuration,
+                    // xp used when reconnect, readObject of building
+                    data = mapOf("level" to 0, "type" to "upgrade", "xp" to 50)
+                )
+
+                val svc = serverContext.requirePlayerContext(playerId).services
+                svc.compound.createBuilding {
+                    Building(
+                        id = bldId,
+                        name = null,
+                        type = bldType,
+                        level = 0, // always 0 because create
+                        rotation = r,
+                        tx = x,
+                        ty = y,
+                        destroyed = false,
+                        resourceValue = 0.0,
+                        upgrade = timer, // create can be thought as an upgrade to level 0
+                        repair = null
+                    )
+                }
+
+                val response = BuildingCreateResponse(
+                    // although client know user's resource,
+                    // server may revalidate (in-case user did client-side hacking)
+                    success = true,
+                    items = emptyMap(),
+                    timer = timer
+                )
+
+                val responseJson = GlobalContext.json.encodeToString(response)
+                send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
+
+                serverContext.taskDispatcher.runTask(
+                    connection = connection,
+                    taskTemplateKey = TaskTemplate.BUILDING,
+                    cfgBuilder = {
+                        it.copy(
+                            targetTask = NetworkMessage.BUILDING_COMPLETE,
+                            initialRunDelay = buildDuration,
+                            extra = mapOf("msg" to listOf(bldId))
+                        )
+                    },
+                    onComplete = {}
+                )         
             }
 
             SaveDataMethod.BUILDING_UPGRADE_BUY -> {
-                Logger.warn(LogConfigSocketToClient) { "Received 'BUILDING_UPGRADE_BUY' message [not implemented]" }
+                val bldId = data["id"] as String? ?: return
+
+                Logger.debug(LogConfigSocketToClient) { "'BUILDING_UPGRADE_BUY' message for $saveId and $bldId" }
+
+                val buildDuration = 0.seconds
+
+                lateinit var timer: TimerData
+                val svc = serverContext.requirePlayerContext(playerId).services
+                svc.compound.updateBuilding(bldId) { bld ->
+                    timer = TimerData.runForDuration(
+                        duration = buildDuration,
+                        data = mapOf("level" to (bld.level + 1), "type" to "upgrade", "xp" to 50)
+                    )
+                    bld.copy(upgrade = timer)
+                }
+
+                val response = BuildingUpgradeResponse(
+                    success = true,
+                    items = emptyMap(),
+                    timer = timer
+                )
+
+                val responseJson = GlobalContext.json.encodeToString(response)
+                send(PIOSerializer.serialize(buildMsg(saveId, responseJson)))
+
+                serverContext.taskDispatcher.runTask(
+                    connection = connection,
+                    taskTemplateKey = TaskTemplate.BUILDING,
+                    cfgBuilder = {
+                        it.copy(
+                            targetTask = NetworkMessage.BUILDING_COMPLETE,
+                            initialRunDelay = buildDuration,
+                            extra = mapOf("msg" to listOf(bldId))
+                        )
+                    },
+                    onComplete = {}
+                )
             }
 
             SaveDataMethod.BUILDING_REPAIR_BUY -> {
